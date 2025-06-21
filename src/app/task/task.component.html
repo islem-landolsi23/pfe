@@ -1,0 +1,84 @@
+<!-- <div class="task" >
+                     {{ message }}
+                </div> -->
+<div  class="modal"  [ngClass]="{'is-active': isModalOpen}">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title">Modal title</p>
+      <button class="delete" aria-label="close" (click)="closeModal()" ></button>
+    </header>
+    <section class="modal-card-body">
+  
+    </section>
+    <footer class="modal-card-foot">
+      <div class="buttons">
+        <button class="button is-success" (click)="delete()" >Save changes</button>
+        <button class="button">Cancel</button>
+       
+
+
+
+      </div>
+   
+    </footer>
+  </div>
+</div>
+
+
+                <div class="card ">
+                    <header class="card-header">
+                 <p class="card-header-title">Titel</p>
+                 <div class="card-header-icon ">
+                        <button  class="delete is-small" 
+                      (click)="openModal()"  >
+    
+    </button>
+                 </div>
+
+                </header>
+  
+  <div class="card-content"  >
+    
+
+  
+ 
+
+
+    <div class="content">
+    {{message}}
+
+    </div>
+  </div>
+  <footer class="card-footer">
+    <!-- <a href="#" class="card-footer-item">Save</a>
+    <a href="#" class="card-footer-item">Edit</a>
+    <a href="#" class="card-footer-item">Delete</a> -->
+    <button class="button is-small is-primary card-footer-item ">Small</button>
+       <button class="button is-small is-info card-footer-item ">Small</button>
+  </footer>
+</div>
+
+<!-- <div  class="modal"  [ngClass]="{'is-active': isModalOpen}">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title">Modal title</p>
+      <button class="delete" aria-label="close" (click)="closeModal()" ></button>
+    </header>
+    <section class="modal-card-body">
+  
+    </section>
+    <footer class="modal-card-foot">
+      <div class="buttons">
+        <button class="button is-success" (click)="delete()" >Save changes</button>
+        <button class="button">Cancel</button>
+       
+
+
+
+      </div>
+   
+    </footer>
+  </div>
+</div> -->
