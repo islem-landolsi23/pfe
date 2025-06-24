@@ -24,12 +24,12 @@ export class AppComponent {
 
   logout()
   {
-const clientId = 'Ov23li5mLKHDdsWg5LYY';
-const redirectUri = 'http://localhost:8080/login/oauth2/code/github';
-const loginUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=user:email&prompt=login`;
+// const clientId = 'Ov23li5mLKHDdsWg5LYY';
+// const redirectUri = 'http://localhost:8080/login/oauth2/code/github';
+// const loginUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=user:email&prompt=login`;
 
-window.location.href = loginUrl;
-//  // window.location.href = 'http://localhost:8080/logout';
+// window.location.href = loginUrl;
+ window.location.href = 'http://localhost:8080/logout';
 //   fetch('http://localhost:8080/api/public/logout', {
 //     method: 'POST',
 //     credentials: 'include'
