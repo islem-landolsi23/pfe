@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -23,11 +24,10 @@ public class Project {
     private String name;
     private String description;
 
-    @ManyToOne
-    private User owner;
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    private List<Sprint> sprints;
 
-    @ManyToMany
-    private Set<User> members;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
 
-    private LocalDateTime createdAt;
 }

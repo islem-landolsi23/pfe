@@ -14,21 +14,5 @@ public class TaskController {
     @Autowired
     private TaskService taskService;
 
-    @PostMapping("/create")
-    public ResponseEntity<Task> createTask(@RequestBody Task task,
-                                           @RequestParam Long projectId,
-                                           @RequestParam Long creatorId) {
-        return ResponseEntity.ok(taskService.createTask(task, projectId, creatorId));
-    }
 
-    @GetMapping("/project/{projectId}")
-    public List<Task> getTasksByProject(@PathVariable Long projectId) {
-        return taskService.getTasksByProject(projectId);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        taskService.deleteTask(id);
-        return ResponseEntity.noContent().build();
-    }
 }

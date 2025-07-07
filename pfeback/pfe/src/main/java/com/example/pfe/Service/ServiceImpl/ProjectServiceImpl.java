@@ -18,27 +18,5 @@ public class ProjectServiceImpl implements ProjectService {
     private ProjectRepository projectRepository ;
     @Autowired
     UserRepository userRepository ;
-    @Override
-    public List<Project> getProjectsByOwner(Long userId) {
-        return projectRepository.findByOwnerId(userId);
-    }
 
-    @Override
-    public Project createProject(Project project, Long ownerId) {
-        User owner = userRepository.findById(ownerId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        project.setOwner(owner);
-        project.setCreatedAt(LocalDateTime.now());
-        return projectRepository.save(project);
-    }
-
-    @Override
-    public Optional<Project> getById(Long id) {
-          return projectRepository.findById(id);
-    }
-
-    @Override
-    public void deleteProject(Long id) {
-        projectRepository.deleteById(id);
-    }
 }

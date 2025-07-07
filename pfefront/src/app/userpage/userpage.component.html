@@ -23,16 +23,16 @@
 
             </div> -->
             <div class="level">
-                  <div class="level-left">
-                <div class="level-item">
-                      <figure class="image is-96x96">
-                        <img class="is-rounded" img [src]="avatar_url" />
-                    </figure>
+                <div class="level-left">
+                    <div class="level-item">
+                        <figure class="image is-96x96">
+                            <img class="is-rounded" img [src]="avatar_url" />
+                        </figure>
+                    </div>
+                    <div class="level-item">
+                        <div class="label "> {{user.name}}</div>
+                    </div>
                 </div>
-                 <div class="level-item">
-                      <div class="label "> {{user.name}}</div>
-                 </div>
-                 </div>
 
 
             </div>
@@ -45,33 +45,67 @@
 
             <div class="container">
                 <div class="card">
+
+
+
+
+
+
+
+
+
                     <div class="card-content">
-                        <div class="columns">
+
+                        <button class="accordion" (click)="togglePanel(1)">User Info</button>
+                        <div class="Mypanel" [style.maxHeight]="isPanelOpen1 ? panelScrollHeight1 : null" #panelRef1>
+                            <div class="columns">
+
+                                <div class="column">
+                                </div>
+                            </div>
+                            <div class="columns">
+
+                                <div class="column">
+                                    <input class="input" type="email" placeholder="email" value="{{user.email}}"
+                                        disabled />
+                                </div>
+                            </div>
+                            <div class="columns">
+                                <div class="column">
+                                    <input class="input" type="text" placeholder="name" />
+                                </div>
+                            </div>
+                            <div class="columns">
+                                <div class="column">
+                                    <input class="input" type="password" placeholder="password" />
+                                </div>
+                            </div>
+                        </div>
+                        <!--     <div class="columns">
                             <div class="column">
                                 <h5 class="subtitle is-5">user info
 
                                 </h5>
 
-                                <input class="input" type="email" placeholder="email"
-                                value="{{user.email}}" />
+                                <input class="input" type="email" placeholder="email" value="{{user.email}}" />
                             </div>
-                          
+
 
                         </div>
                         <div class="columns">
                             <div class="column">
                                 <input class="input" type="text" placeholder="Text input" />
                             </div>
-                           
+
 
                         </div>
                         <div class="columns">
                             <div class="column">
                                 <input class="input" type="text" placeholder="Text input" />
                             </div>
-                           
 
-                        </div>
+
+                        </div>  -->
 
 
                     </div>
@@ -79,34 +113,57 @@
             </div>
 
 
-<br>
+            <br>
 
-              <div class="container">
+            <div class="container">
                 <div class="card">
                     <div class="card-content">
-                        <div class="columns">
+                        <!-- <div class="columns">
                             <div class="column">
                                 <h5 class="subtitle is-5">Projects 
 
                                 </h5>
 
-                                <input class="input" type="email" placeholder="email"  />
-                            </div>
+                               <input class="input" type="email" placeholder="email"  /> -->
+                        <!--  </div>
                           
 
                         </div>
-                        <div class="columns">
+                        <div>
+                              <div class="columns">
                             <div class="column">
                                 <input class="input" type="text" placeholder="Text input" />
                             </div>
                            
 
                         </div>
-                        <div class="columns">
-                            <div class="column">
-                                <input class="input" type="text" placeholder="Text input" />
+                        </div> -->
+
+                        <button class="accordion" (click)="togglePanel(2)">Projects</button>
+                        <div class="Mypanel" [style.maxHeight]="isPanelOpen2 ? panelScrollHeight2 : null" #panelRef2>
+                            <div class="columns">
+                                <div class="column">
+                                  
+                                </div>
                             </div>
-                           
+
+                            <div class="columns">
+                                <div class="column">
+                                <a href="#">  <label class="label">Projet 1</label></a>   
+                                </div>
+                            </div>
+                            <div class="columns">
+                                <div class="column">
+                                    <label class="label">Projet 2</label>
+                                </div>
+                            </div>
+                            <div class="columns">
+                                <div class="column">
+                                    <label class="label">Projet 3</label>
+                                </div>
+                            </div>
+
+
 
                         </div>
 
@@ -115,7 +172,9 @@
                 </div>
             </div>
         </div>
+        <button class="button" (click)="saveUser()">Button</button>
 
     </div>
+
 
 </div>

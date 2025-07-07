@@ -12,32 +12,23 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 public class Task {
-
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String title;
     private String description;
 
     @Enumerated(EnumType.STRING)
-    private TaskStatus status; // TO_DO, IN_PROGRESS, DONE
-
-    @Enumerated(EnumType.STRING)
-    private TaskType type;     // BUG, FEATURE, STORY, EPIC
-
-    @Enumerated(EnumType.STRING)
-    private Priority priority; // LOW, MEDIUM, HIGH, CRITICAL
+    private TaskStatus status;
 
     @ManyToOne
-    private Project project;
+    @JoinColumn(name = "sprint_id")
+    private Sprint sprint;
 
     @ManyToOne
-    private User assignee;
-
-    @ManyToOne
-    private User creator;
-
+    @JoinColumn(name = "user_id")
+    private User assignedUser;
     private LocalDateTime createdAt;
     private LocalDateTime dueDate;
 
