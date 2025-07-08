@@ -1,65 +1,66 @@
- 
- <div>
-  <button class="button is-small is-primary "(click)="fillme()">
+<div>
+  <button class="button is-small is-primary " (click)="fillme()">
     click me
   </button>
- </div>
- 
- 
- <div class="board">
+</div>
 
-    <!-- <div class="board-bar">
-      <p class="board-name">{{ board.name }}</p>
-    </div> -->
 
-    <div class="board-wrapper">
+<div class="board p-p-3">
 
-      <!-- <div class="board-columns" cdkDropListGroup> -->
-        <div class="board-columns  " cdkDropListGroup > 
-               <!-- {{  board.columns.length}} -->
-                  @for(column of board.columns ; track column ){
-        <div class="board-column  " >
 
-          <div class="column-title  ">
-            {{ column.name }}
-          </div>
 
-          <!-- <div class="tasks-container"
-          cdkDropList
-          [cdkDropListData]="column.tasks"
+  <div class="board-wrapper">
+
+
+    <div class="p-grid board-columns  " cdkDropListGroup>
+
+      @for(column of board.columns ; track column ){
+      <div class="p-col-12 p-md-6 p-lg-3 board-column ">
+
+        <div class="column-title  ">
+          {{ column.name }}
+        </div>
+
+<!-- 
+        <div class="tasks-container p-flex p-flex-column gap-2" cdkDropList [cdkDropListData]="column.tasks"
           (cdkDropListDropped)="drop($event)">
-            <div class="task" *ngFor="let item of column.tasks" cdkDrag>
-              {{ item     [cdkDropListData]="column.tasks"
-          (cdkDropListDropped)="drop($event)"}}
-            </div> -->
-             <div class="tasks-container" cdkDropList
-                   [cdkDropListData]="column.tasks"
-                   (cdkDropListDropped)="drop($event)" 
-                  
-                   >
-                @for( item of column.tasks ; track item ;let idx = $index, e = $even)
-                {
-                    <!-- <div class="task" cdkDrag  (click)="click($event)">
-                     {{ item }}
-                    
-                </div> -->
-                <div class="grid" cdkDrag>
-                     <app-task [message]="item" [board]="board" [columnName]="column.name" [index]="idx"
-                     (click)="click(column,idx,e)"></app-task>
-                </div>
-               
-                    
-                }
-            <!-- <div class="task" *ngFor="let item of column.tasks" >
-              {{ item }}
-            </div> -->
+          @for( item of column.tasks ; track item ;let idx = $index, e = $even)
+          {
+
+          <div class="p-shadow-2 p-p-2 p-rounded" cdkDrag>
+            <app-task [message]="item" [board]="board" [columnName]="column.name" [index]="idx"
+              (click)="click(column,idx,e)"></app-task>
           </div>
+
+
+          }
+
+        </div> -->
+        <div class="tasks-container p-flex p-flex-column gap-2"
+     cdkDropList
+     [cdkDropListData]="column.tasks"
+     (cdkDropListDropped)="drop($event)"
+     [cdkDropListConnectedTo]="getConnectedDropLists()"
+     [style.min-height.px]="50"
+     class="drop-zone" 
+     cdkDropListSortingDisabled="true" >
+    
+    @for (item of column.tasks; track item; let idx = $index, e = $even) {
+        <div class="p-shadow-2 p-p-2 p-rounded" cdkDrag  >
+            <app-task [message]="item" [board]="board" [columnName]="column.name" [index]="idx"
+            
+                      (click)="click(column, idx, e)"
+                     >
+            </app-task>
         </div>
     }
 
+</div>
       </div>
+      }
 
     </div>
 
   </div>
 
+</div>

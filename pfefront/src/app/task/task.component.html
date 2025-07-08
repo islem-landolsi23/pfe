@@ -1,63 +1,40 @@
 <!-- <div class="task" >
                      {{ message }}
                 </div> -->
-<div  class="modal"  [ngClass]="{'is-active': isModalOpen}">
-  <div class="modal-background"></div>
-  <div class="modal-card">
-    <header class="modal-card-head">
-      <p class="modal-card-title">Modal title</p>
-      <button class="delete" aria-label="close" (click)="closeModal()" ></button>
-    </header>
-    <section class="modal-card-body">
-  
-    </section>
-    <footer class="modal-card-foot">
-      <div class="buttons">
-        <button class="button is-success" (click)="delete()" >Save changes</button>
-        <button class="button">Cancelss</button>
-       
 
 
 
-      </div>
-   
-    </footer>
-  </div>
-</div>
+<!-- <div class="card ">
+  <header class="card-header">
+    <p class="card-header-title">Titel</p>
+    <div class="card-header-icon ">
+      <button class="delete is-small" (click)="openModal()">
+
+      </button>
+    </div>
+
+  </header>
+
+  <div class="card-content">
 
 
-                <div class="card ">
-                    <header class="card-header">
-                 <p class="card-header-title">Titel</p>
-                 <div class="card-header-icon ">
-                        <button  class="delete is-small" 
-                      (click)="openModal()"  >
-    
-    </button>
-                 </div>
 
-                </header>
-  
-  <div class="card-content"  >
-    
 
-  
- 
 
 
     <div class="content">
-    {{message}}
+      {{message}}
 
     </div>
-  </div>
-  <footer class="card-footer">
-    <!-- <a href="#" class="card-footer-item">Save</a>
+  </div> -->
+<!-- <footer class="card-footer"> -->
+<!-- <a href="#" class="card-footer-item">Save</a>
     <a href="#" class="card-footer-item">Edit</a>
     <a href="#" class="card-footer-item">Delete</a> -->
-    <button class="button is-small is-primary card-footer-item ">Small</button>
-       <button class="button is-small is-info card-footer-item ">Small</button>
+<!-- <button class="button is-small is-primary card-footer-item ">Small</button>
+    <button class="button is-small is-info card-footer-item ">Small</button>
   </footer>
-</div>
+</div> -->
 
 <!-- <div  class="modal"  [ngClass]="{'is-active': isModalOpen}">
   <div class="modal-background"></div>
@@ -82,3 +59,31 @@
     </footer>
   </div>
 </div> -->
+
+
+<p-card>
+  <ng-template pTemplate="header">
+    <div class="flex flex-row-reverse flex-wrap">
+    <div class="flex align-items-center justify-content-center  m-3">
+    <i class="pi pi-times cursor-pointer"  (click)="delete()" ></i>
+    </div>
+
+    </div>
+  
+   
+  </ng-template>
+  
+  <ng-template pTemplate="title"> Advanced Card </ng-template>
+  <ng-template pTemplate="subtitle"> </ng-template>
+  <p>
+
+    {{message}}
+  </p>
+  <ng-template pTemplate="footer">
+    <div class="flex gap-4 mt-1">
+      <p-button label="Cancel" severity="secondary" class="w-full" [outlined]="true" styleClass="w-full" />
+      <p-button label="Save" class="w-full" styleClass="w-full" />
+    </div>
+  </ng-template>
+</p-card>
+<br>

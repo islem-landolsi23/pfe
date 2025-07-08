@@ -2,11 +2,13 @@ import { CommonModule } from '@angular/common';
 import { Component , EventEmitter, Input , OnInit, Output } from '@angular/core';
 import { Board } from '../kanbanboard/kanbanboard.component';
 import { log } from 'console';
-
+import { CardModule } from 'primeng/card';
+import { ButtonModule } from 'primeng/button';
+import { PrimeIcons } from 'primeng/api';
 @Component({
   selector: 'app-task',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,CardModule ,ButtonModule],
   templateUrl: './task.component.html',
   styleUrl: './task.component.scss'
 })

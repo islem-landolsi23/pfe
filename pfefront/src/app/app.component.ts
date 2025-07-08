@@ -1,18 +1,20 @@
 import { Component } from '@angular/core';
-
-
+import { ButtonModule } from 'primeng/button';
+import { NgIf } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { AuthService } from './auth/auth.service';
+import { log } from 'console';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [ RouterOutlet],
+  imports: [ RouterOutlet,NgIf,ButtonModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
   title = 'pfefront';
+  isDropdownOpen = false;
 
 constructor(private authService: AuthService){}
 
@@ -48,5 +50,10 @@ constructor(private authService: AuthService){}
   {
     console.log( this.authService.isLoggedIn())  
 
+  }
+
+   toggleDropdown(): void {
+    this.isDropdownOpen = !this.isDropdownOpen;
+    console.log(this.isDropdownOpen )
   }
 }

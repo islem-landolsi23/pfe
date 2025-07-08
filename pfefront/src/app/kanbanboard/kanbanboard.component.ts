@@ -85,6 +85,9 @@ this.removeTask(this.board,column.name,index)
 //console.log( board.columns[index].tasks.splice(taskToRemoveIndex,1))
  
 }
+getConnectedDropLists() {
+  return this.board.columns.map((_, index) => `cdk-drop-list-${index}`);
+}
 }
 
 export class Column {
