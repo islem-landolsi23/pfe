@@ -500,7 +500,7 @@
 
 
 
-<div class="root">
+<!-- <div class="root">
   <nav class="navbar has-background-dark">
     <div class="navbar-brand">
       <div class="navbar-item">
@@ -508,7 +508,7 @@
       </div>
     </div>
 
-      <div class="navbar-end">
+    <div class="navbar-end">
       <div class="navbar-item">
         <div class="buttons">
           <a class="button is-primary">
@@ -516,14 +516,14 @@
           </a>
           <a class="button is-light">
             Log in
-          </a>
-         
- 
- 
+          </a> -->
 
 
- 
-<!-- <div class="select">
+
+
+
+
+          <!-- <div class="select">
   <select>
     <option>Projects 2</option>
     <option>Select dropdown</option>
@@ -531,7 +531,7 @@
   </select>
 
 </div> -->
-        </div>
+        <!-- </div>
       </div>
     </div>
   </nav>
@@ -545,11 +545,37 @@
     </a>
   </div>
 
-  <div>
-    <p-button class="button is-small  " (click)=" logout()">logout</p-button>
+  <div> -->
+    <!-- <p-button class="button is-small  " (click)=" logout()">logout</p-button>
   </div>
   <div>
     <button class="button is-small  " (click)="checkislogged()">check is loged </button>
-  </div>
-  <router-outlet />
-      <p-button class="button is-small  " (click)=" logout()">logout</p-button>
+  </div> -->
+  
+  <p-menubar [model]="items">
+        <ng-template #start>
+         <h1 class="app-name has-gradient-text">STEPS</h1>
+         
+        </ng-template>
+        <ng-template #item let-item let-root="root">
+            <a pRipple class="flex items-center p-menubar-item-link">
+               <span [class]="item.icon"></span>
+                <span>{{ item.label }}</span>
+                <p-badge *ngIf="item.badge" [ngClass]="{ 'ml-auto': !root, 'ml-2': root }" [value]="item.badge" />
+                <span *ngIf="item.shortcut" class="ml-auto border border-surface rounded bg-emphasis text-muted-color text-xs p-1">{{ item.shortcut }}</span>
+                <i *ngIf="item.items" [ngClass]="['ml-auto pi', root ? 'pi-angle-down' : 'pi-angle-right']"></i>
+            </a>
+        </ng-template>
+        <ng-template #end>
+            <!-- <div class="flex items-center gap-2">
+                <input type="text" pInputText placeholder="Search" class="w-36" />
+                <p-avatar image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" shape="circle" />
+            </div> -->
+        </ng-template>
+    </p-menubar>
+<br>
+<br>
+    <router-outlet />
+    <!-- <p-button class="button is-small  " (click)=" logout()">logout</p-button> -->
+
+   

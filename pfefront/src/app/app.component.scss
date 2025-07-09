@@ -1,8 +1,8 @@
-.root {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-}
+// .root {
+//     display: flex;
+//     flex-direction: column;
+//     height: 100%;
+// }
 
 .app-name {
     font-size: 28px;
@@ -11,40 +11,44 @@
 }
 
 .has-gradient-text {
-    background: -webkit-linear-gradient(#b30eb3, #2af598);
+    background: -webkit-linear-gradient(#d62cd6, #8bef73);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
-.Mydropdown {
-  position: relative;
-  display: inline-block;
-}
+// .Mydropdown {
+//   position: relative;
+//   display: inline-block;
+// }
 
-.Mydropdown-content {
-  display: none;
-  position: absolute;
-  background-color:#f1f1f1;
-  min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  padding: 12px 16px;
-  z-index: 1;
-}
+// .Mydropdown-content {
+//   display: none;
+//   position: absolute;
+//   background-color:#f1f1f1;
+//   min-width: 160px;
+//   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+//   padding: 12px 16px;
+//   z-index: 1;
+// }
 
-.Mydropdown-content a {
-  color: black;
-  padding: 12px 16px;
-  text-decoration: none;
-  display: block;
-}
+// .Mydropdown-content a {
+//   color: black;
+//   padding: 12px 16px;
+//   text-decoration: none;
+//   display: block;
+// }
 
-.Mydropdown:hover .Mydropdown-content {
-  display: block;
+// .Mydropdown:hover .Mydropdown-content {
+//   display: block;
 
  
-}
+// }
 
-.Mydropdown-content a:hover {
-    background-color: #30d854;
-}
+// .Mydropdown-content a:hover {
+//     background-color: #30d854;
+// }
 
+::ng-deep .p-menubar {
+  background-color: transparent !important;
+  box-shadow: none !important; /* Optional */
+}

@@ -1,180 +1,107 @@
 <!-- <img [src]="avatar_url" alt="User Avatar"> -->
 
-<div class="container">
-
-    <div class="card">
-        <div class="card-content">
-            <p class="subtitle">
-                Personal information
-            </p>
-
-            <!-- <div class="columns">
-                <div class="column is-1">
-                    <figure class="image is-96x96">
-                        <img class="is-rounded" img [src]="avatar_url" />
-                    </figure>
 
 
 
+
+
+
+
+
+
+<!-- 
+   <div class="line-height-10">
+    <div class="overflow-auto p-3  " >
+       
+ <p-avatar image="{{avatar_url}}"
+  class="mr-2" size="xlarge" shape="circle" />
+ 
+    
+    
+         
+           
+                <div class="label "> {{user.name}}</div>
+    </div>
+</div>  -->
+<!--//////////////////////////////////////////////////////////////////////////////////////////////////////////-->
+<!-- 
+<div class="flex justify-content-center flex-wrap">
+
+    <div class="flex align-items-center justify-content-center">
+        <p-panel [toggleable]="true" class="w-12">
+            <ng-template #header>
+                <div class="flex items-center gap-50">
+                    <p-avatar image="{{avatar_url}}" shape="circle" />
+                    <span class="font-bold">{{user.name}}</span>
                 </div>
-                <div class="column">
-                    <div class="label "> jeff basos</div>
-                </div>
+            </ng-template>
 
-            </div> -->
-            <div class="level">
-                <div class="level-left">
-                    <div class="level-item">
-                        <figure class="image is-96x96">
-                            <img class="is-rounded" img [src]="avatar_url" />
-                        </figure>
-                    </div>
-                    <div class="level-item">
-                        <div class="label "> {{user.name}}</div>
-                    </div>
-                </div>
+            <ng-template #icons>
+                <p-button icon="pi pi-cog" severity="secondary" rounded text />
 
+            </ng-template>
+          
+                
+         
+           <br><br>
 
-            </div>
-
+                <input pInputText   placeholder="UserName" class="w-30rem"
+                >
+               
+      
+       
+           
+        </p-panel>
 
 
-            <br>
-
-
-
-            <div class="container">
-                <div class="card">
-
-
-
-
-
-
-
-
-
-                    <div class="card-content">
-
-                        <button class="accordion" (click)="togglePanel(1)">User Info</button>
-                        <div class="Mypanel" [style.maxHeight]="isPanelOpen1 ? panelScrollHeight1 : null" #panelRef1>
-                            <div class="columns">
-
-                                <div class="column">
-                                </div>
-                            </div>
-                            <div class="columns">
-
-                                <div class="column">
-                                    <input class="input" type="email" placeholder="email" value="{{user.email}}"
-                                        disabled />
-                                </div>
-                            </div>
-                            <div class="columns">
-                                <div class="column">
-                                    <input class="input" type="text" placeholder="name" />
-                                </div>
-                            </div>
-                            <div class="columns">
-                                <div class="column">
-                                    <input class="input" type="password" placeholder="password" />
-                                </div>
-                            </div>
-                        </div>
-                        <!--     <div class="columns">
-                            <div class="column">
-                                <h5 class="subtitle is-5">user info
-
-                                </h5>
-
-                                <input class="input" type="email" placeholder="email" value="{{user.email}}" />
-                            </div>
-
-
-                        </div>
-                        <div class="columns">
-                            <div class="column">
-                                <input class="input" type="text" placeholder="Text input" />
-                            </div>
-
-
-                        </div>
-                        <div class="columns">
-                            <div class="column">
-                                <input class="input" type="text" placeholder="Text input" />
-                            </div>
-
-
-                        </div>  -->
-
-
-                    </div>
-                </div>
-            </div>
-
-
-            <br>
-
-            <div class="container">
-                <div class="card">
-                    <div class="card-content">
-                        <!-- <div class="columns">
-                            <div class="column">
-                                <h5 class="subtitle is-5">Projects 
-
-                                </h5>
-
-                               <input class="input" type="email" placeholder="email"  /> -->
-                        <!--  </div>
-                          
-
-                        </div>
-                        <div>
-                              <div class="columns">
-                            <div class="column">
-                                <input class="input" type="text" placeholder="Text input" />
-                            </div>
-                           
-
-                        </div>
-                        </div> -->
-
-                        <button class="accordion" (click)="togglePanel(2)">Projects</button>
-                        <div class="Mypanel" [style.maxHeight]="isPanelOpen2 ? panelScrollHeight2 : null" #panelRef2>
-                            <div class="columns">
-                                <div class="column">
-                                  
-                                </div>
-                            </div>
-
-                            <div class="columns">
-                                <div class="column">
-                                <a href="#">  <label class="label">Projet 1</label></a>   
-                                </div>
-                            </div>
-                            <div class="columns">
-                                <div class="column">
-                                    <label class="label">Projet 2</label>
-                                </div>
-                            </div>
-                            <div class="columns">
-                                <div class="column">
-                                    <label class="label">Projet 3</label>
-                                </div>
-                            </div>
-
-
-
-                        </div>
-
-
-                    </div>
-                </div>
-            </div>
-        </div>
-        <button class="button" (click)="saveUser()">Button</button>
 
     </div>
+</div> -->
 
 
+<div class="flex justify-content-center mt-5">
+    <p-card class="w-11 shadow-4">
+        <div class="flex flex-column align-items-center gap-3">
+            <p-panel [toggleable]="true" class="w-full  h-full">
+                <ng-template #header>
+                    <div class="flex align-items-center gap-3">
+                        <p-avatar [image]="avatar_url" shape="circle"></p-avatar>
+                        <span class="font-bold">{{ user.name }}</span>
+                    </div>
+                </ng-template>
+
+                <ng-template #icons>
+                    <p-button icon="pi pi-cog" severity="secondary" rounded text />
+                </ng-template>
+                <!--                          first panel                           -->
+                <div class="mt-4 flex flex-column justify-content-center">
+                    <input pInputText placeholder="UserName" class="w-40rem" value="{{ user.name }}" />
+                    <br>
+                    <input pInputText placeholder="email" class="w-40rem" value="{{ user.email }}" />
+                    <br>
+                    <input pInputText placeholder="" class="w-40rem" />
+                </div>
+            </p-panel>
+            <p-panel [toggleable]="true" class="w-full h-full">
+                <ng-template #header>
+                    <div class="flex align-items-center gap-3">
+                        Projects
+                    </div>
+                </ng-template>
+
+                <ng-template #icons>
+                    <p-button icon="pi pi-cog" severity="secondary" rounded text />
+                </ng-template>
+                <!--                          seconde panel                           -->
+                <label for=""> Project : </label> porjeycmo
+                <p-divider />
+                <p>
+                    <label for=""> Project :</label> lolo wow
+                </p>
+                <p-divider />
+                <label for=""> Project :</label> kiki gio
+
+            </p-panel>
+        </div>
+    </p-card>
 </div>

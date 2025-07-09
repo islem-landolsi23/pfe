@@ -1,22 +1,81 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
-import { NgIf } from '@angular/common';
+import { CommonModule, NgIf } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { AuthService } from './auth/auth.service';
-import { log } from 'console';
-
+import { PrimeIcons } from 'primeng/api';
+import { Menubar, MenubarModule } from 'primeng/menubar';
+import { Ripple } from 'primeng/ripple';
+import { MenuItem } from 'primeng/api';
+import { BadgeModule } from 'primeng/badge';
+import { AvatarModule } from 'primeng/avatar';
+import { InputTextModule } from 'primeng/inputtext';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [ RouterOutlet,NgIf,ButtonModule],
+  imports: [ CommonModule,RouterOutlet,NgIf,
+    ButtonModule,MenubarModule ,Menubar,
+     BadgeModule, AvatarModule, InputTextModule,
+      Ripple],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent {
+export class AppComponent implements OnInit{
+     items: MenuItem[] | undefined;
   title = 'pfefront';
   isDropdownOpen = false;
 
 constructor(private authService: AuthService){}
+  ngOnInit(): void {
+          this.items = [
+            {
+                label: 'Home',
+                icon: 'pi pi-home',
+            },
+              {
+                label: 'Profile',
+                icon: 'pi pi-user',
+            },
+            {
+                label: 'Projects',
+                icon: 'pi pi-briefcase',
+               
+                items: [
+                    {
+                        label: 'Core',
+                        icon: 'pi pi-bolt',
+                        shortcut: '⌘+S',
+                    },
+                    {
+                        label: 'Blocks',
+                        icon: 'pi pi-server',
+                        shortcut: '⌘+B',
+                    },
+                    {
+                        separator: true,
+                    },
+                    {
+                        label: 'UI Kit',
+                        icon: 'pi pi-pencil',
+                        shortcut: '⌘+U',
+                    },
+                ],
+            },
+            {
+              label:"Forum",
+               icon: 'pi pi-hashtag'
+              
+            },{
+                label:"Notifications",
+               icon: 'pi pi-bell',
+                badge : "2"
+            },{
+               label:"Messages",
+               icon: 'pi pi-envelope',
+                badge : "2",
+            }
+        ];
+  }
 
 
 

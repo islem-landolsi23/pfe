@@ -10,5 +10,9 @@ export const routes: Routes = [
     {path : 'kanban',component :KanbanboardComponent },
      {path : 'login',component :LoginformComponent },
       {path : 'user',component :UserpageComponent,  canActivate: [authGuard], },
-        {path : 'project',component :ProjectComponent,  canActivate: [authGuard], }
+        {path : 'project',component :ProjectComponent,  canActivate: [authGuard], },
+        {
+        path: 'ticket',
+        loadChildren: () => import('./ticket/ticket.module').then(m => m.TicketModule)
+      },
 ];

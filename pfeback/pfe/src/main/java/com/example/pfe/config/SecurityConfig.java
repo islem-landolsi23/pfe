@@ -35,7 +35,7 @@ public class SecurityConfig {
                         ).defaultSuccessUrl("http://localhost:4200/user", true)
                 ).logout(logout -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("http://localhost:4200") // redirect after logout
+                        .logoutSuccessUrl("http://localhost:4200/login") // redirect after logout
                         .invalidateHttpSession(true)
                         .clearAuthentication(true)
                         .deleteCookies("JSESSIONID")

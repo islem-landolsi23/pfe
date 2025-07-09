@@ -9,6 +9,7 @@ import Aura from '@primeng/themes/aura';
 
 
 
+
 export const appConfig: ApplicationConfig = {
   providers: [provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes), provideClientHydration(),
      provideHttpClient(),  provideAnimationsAsync(),

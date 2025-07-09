@@ -2,10 +2,27 @@ import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angula
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { log } from 'console';
+import { PrimeIcons } from 'primeng/api';
+import { Avatar } from 'primeng/avatar';
+import { AvatarGroup } from 'primeng/avatargroup';
+import { AvatarModule } from 'primeng/avatar';
+import { OverlayBadgeModule } from 'primeng/overlaybadge';
+import { PanelModule } from 'primeng/panel';
+import { ButtonModule } from 'primeng/button';
+import { MenuModule } from 'primeng/menu';
+import { InputTextModule } from 'primeng/inputtext';
+import { FormsModule } from '@angular/forms'
+import { FloatLabel } from 'primeng/floatlabel';
+import { CardModule } from 'primeng/card';
+import { AccordionModule } from 'primeng/accordion';
+import { DividerModule } from 'primeng/divider';
 @Component({
   selector: 'app-userpage',
   standalone: true,
-  imports: [],
+  imports: [Avatar,AvatarGroup,AvatarModule, DividerModule ,
+    OverlayBadgeModule,AccordionModule,
+    PanelModule,ButtonModule,CardModule
+    ,MenuModule , FormsModule, InputTextModule,FloatLabel],
   templateUrl: './userpage.component.html',
   styleUrl: './userpage.component.scss'
 })
@@ -13,18 +30,12 @@ export class UserpageComponent implements OnInit ,AfterViewInit {
   isLoggedIn = false;
   avatar_url =''
   user : any
-   isPanelOpen1 = false;
-    isPanelOpen2 = false;
-  panelScrollHeight1 = '0px';
-   panelScrollHeight2 = '0px';
-  @ViewChild('panelRef1') panelRef1!: ElementRef;
-   @ViewChild('panelRef2') panelRef2!: ElementRef;
+  
 
 constructor(private http: HttpClient,private router: Router) {}
   ngAfterViewInit(): void {
    // throw new Error('Method not implemented.');
-    this.panelScrollHeight1 = this.panelRef1.nativeElement.scrollHeight + 'px';
-       this.panelScrollHeight2 = this.panelRef2.nativeElement.scrollHeight + 'px';
+    
   }
 
  
@@ -98,13 +109,7 @@ saveUser()
   }
 
 
-  togglePanel(n :any): void {
-console.log(n)
-    if(n == 1)
-    this.isPanelOpen1 = !this.isPanelOpen1;
-  if(n == 2)
-     this.isPanelOpen2 = !this.isPanelOpen2;
-  }
+ 
 }
 
 
