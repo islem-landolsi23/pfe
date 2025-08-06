@@ -1,5 +1,6 @@
 package com.example.pfe.Controller;
 
+import com.example.pfe.Entity.Sprint;
 import com.example.pfe.Entity.Task;
 import com.example.pfe.Service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,5 +15,20 @@ public class TaskController {
     @Autowired
     private TaskService taskService;
 
+
+
+    @PostMapping("/getBySprint")
+    public List<Task> getTaskBySprint(@RequestBody Sprint sprint)
+    {
+        return taskService.getTaskBySprint(sprint) ;
+    }
+
+
+
+    @PostMapping("/addTask")
+    public Task addTask(@RequestBody Task task)
+    {
+        return taskService.addTask(task) ;
+    }
 
 }

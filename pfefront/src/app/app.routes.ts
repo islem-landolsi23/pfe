@@ -4,6 +4,13 @@ import { LoginformComponent } from './loginform/loginform.component';
 import { UserpageComponent } from './userpage/userpage.component';
 import { authGuard } from './auth/authGuard';
 import { ProjectComponent } from './project/project.component';
+import { ChatComponent } from './chat/chat.component';
+import { Kanban2Component } from './kanban2/kanban2.component';
+import { Oauth2RedirectComponent } from './oauth2-redirect/oauth2-redirect.component';
+import { ProjectdetailsComponent } from './projectdetails/projectdetails.component';
+import { SprintComponent } from './sprint/sprint.component';
+import { TaskComponent } from './task/task.component';
+
 
 export const routes: Routes = [
 
@@ -15,4 +22,11 @@ export const routes: Routes = [
         path: 'ticket',
         loadChildren: () => import('./ticket/ticket.module').then(m => m.TicketModule)
       },
+        {path : 'chat',component :ChatComponent },
+     
+            {path : 'kanban2',component :Kanban2Component },
+            { path: 'oauth2-redirect', component: Oauth2RedirectComponent },
+              { path: 'project-details/:id', component: ProjectdetailsComponent },
+                { path: 'sprint/:projectId/:sprintId', component: SprintComponent },
+                  { path: 'task/:projectId/:sprintId/:task', component: TaskComponent },
 ];

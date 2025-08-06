@@ -19,4 +19,36 @@ public class ProjectServiceImpl implements ProjectService {
     @Autowired
     UserRepository userRepository ;
 
+    @Override
+    public Project creatProject(Project project) {
+
+      Project p =  projectRepository.save(project);
+        return p;
+    }
+
+    @Override
+    public void deleteProject(Project project) {
+        projectRepository.deleteById(project.getId());
+    }
+
+    @Override
+    public Project updateProject(Project project) {
+
+        return projectRepository.save(project) ;
+
+    }
+
+    @Override
+    public List<Project> getProjectList() {
+
+
+        return projectRepository.findAll();
+    }
+
+    @Override
+    public Project getProjecrById(long id) {
+        return projectRepository.findById(id).get();
+    }
+
+
 }

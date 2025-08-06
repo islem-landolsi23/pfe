@@ -26,6 +26,8 @@ public class User {
 
     private String name;
 
+    private String password ;
+
     @Column(name = "github_id", unique = true)
     private String githubId;
 

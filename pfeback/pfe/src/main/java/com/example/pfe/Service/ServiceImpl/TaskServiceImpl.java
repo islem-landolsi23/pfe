@@ -1,6 +1,7 @@
 package com.example.pfe.Service.ServiceImpl;
 
 import com.example.pfe.Entity.Project;
+import com.example.pfe.Entity.Sprint;
 import com.example.pfe.Entity.Task;
 import com.example.pfe.Entity.User;
 import com.example.pfe.Repository.ProjectRepository;
@@ -22,4 +23,34 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     private UserRepository userRepository;
 
+    @Override
+    public Task addTask(Task task) {
+        return taskRepository.save(task);
+    }
+
+    @Override
+    public Task updateTask(Task task) {
+        return taskRepository.save(task);
+    }
+
+    @Override
+    public void deleteTask(long id) {
+         taskRepository.deleteById(id);
+    }
+
+    @Override
+    public Task getTaskById(long id) {
+     return taskRepository.getById(id);
+    }
+
+    @Override
+    public List<Task> getTaskBySprint(Sprint sprint) {
+        return  taskRepository.getBySprint(sprint) ;
+
+    }
+
+    @Override
+    public List<Task> getTaskByUser(Long userId) {
+        return List.of();
+    }
 }

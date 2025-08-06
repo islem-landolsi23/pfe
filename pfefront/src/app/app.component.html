@@ -558,7 +558,7 @@
          
         </ng-template>
         <ng-template #item let-item let-root="root">
-            <a pRipple class="flex items-center p-menubar-item-link">
+            <a pRipple class="flex items-center p-menubar-item-link"  (click)="goToRout(item.path)">
                <span [class]="item.icon"></span>
                 <span>{{ item.label }}</span>
                 <p-badge *ngIf="item.badge" [ngClass]="{ 'ml-auto': !root, 'ml-2': root }" [value]="item.badge" />
@@ -571,6 +571,7 @@
                 <input type="text" pInputText placeholder="Search" class="w-36" />
                 <p-avatar image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" shape="circle" />
             </div> -->
+            <p-button class="button is-small  " (click)=" logout()">logout</p-button>
         </ng-template>
     </p-menubar>
 <br>

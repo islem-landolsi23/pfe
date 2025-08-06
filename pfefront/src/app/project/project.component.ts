@@ -1,64 +1,162 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { DragDropModule } from 'primeng/dragdrop';
+import { Table, TableModule } from 'primeng/table';
+import { TagModule } from 'primeng/tag';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
+import { InputTextModule } from 'primeng/inputtext';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { TextareaModule } from 'primeng/textarea';
+import { SelectModule } from 'primeng/select';
+import { ButtonModule } from 'primeng/button';
+import { DrawerModule } from 'primeng/drawer';
+import { Avatar } from 'primeng/avatar';
+import { DatePickerModule } from 'primeng/datepicker';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FluidModule } from 'primeng/fluid';
+import { ProjectService } from '../project.service';
+import { log } from 'console';
+import { HttpHeaders } from '@angular/common/http';
+import { Router } from '@angular/router';
+
 @Component({
   selector: 'app-project',
   standalone: true,
-  imports: [DragDropModule, CommonModule],
+  imports: [ TableModule, TagModule,ButtonModule,InputTextModule ,DatePickerModule,FluidModule,TextareaModule,
+     IconFieldModule, InputTextModule,
+      InputIconModule, MultiSelectModule, SelectModule, FormsModule,DrawerModule,Avatar,ReactiveFormsModule,
+      CommonModule],
   templateUrl: './project.component.html',
   styleUrl: './project.component.scss'
 })
 export class ProjectComponent implements OnInit{
+  projectForm!: FormGroup
 
-     availableProducts: Product[] | undefined;
+searchValue :any
+  visible: boolean = false;
 
-    selectedProducts: Product[] | undefined;
 
-    draggedProduct: Product | undefined | null;
-  ngOnInit(): void {
-     this.selectedProducts = [];
-        this.availableProducts = [
-            {id:'1', name: 'Black Watch'},
-            {id:'2', name: 'Bamboo Watch'}
-        ]
-  }
+   customers = [
+    {
+        "name": "James Butt",
+        "country": "Algeria",
+        "contact": "Benton, John B Jr",
+        "associate": "Ioni Bowcher"
+    },
+    {
+        "name": "Josephine Darakjy",
+        "country": "Egypt",
+        "contact": "Chanay, Jeffrey A Esq",
+        "associate": "Amy Elsner"
+    },
+    {
+        "name": "Art Venere",
+        "country": "Panama",
+        "contact": "Chemel, James L Cpa",
+        "associate": "Asiya Javayant"
+    },
+    {
+        "name": "Lenna Paprocki",
+        "country": "Slovenia",
+        "contact": "Feltz Printing Service",
+        "associate": "Xuxue Feng"
+    },
+    {
+        "name": "Donette Foller",
+        "country": "South Africa",
+        "contact": "Printing Dimensions",
+        "associate": "Asiya Javayant"
+    },
+     {
+        "name": "Donette Foller",
+        "country": "South Africa",
+        "contact": "Printing Dimensions",
+        "associate": "Asiya Javayant"
+    },
+     {
+        "name": "Donette Foller",
+        "country": "South Africa",
+        "contact": "Printing Dimensions",
+        "associate": "Asiya Javayant"
+    }
+]
+ projects: any[] = [];
 
-  
-  dragStart(product: any) {
-        this.draggedProduct = product;
+
+    constructor(private projectservice :ProjectService,private fb: FormBuilder,private router: Router) {}
+
+    ngOnInit() {
+   
+
+
+this.getdataList();
+
+    
+    
+this.projectForm = this.fb.group({
+      name: [''],
+      description: [''],
+      startDate: [null],
+      endDate: [null]
+    });
+      
     }
 
-       drop() {
-        if (this.draggedProduct) {
-            let draggedProductIndex = this.findIndex(this.draggedProduct);
-            this.selectedProducts = [...(this.selectedProducts as Product[]), this.draggedProduct];
-            this.availableProducts = this.availableProducts?.filter((val, i) => i != draggedProductIndex);
-            this.draggedProduct = null;
-        }
-    }
 
+     getdataList()
+     {
+        this. projectservice.getListProject().subscribe(res=>{
+      console.log(res);
+      this.projects=res
+      
+     })
 
-      dragEnd() {
-        this.draggedProduct = null;
-    }
-
-    findIndex(product: Product) {
-        let index = -1;
-        for (let i = 0; i < (this.availableProducts as Product[]).length; i++) {
-            if (product.id === (this.availableProducts as Product[])[i].id) {
-                index = i;
-                break;
-            }
-        }
-        return index;
-    }
+     }
+onGlobalFilter(event: Event, table: Table) {
+  const input = event.target as HTMLInputElement;
+  table.filterGlobal(input.value, 'contains');
 }
-export class Product {
-  id: string;
-  name: string;
+    clear(table: Table) {
+        table.clear();
+    }
 
-  constructor(id: string, name: string) {
-    this.id = id;
-    this.name = name;
-  }
+    // getSeverity(status: string) {
+    //     switch (status) {
+    //         case 'unqualified':
+    //             return 'danger';
+
+    //         case 'qualified':
+    //             return 'success';
+
+    //         case 'new':
+    //             return 'info';
+
+    //         case 'negotiation':
+    //             return 'warn';
+
+          
+    //     }
+    // }
+  
+
+    saveProject()
+    {
+ 
+      console.log(this.projectForm.value)
+this.projectservice.addProject(this.projectForm.value).subscribe(
+  res=>{
+    console.log("hello ",res)
+    this.getdataList();
+    this.visible=false
+
+  })
+    }
+
+    goTodetails(p :any){
+   
+        this.router.navigate(['/project-details',p.id]);
+    
+
+    }
+   
 }

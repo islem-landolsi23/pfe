@@ -1,0 +1,53 @@
+<!-- <div class="kanban-board p-4">
+  <div class="p-grid" cdkDropListGroup>
+    <div
+      *ngFor="let column of board.columns"
+      class="p-col-12 p-md-4"
+      cdkDropList
+      [cdkDropListData]="column.tasks"
+      [cdkDropListConnectedTo]="connectedDropListsIds"
+      (cdkDropListDropped)="onTaskDrop($event, column)"
+    >
+      <div class="kanban-column p-3 surface-card shadow-2">
+        <h4 class="mb-3">{{ column.name }}</h4>
+        <div class="kanban-tasks flex flex-column gap-2">
+          <div
+            *ngFor="let task of column.tasks"
+            cdkDrag
+            class="kanban-task p-3 border-round shadow-1 bg-white"
+          >
+            <div class="font-medium">{{ task.title }}</div>
+            <small class="text-color-secondary">{{ task.description }}</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> -->
+
+
+<div class="kanban-board p-4 overflow-x-auto" cdkDropListGroup>
+  <div class="kanban-columns flex gap-4">
+    <div
+      *ngFor="let column of board.columns"
+      class="kanban-column surface-card p-3 shadow-2"
+      cdkDropList
+      [cdkDropListData]="column.tasks"
+      [cdkDropListConnectedTo]="connectedDropListsIds"
+      (cdkDropListDropped)="onTaskDrop($event, column)"
+    >
+      <h4 class="mb-3">{{ column.name }}</h4>
+      <div class="kanban-tasks flex flex-column gap-2">
+        <div
+          *ngFor="let task of column.tasks"
+          cdkDrag
+          class="kanban-task p-3 border-round shadow-1 bg-white"
+        >
+          <div class="font-medium">{{ task.title }}</div>
+          <small class="text-color-secondary">{{ task.description }}</small>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

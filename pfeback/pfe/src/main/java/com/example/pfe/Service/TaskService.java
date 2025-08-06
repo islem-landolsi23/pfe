@@ -1,5 +1,7 @@
 package com.example.pfe.Service;
 
+import com.example.pfe.Entity.Project;
+import com.example.pfe.Entity.Sprint;
 import com.example.pfe.Entity.Task;
 
 import java.util.List;
@@ -7,4 +9,10 @@ import java.util.List;
 public interface TaskService {
 
 
+    public Task addTask(Task task) ;
+    public Task updateTask(Task task) ;
+    public void deleteTask(long id) ;
+    public  Task getTaskById(long id) ;
+    public List<Task> getTaskBySprint(Sprint sprint);
+    public List<Task>getTaskByUser(Long userId);
 }

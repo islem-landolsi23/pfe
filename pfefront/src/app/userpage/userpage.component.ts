@@ -16,12 +16,15 @@ import { FloatLabel } from 'primeng/floatlabel';
 import { CardModule } from 'primeng/card';
 import { AccordionModule } from 'primeng/accordion';
 import { DividerModule } from 'primeng/divider';
+import { RippleModule } from 'primeng/ripple';
+import { PasswordModule } from 'primeng/password';
+import { Fluid } from 'primeng/fluid';
 @Component({
   selector: 'app-userpage',
   standalone: true,
   imports: [Avatar,AvatarGroup,AvatarModule, DividerModule ,
-    OverlayBadgeModule,AccordionModule,
-    PanelModule,ButtonModule,CardModule
+    OverlayBadgeModule,AccordionModule,RippleModule,PasswordModule,
+    PanelModule,ButtonModule,CardModule , Fluid
     ,MenuModule , FormsModule, InputTextModule,FloatLabel],
   templateUrl: './userpage.component.html',
   styleUrl: './userpage.component.scss'
@@ -30,7 +33,7 @@ export class UserpageComponent implements OnInit ,AfterViewInit {
   isLoggedIn = false;
   avatar_url =''
   user : any
-  
+  password =""
 
 constructor(private http: HttpClient,private router: Router) {}
   ngAfterViewInit(): void {
@@ -45,7 +48,7 @@ constructor(private http: HttpClient,private router: Router) {}
   this.http.get('http://localhost:8080/api/public/me', { withCredentials: true })
       .subscribe({
         next: (user: any) => {
-              this.checkUser(user.email)
+           //  this.checkUserGit(user.email)
           this.isLoggedIn = true;
           this.avatar_url=user.avatar_url
 
@@ -53,14 +56,37 @@ constructor(private http: HttpClient,private router: Router) {}
           this.user =user
         },
         error: () => {
-          this.isLoggedIn = false;
+         // console.log(55555555555555555555555555555555555)
+        
+                   const jwtToken = localStorage.getItem('jwt');
+             const savedEmail = localStorage.getItem('email');
+             const headers = {
+    'Authorization': `Bearer ${jwtToken}`
+  };
+               console.log("email :",savedEmail ,"token :",jwtToken)
+                this.http.get<User>('http://localhost:8080/api/public/getUserByEmail/' + savedEmail, { headers })
+    .subscribe({
+      next: (res) => {
+        this.avatar_url = res.avatarUrl;
+        this.user = res;
+      },
+      error: (err) => {
+        console.error("Erreur lors de l’appel API :", err);
+      }
+    });
         }
       });
   }
 
 saveUser()
 {
-  let userToadd : User= new User(this.user.name,this.user.github_id,this.user.email,this.user.avatar_url);
+
+  let password="" ;
+  if(this.password.length == 0)
+    password = "change me"
+  else
+    password = this.password
+  let userToadd : User= new User(this.user.name,this.user.github_id,this.user.email,password,this.user.avatar_url);
  
 
   this.http.post('http://localhost:8080/api/public/addUser',userToadd, { withCredentials: true })
@@ -82,8 +108,9 @@ saveUser()
 
 
 
-  checkUser(email : string)
+  checkUserGit(email : string)
   {
+
     console.log("hani d5alite ")
     console.log("el email",email)
     //  `http://localhost:8080/api/public/checkUser/${email}`
@@ -93,12 +120,32 @@ saveUser()
           console.log(user)
           if(user != null)
           {
+            console.log(111111111111111111111111111111111111111111111111111111111)
+        
 
-            console.log("hani mawjoude ");
-             this.router.navigateByUrl('/kanban');
+      
+   
             
           }else
-          {console.log("zidni !!!!!!!")}
+          {console.log("zidni !!!!!!!")
+ console.log(22222222222222222222222222222222222222222222222)
+                   const jwtToken = localStorage.getItem('jwt');
+             const savedEmail = localStorage.getItem('email');
+             const headers = {
+    'Authorization': `Bearer ${jwtToken}`
+  };
+               console.log("email :",savedEmail ,"token :",jwtToken)
+                this.http.get<User>('http://localhost:8080/api/public/getUserByEmail/' + savedEmail, { headers })
+    .subscribe({
+      next: (res) => {
+        this.avatar_url = res.avatarUrl;
+        this.user = res;
+      },
+      error: (err) => {
+        console.error("Erreur lors de l’appel API :", err);
+      }
+    });
+          }
 
     
         },
@@ -115,7 +162,7 @@ saveUser()
 
 
 export class User {
-    constructor(public name: string, public github_id: string ,public email:string,
+    constructor(public name: string, public github_id: string ,public email:string,public password :string ,
       public avatarUrl :string
     ) {}
 }

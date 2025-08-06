@@ -2,6 +2,7 @@ package com.example.pfe.Controller;
 
 
 import com.example.pfe.Entity.Project;
+import com.example.pfe.Entity.Sprint;
 import com.example.pfe.Service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,5 +19,34 @@ public class ProjectController {
     private ProjectService projectService;
 
 
+    @PostMapping("/add")
+    public Project addProject(@RequestBody Project project) {
+        return projectService.creatProject(project);
+    }
 
+    @GetMapping("/getAll")
+    public List<Project> addProject() {
+        return projectService.getProjectList();
+    }
+
+
+    @GetMapping("/getById/{id}")
+    public Project getProjectById(@PathVariable long id) {
+        return projectService.getProjecrById(id);
+    }
+
+
+    @PostMapping("/addSprints")
+    public Project addSprints(@RequestBody Project p)
+    {
+        Project project =projectService.getProjecrById(p.getId()) ;
+
+        List<Sprint> sprintList = p.getSprints() ;
+        sprintList.forEach(s ->{
+            s.setProject(p);
+
+        });
+        project.setSprints(sprintList);
+      return  projectService.updateProject(project) ;
+    }
 }

@@ -1,10 +1,12 @@
 package com.example.pfe.Entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 
@@ -19,12 +21,17 @@ public class Sprint {
     private Long id;
 
     private String name;
-    private String goal;
 
     @ManyToOne
     @JoinColumn(name = "project_id")
+    @JsonBackReference
     private Project project;
 
     @OneToMany(mappedBy = "sprint", cascade = CascadeType.ALL)
     private List<Task> tasks;
+
+    private OffsetDateTime startDate;
+    private OffsetDateTime endDate;
+    private String status;
+
 }

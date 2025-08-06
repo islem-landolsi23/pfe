@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { CommonModule, NgIf } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { AuthService } from './auth/auth.service';
 import { PrimeIcons } from 'primeng/api';
 import { Menubar, MenubarModule } from 'primeng/menubar';
@@ -25,7 +25,7 @@ export class AppComponent implements OnInit{
   title = 'pfefront';
   isDropdownOpen = false;
 
-constructor(private authService: AuthService){}
+constructor(private authService: AuthService,private router: Router){}
   ngOnInit(): void {
           this.items = [
             {
@@ -35,31 +35,34 @@ constructor(private authService: AuthService){}
               {
                 label: 'Profile',
                 icon: 'pi pi-user',
+                path:'user'
+                
             },
             {
                 label: 'Projects',
                 icon: 'pi pi-briefcase',
+                path:'/project'
                
-                items: [
-                    {
-                        label: 'Core',
-                        icon: 'pi pi-bolt',
-                        shortcut: '⌘+S',
-                    },
-                    {
-                        label: 'Blocks',
-                        icon: 'pi pi-server',
-                        shortcut: '⌘+B',
-                    },
-                    {
-                        separator: true,
-                    },
-                    {
-                        label: 'UI Kit',
-                        icon: 'pi pi-pencil',
-                        shortcut: '⌘+U',
-                    },
-                ],
+                // items: [
+                //     {
+                //         label: 'Core',
+                //         icon: 'pi pi-bolt',
+                //         shortcut: '⌘+S',
+                //     },
+                //     {
+                //         label: 'Blocks',
+                //         icon: 'pi pi-server',
+                //         shortcut: '⌘+B',
+                //     },
+                //     {
+                //         separator: true,
+                //     },
+                //     {
+                //         label: 'UI Kit',
+                //         icon: 'pi pi-pencil',
+                //         shortcut: '⌘+U',
+                //     },
+                // ],
             },
             {
               label:"Forum",
@@ -73,6 +76,7 @@ constructor(private authService: AuthService){}
                label:"Messages",
                icon: 'pi pi-envelope',
                 badge : "2",
+                path:'/chat'
             }
         ];
   }
@@ -114,5 +118,11 @@ constructor(private authService: AuthService){}
    toggleDropdown(): void {
     this.isDropdownOpen = !this.isDropdownOpen;
     console.log(this.isDropdownOpen )
+  }
+
+  goToRout(path:string)
+  {
+   
+   this.router.navigateByUrl(path);
   }
 }

@@ -79,7 +79,17 @@
                     <br>
                     <input pInputText placeholder="email" class="w-40rem" value="{{ user.email }}" />
                     <br>
-                    <input pInputText placeholder="" class="w-40rem" />
+                  
+            
+                <p-fluid>
+                      <p-floatLabel>
+
+                        <p-password [(ngModel)]="password" [feedback]="false" value="changeMe"/>
+    <label for="password">Password</label>
+</p-floatLabel>
+                </p-fluid>
+
+
                 </div>
             </p-panel>
             <p-panel [toggleable]="true" class="w-full h-full">
@@ -103,5 +113,15 @@
 
             </p-panel>
         </div>
+        <br>
+        <button 
+    pButton 
+    pRipple 
+    label="Save" 
+    class="p-button-success"
+    (click)="saveUser()">
+</button>
     </p-card>
 </div>
+
+<!-- <button class=""(click)="saveUser()">save </button> -->

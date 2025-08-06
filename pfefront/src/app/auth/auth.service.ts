@@ -37,6 +37,16 @@ export class AuthService {
   // }
 
    checkSession(): Observable<boolean> {
+ //const token = localStorage.getItem('jwt');
+
+    if (typeof window !== 'undefined') {
+    const token = localStorage.getItem('jwt');
+    if (token) {
+      this.loggedInSubject.next(true);
+      return of(true);
+    }
+  }
+
     return this.http.get('http://localhost:8080/api/public/me', { withCredentials: true }).pipe(
       tap(() => this.loggedInSubject.next(true)),
       map(() => true),
@@ -53,7 +63,21 @@ export class AuthService {
     
 
    logout() {
+    localStorage.removeItem('jwt');
+    localStorage.removeItem('email'); // or wherever you store it
+// router.navigate(['/login']);
     window.location.href = 'http://localhost:8080/logout';
     
   }
+
+  login(email: string, password: string) {
+  return this.http.post<{ token: string }>(`http://localhost:8080/api/login`, { email, password })
+    .pipe(
+      tap(res => {
+        localStorage.setItem('jwt', res.token);
+         localStorage.setItem('email', email);
+
+      })
+    );
+}
 }

@@ -17,7 +17,8 @@ body{
 
 .main{
     width: 420px;
-    background: transparent;
+   // background: transparent;
+        background: transparent;
     border: 2px solid rgba(255, 255, 255, .2);
     backdrop-filter: blur(20px);
     box-shadow: 0 0 10px rgba(0, 0, 0, .5);
@@ -136,3 +137,33 @@ body{
   .social-links a:hover svg path {
     fill: var(--gray-900);
   }
+
+
+  .github-login-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background-color: #24292e;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 16px;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.github-login-btn:hover {
+  background-color: #1b1f23;
+}
+
+.github-logo {
+  width: 24px;
+  height: 24px;
+}
+
+
+.githubcenter {
+    padding-left: 50px;
+
+}

@@ -1,5 +1,6 @@
 package com.example.pfe.Entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -25,9 +27,13 @@ public class Project {
     private String description;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Sprint> sprints;
 
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
+//    private LocalDateTime startDate;
+//    private LocalDateTime endDate;
+
+    private OffsetDateTime startDate;
+   private OffsetDateTime endDate;
 
 }
