@@ -12,6 +12,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -68,6 +69,14 @@ public class UserController {
     public ResponseEntity<User> getUserByEmail(@PathVariable String email)
     {
         return ResponseEntity.ok(userRepository.findByEmail(email).get());
+    }
+
+
+    @GetMapping("/getAllUsers")
+
+    public ResponseEntity<List<User>> getAllUsers()
+    {
+        return ResponseEntity.ok(userRepository.findAll());
     }
 
 

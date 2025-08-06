@@ -17,6 +17,7 @@ import { CommonModule } from '@angular/common';
 import { FileUploadModule } from 'primeng/fileupload';
 import { ListboxModule } from 'primeng/listbox';
 import { ChatMessage, ChatService } from '../chat.service';
+import { UserService } from '../user.service';
 
 
 
@@ -43,7 +44,7 @@ export class ChatComponent  implements OnInit, AfterViewChecked  {
   searchQuery: string = '';
   newMessage: string = '';
   selectedContact: any = null;
-  contacts = [
+  contacts :Contact[]= [
     {
       id: 1,
       name: 'Alice Johnson',
@@ -68,17 +69,17 @@ export class ChatComponent  implements OnInit, AfterViewChecked  {
   messages = [
     {
       text: "Hi there!",
-      sent: false,
+      user: 'rr',
       time: new Date(Date.now() - 3600000)
     },
     {
       text: "Hello! How are you?",
-      sent: true,
+      user: 'true',
       time: new Date(Date.now() - 3000000)
     },
     {
       text: "I'm doing great, thanks for asking!",
-      sent: false,
+      user: 'false',
       time: new Date(Date.now() - 2400000)
     }
   ];
@@ -88,11 +89,40 @@ export class ChatComponent  implements OnInit, AfterViewChecked  {
       contact.name.toLowerCase().includes(this.searchQuery.toLowerCase())
     );
   }
+  constructor(
+  private chatService: ChatService, private userService :UserService
+)
+{
+
+}
 
   ngOnInit() {
+
+
+
+
+    let useremail = localStorage.getItem('email');
+    if(useremail)
+    this.userName = useremail ;
+   this.getAllUsers()
+
+    
     this.selectedContact = this.contacts[0];
      this.chatService.joinRoom("ABC");
     this.lisenerMessage();
+  }
+
+
+  getAllUsers()
+  {
+    this.userService.getAllUsers().subscribe(res=>{
+      console.log("all users", res)
+      res.forEach((element: { id: number; name: string; avatarUrl: string; }) => {
+        
+        let newconatc =new Contact(element.id,element.name,element.avatarUrl,"Online","lol",2)
+        this.contacts.push(newconatc)
+      });
+    })
   }
 
   ngAfterViewChecked() {
@@ -114,14 +144,15 @@ export class ChatComponent  implements OnInit, AfterViewChecked  {
     if (this.newMessage.trim()) {
       this.messages.push({
         text: this.newMessage,
-        sent: true,
+        user: 'true',
         time: new Date()
       });
+      console.log("send message local",this.messages)
       this.newMessage = '';
       setTimeout(() => {
         this.messages.push({
-          text: 'Thanks for your message!',
-          sent: false,
+          text: "hiiiiiiiiiiiiiii",
+          user: 'false',
           time: new Date()
         });
       }, 1000);
@@ -146,13 +177,7 @@ export class ChatComponent  implements OnInit, AfterViewChecked  {
 
    searchTerm: string = '';
 
-constructor(
-  private chatService: ChatService
-)
-{
-  // var global
-  //  global = global || window
-}
+
   // ngOnInit(): void {
    
   //   this.chatService.joinRoom("ABC");
@@ -173,15 +198,22 @@ constructor(
 
 
   sendMessage() {
-    console.log("el message ",this.messageInput);
+    console.log("el message ",this.newMessage);
     
     const chatMessage = {
-      message: this.messageInput,
-      user: this.userName
-    }as ChatMessage
+      text: this.newMessage,
+      user: this.userName,
+      time: new Date().toDateString()
+    } as  ChatMessage
     this.chatService.sendMessage("ABC", chatMessage);
-    this.messageInput = '';
-    console.log("ena fi el send message",this.messageList);
+     this.messages.push({
+        text: this.newMessage,
+        user: this.userName,
+        time: new Date()
+      });
+           console.log("send message lo5ra",this.messages)
+    this.newMessage = '';
+  
     
   }
 
@@ -192,9 +224,15 @@ constructor(
    
   lisenerMessage() {
     this.chatService.getMessageSubject().subscribe((messages: any) => {
-      console.log("message list",this.messageList);
+      console.log("ena el bandoura el 7amra",messages)
+     // console.log("message list",this.messageList);
       
-      this.messageList = messages.map((item: any)=> ({
+      // this.messageList = messages.map((item: any)=> ({
+      //   ...item,
+      //   message_side: item.user === this.userName ? 'sender': 'receiver'
+      // }))
+
+       this.messages = messages.map((item: any)=> ({
         ...item,
         message_side: item.user === this.userName ? 'sender': 'receiver'
       }))
@@ -209,3 +247,27 @@ constructor(
 }
 
 
+
+
+class Contact {
+  id: number;
+  name: string;
+  avatar:string ;
+   status: string;
+    lastMessage: string;
+      unread: number ;
+
+
+
+
+  constructor(id : number,name : string,avatar :string, status : string,lastMessage : string,unread : number) {
+    this.id=id
+   this.name= name;
+this.avatar=avatar
+    this.status= status;
+     this.lastMessage= lastMessage;
+      this. unread= unread ;
+  }
+
+ 
+}

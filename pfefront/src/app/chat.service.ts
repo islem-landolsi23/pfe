@@ -63,6 +63,7 @@ export class ChatService {
     }
 }
 export interface ChatMessage {
-    message: string;
+    text: string;
     user: string;
+    time: string ;
   }

@@ -31,6 +31,8 @@ public class MessageWebSocketController {
     public ChatMessage chat(@DestinationVariable String roomId, ChatMessage message) {
         System.out.println("wa wa ya wy5ayeni");
         System.out.println(message);
-        return new ChatMessage(message.getMessage(), message.getUser());
+
+
+        return new ChatMessage(message.getText(), message.getUser(), message.getTime());
     }
 }

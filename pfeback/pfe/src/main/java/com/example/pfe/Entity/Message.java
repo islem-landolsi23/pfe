@@ -1,25 +1,34 @@
 package com.example.pfe.Entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import lombok.Data;
+import jakarta.persistence.*;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
-@Data
+@Table(name = "messages")
 public class Message {
 
     @Id
     @GeneratedValue
     private Long id;
-    @ManyToOne
-    private User sender;
-    @ManyToOne private Conversation conversation;
+    @Column(nullable = false)
+    private String senderEmail;
+    @Column( nullable = false)
+    private String receiverEmail;
     private String content;
-    private String type; // TEXT, IMAGE, VIDEO, DOC
     private String fileUrl;
+    @Enumerated(EnumType.STRING)
+    private MessageState state;
+    @Enumerated(EnumType.STRING)
+    private MessageType type;
     private LocalDateTime timestamp;
+
+    @ManyToOne
+    @JoinColumn(name = "chat_id")
+    private Chat chat;
 }

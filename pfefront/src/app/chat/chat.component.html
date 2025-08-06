@@ -171,7 +171,7 @@
     <div class="p-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
       <div class="flex items-center justify-between">
         <div class="flex items-center space-x-4">
-          <img [src]="selectedContact?.avatar" [alt]="selectedContact?.name" class="w-10 h-10 rounded-full">
+          <img [src]="selectedContact?.avatar" [alt]="selectedContact?.name" class="w-6 h-10 rounded-full">
           <div>
             <h2 class="font-semibold dark:text-white">{{selectedContact?.name}}</h2>
             <span class="text-sm text-gray-500 dark:text-gray-400">{{selectedContact?.status}}</span>
@@ -179,10 +179,10 @@
         </div>
         <div class="flex space-x-4">
           <button class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full">
-            <svg class="w-6 h-6 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+            <svg class="w-12 h-6 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
           </button>
           <button class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full">
-            <svg class="w-6 h-6 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+            <svg class="w-12 h-6 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
           </button>
         </div>
       </div>
@@ -191,10 +191,11 @@
     <!-- Messages -->
     <div class="flex-1 overflow-y-auto p-4 bg-gray-50 dark:bg-gray-900" #messageContainer>
       <div *ngFor="let message of messages" class="mb-4">
-        <div [class]="message.sent ? 'flex justify-end' : 'flex justify-start'">
-          <div [class]="message.sent ? 'bg-blue-500 text-white' : 'bg-white dark:bg-gray-800 dark:text-white'" class="max-w-xs rounded-lg px-4 py-2 shadow">
+        <div [class]="message.user == userName ? 'flex justify-end' : 'flex justify-start'">
+          <div [class]="message.user == userName ? 'bg-blue-500 text-white' : 'bg-white dark:bg-gray-800 dark:text-white'" class="max-w-xs rounded-lg px-4 py-2 shadow">
             <p>{{message.text}}</p>
-            <span class="text-xs opacity-75">{{message.time | date:'shortTime'}}</span>
+            <!-- <span class="text-xs opacity-75">{{message.time | date:'shortTime'}}</span> -->
+               <span class="text-xs opacity-75">{{message.time }}</span>
           </div>
         </div>
       </div>
@@ -204,11 +205,11 @@
     <div class="p-4 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
       <div class="flex space-x-4">
         <button class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full">
-          <svg class="w-6 h-6 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
+          <svg class="w-8 h-8 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
         </button>
-        <input type="text" [(ngModel)]="newMessage" (keyup.enter)=" sendlocalMessage()" placeholder="Type your message..." class="flex-1 px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg focus:outline-none dark:text-white">
-        <button (click)=" sendlocalMessage()" class="p-2 bg-blue-500 text-white rounded-full hover:bg-blue-600">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+        <input type="text" [(ngModel)]="newMessage" (keyup.enter)=" sendMessage()" placeholder="Type your message..." class="flex-1 px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg focus:outline-none dark:text-white">
+        <button (click)="sendMessage()" class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full">
+          <svg class="w-8 h-8  text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
         </button>
       </div>
     </div>

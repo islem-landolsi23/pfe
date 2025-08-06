@@ -79,7 +79,7 @@ public class SecurityConfig {
                         .userInfoEndpoint(userInfo -> userInfo
                                 .userService(customOAuth2UserService)
                         ) .successHandler(customOAuth2SuccessHandler)
-                        .defaultSuccessUrl("http://localhost:4200/user", true)
+                      //  .defaultSuccessUrl("http://localhost:4200/user", true)
                 ).logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("http://localhost:4200/login") // redirect after logout
@@ -88,9 +88,9 @@ public class SecurityConfig {
                         .deleteCookies("JSESSIONID")
                 ) .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
-        http
-                .headers()
-                .frameOptions().disable();
+//        http
+//                .headers()
+//                .frameOptions().disable();
         return http.build();
     }
 
