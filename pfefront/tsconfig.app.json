@@ -6,7 +6,11 @@
     "outDir": "./out-tsc/app",
     "types": [
       "node"
-    ]
+    ],
+       "noImplicitAny": false,
+    "strict": false,
+    "strictFunctionTypes": false,
+    "strictNullChecks": false
   },
   "files": [
     "src/main.ts",

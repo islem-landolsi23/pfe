@@ -12,7 +12,11 @@ import lombok.ToString;
 @ToString
 public class ChatMessage {
 
-    String text;
     String user;
-    String time;
+    String content ;
+    String timestamp;
+    String file_Url ;
+    String conversationID ;
+    String receiverEmail ;
+    String fileType ;
 }

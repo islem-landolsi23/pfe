@@ -65,7 +65,9 @@ public class SecurityConfig {
                 .csrf().disable()
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/login","/ws/**").permitAll()
+                        .requestMatchers("/api/login","/ws/**","/api/files/**",
+                                "/api/conversations/**",
+                                "/uploads/**").permitAll()
                         .anyRequest().authenticated()
                 ).formLogin(form -> form
                         .loginPage("/login") // Optional custom login page

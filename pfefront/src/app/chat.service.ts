@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Stomp } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import { BehaviorSubject } from 'rxjs';
+import { ChatMessage } from './Entities/ChatMessage';
 @Injectable({
   providedIn: 'root'
 })
@@ -62,8 +63,6 @@ export class ChatService {
       return this.messageSubject.asObservable();
     }
 }
-export interface ChatMessage {
-    text: string;
-    user: string;
-    time: string ;
-  }
+
+
+

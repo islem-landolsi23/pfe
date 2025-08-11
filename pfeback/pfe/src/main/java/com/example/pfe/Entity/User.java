@@ -14,6 +14,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 @Entity
+@ToString(exclude = {"assignedTasks"})
 public class User {
 
 
@@ -38,4 +39,8 @@ public class User {
 
     @OneToMany(mappedBy = "author")
     private List<Comment> comments = new ArrayList<>();
+
+
+    @ManyToMany(mappedBy = "participants")
+    private Set<Conversation> conversations;
 }

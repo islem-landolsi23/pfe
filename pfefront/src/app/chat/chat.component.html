@@ -193,9 +193,20 @@
       <div *ngFor="let message of messages" class="mb-4">
         <div [class]="message.user == userName ? 'flex justify-end' : 'flex justify-start'">
           <div [class]="message.user == userName ? 'bg-blue-500 text-white' : 'bg-white dark:bg-gray-800 dark:text-white'" class="max-w-xs rounded-lg px-4 py-2 shadow">
-            <p>{{message.text}}</p>
-            <!-- <span class="text-xs opacity-75">{{message.time | date:'shortTime'}}</span> -->
-               <span class="text-xs opacity-75">{{message.time }}</span>
+           <!--------TEXT --------------->
+            <p *ngIf="!message.file_Url">{{message.content}}</p>
+        <!-- Image -->
+      <img *ngIf="message.fileType === 'image'" [src]="backendurl+message.file_Url" class="max-w-full rounded mt-2">
+       <!-- Audio -->
+      <audio *ngIf="message.fileType === 'audio'" [src]="backendurl+message.file_Url" controls class="max-w-full mt-4"></audio>
+        <!-- Video -->
+      <video *ngIf="message.fileType === 'video'" [src]="backendurl+message.file_Url" controls class="max-w-full rounded mt-2"></video>
+
+      <!-- PDF / Other -->
+      <a *ngIf="message.fileType === 'pdf' || message.fileType === 'file'" [href]="message.file_Url" target="_blank" class="underline mt-2 block">
+        📄 Download File
+      </a>
+               <span class="text-xs opacity-75">{{message.timestamp }}</span>
           </div>
         </div>
       </div>
@@ -204,9 +215,12 @@
     <!-- Input Area -->
     <div class="p-4 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
       <div class="flex space-x-4">
-        <button class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full">
+        <!-- <button class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full">
           <svg class="w-8 h-8 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
-        </button>
+        </button> -->
+        <input type="file" (change)="onFileSelected($event)" hidden #fileInput>
+<button (click)="fileInput.click()">📎</button>
+
         <input type="text" [(ngModel)]="newMessage" (keyup.enter)=" sendMessage()" placeholder="Type your message..." class="flex-1 px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg focus:outline-none dark:text-white">
         <button (click)="sendMessage()" class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full">
           <svg class="w-8 h-8  text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>

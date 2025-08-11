@@ -1,5 +1,6 @@
 package com.example.pfe.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,19 +17,27 @@ public class Message {
     @Id
     @GeneratedValue
     private Long id;
-    @Column(nullable = false)
+
     private String senderEmail;
-    @Column( nullable = false)
+
     private String receiverEmail;
     private String content;
     private String fileUrl;
     @Enumerated(EnumType.STRING)
     private MessageState state;
-    @Enumerated(EnumType.STRING)
-    private MessageType type;
-    private LocalDateTime timestamp;
 
+    private String type;
+    private LocalDateTime timestamp;
     @ManyToOne
-    @JoinColumn(name = "chat_id")
-    private Chat chat;
+    @JoinColumn(name = "conversation_id")
+    @JsonIgnore
+    private Conversation conversation;
+    @ManyToOne
+    @JoinColumn(name = "sender_id")
+    private User sender;
+
+
+/// ken l9it wa9et zidha
+//    @OneToMany(mappedBy = "message", cascade = CascadeType.ALL)
+//    private Set<MessageReadReceipt> readReceipts;
 }
