@@ -1,0 +1,18 @@
+<div class="video-call">
+  <div>
+    <h3>My ID: {{ peerId }}</h3>
+    <input [(ngModel)]="targetPeerId" placeholder="Enter peer ID to call">
+    <button (click)="callPeer()" style="color: green;">Call</button>
+
+    <button (click)="endCall()" style="color: red;">End Call</button>
+  </div>
+
+  <div class="videos">
+    <video #myVideo autoplay muted></video>
+    <video #partnerVideo autoplay></video>
+  </div>
+</div>
+
+
+
+<!-- <div id="video-container" class="video-grid"></div> -->

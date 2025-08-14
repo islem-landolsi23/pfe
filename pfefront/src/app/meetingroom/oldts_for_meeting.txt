@@ -1,0 +1,79 @@
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { VideoCallService } from '../service/video-call.service';
+
+@Component({
+  selector: 'app-meetingroom',
+  standalone: true,
+  imports: [],
+  templateUrl: './meetingroom.component.html',
+  styleUrl: './meetingroom.component.scss'
+})
+export class MeetingroomComponent implements OnInit{
+  @ViewChild('localVideo') localVideo!: ElementRef<HTMLVideoElement>;
+  @ViewChild('remoteVideo') remoteVideo!: ElementRef<HTMLVideoElement>;
+
+
+
+  
+  private pc!: RTCPeerConnection;
+  private roomId = 'my-meeting-123'; // generate dynamically in real case
+  private username = 'user-' + Math.floor(Math.random() * 1000);
+private peers: { [id: string]: RTCPeerConnection } = {};
+
+constructor(private videcallservice :VideoCallService){
+
+}
+ async  ngOnInit() {
+        this.pc = new RTCPeerConnection({
+      iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
+    });
+
+      this.pc.ontrack = (event) => {
+      this.remoteVideo.nativeElement.srcObject = event.streams[0];
+    };
+
+        this.pc.onicecandidate = (event) => {
+      if (event.candidate) {
+        this.videcallservice.sendSignal(this.roomId, {
+          type: 'candidate',
+          sender: this.username,
+          data: event.candidate
+        });
+      }
+    };
+
+
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+    stream.getTracks().forEach(track => this.pc.addTrack(track, stream));
+    this.localVideo.nativeElement.srcObject = stream;
+
+
+
+
+
+
+
+    this.videcallservice.connect(this.roomId, async (message) => {
+      if (message.sender === this.username) return;
+
+      if (message.type === 'offer') {
+        await this.pc.setRemoteDescription(new RTCSessionDescription(message.data));
+        const answer = await this.pc.createAnswer();
+        await this.pc.setLocalDescription(answer);
+        this.videcallservice.sendSignal(this.roomId, { type: 'answer', sender: this.username, data: answer });
+
+      } else if (message.type === 'answer') {
+        await this.pc.setRemoteDescription(new RTCSessionDescription(message.data));
+
+      } else if (message.type === 'candidate') {
+        await this.pc.addIceCandidate(new RTCIceCandidate(message.data));
+      }
+    });
+
+  }
+ async startCall() {
+    const offer = await this.pc.createOffer();
+    await this.pc.setLocalDescription(offer);
+    this.videcallservice.sendSignal(this.roomId, { type: 'offer', sender: this.username, data: offer });
+  }
+}

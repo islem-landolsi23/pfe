@@ -67,7 +67,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/login","/ws/**","/api/files/**",
                                 "/api/conversations/**",
-                                "/uploads/**").permitAll()
+                                "/uploads/**","/signal/**").permitAll()
                         .anyRequest().authenticated()
                 ).formLogin(form -> form
                         .loginPage("/login") // Optional custom login page

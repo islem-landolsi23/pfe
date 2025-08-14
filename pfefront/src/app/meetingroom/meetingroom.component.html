@@ -1,0 +1,33 @@
+<!-- <p>meetingroom works!</p>
+<div class="video-container">
+  <video #localVideo autoplay playsinline muted></video>
+  <video #remoteVideo autoplay playsinline></video>
+</div>
+<button (click)="startCall()">Start Call</button> -->
+
+
+
+
+
+<div class="call">
+  <div class="videos">
+    <div class="panel">
+      <h4>You</h4>
+      <video #localVideo autoplay playsinline muted></video>
+    </div>
+
+    <div class="panel" *ngFor="let id of remoteIds">
+      <h4>{{ id }}</h4>
+      <video
+        [attr.id]="'remote-'+id"
+        [srcObject]="remoteStreams.get(id) || null"
+        autoplay
+        playsinline>
+      </video>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button (click)="ngOnDestroy()">Leave</button>
+  </div>
+</div>

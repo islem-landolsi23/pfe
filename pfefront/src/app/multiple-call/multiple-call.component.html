@@ -1,0 +1,27 @@
+<!-- 
+<div>
+  <video #localVideo autoplay playsinline muted></video>
+</div>
+<div id="remoteVideos"></div> -->
+
+
+
+<div class="local-area">
+  <video #localVideo autoplay playsinline muted class="local-video"></video>
+  <div class="my-id">You: {{ myId }}</div>
+</div>
+
+<div id="remoteVideos" class="remote-grid"></div>
+
+
+
+
+
+<button (click)="leaveCall()" class="leave-button">Leave Call</button>
+
+<div class="local-area">
+  <video #localVideo autoplay playsinline muted class="local-video"></video>
+  <div class="my-id">You: {{ myId }}</div>
+</div>
+
+<div id="remoteVideos" class="remote-grid"></div>

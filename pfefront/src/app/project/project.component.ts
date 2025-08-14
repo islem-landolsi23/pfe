@@ -14,10 +14,11 @@ import { Avatar } from 'primeng/avatar';
 import { DatePickerModule } from 'primeng/datepicker';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FluidModule } from 'primeng/fluid';
-import { ProjectService } from '../project.service';
+
 import { log } from 'console';
 import { HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { ProjectService } from '../service/project.service';
 
 @Component({
   selector: 'app-project',

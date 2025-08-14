@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { Stomp } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import { BehaviorSubject } from 'rxjs';
-import { ChatMessage } from './Entities/ChatMessage';
+import { ChatMessage } from '../Entities/ChatMessage';
+
 @Injectable({
   providedIn: 'root'
 })

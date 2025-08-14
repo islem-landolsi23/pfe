@@ -16,12 +16,16 @@ import { AvatarModule } from 'primeng/avatar'
 import { CommonModule } from '@angular/common';
 import { FileUploadModule } from 'primeng/fileupload';
 import { ListboxModule } from 'primeng/listbox';
-import {  ChatService } from '../chat.service';
-import { UserService } from '../user.service';
-import { ConversationService } from '../conversation.service';
+
+
+
 import { error } from 'console';
 import { ChatMessage } from '../Entities/ChatMessage';
-import { FileService } from '../file.service';
+import { ChatService } from '../service/chat.service';
+import { ConversationService } from '../service/conversation.service';
+import { FileService } from '../service/file.service';
+import { UserService } from '../service/user.service';
+
 
 
 

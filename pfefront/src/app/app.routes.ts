@@ -10,6 +10,10 @@ import { Oauth2RedirectComponent } from './oauth2-redirect/oauth2-redirect.compo
 import { ProjectdetailsComponent } from './projectdetails/projectdetails.component';
 import { SprintComponent } from './sprint/sprint.component';
 import { TaskComponent } from './task/task.component';
+import { VideocallComponent } from './videocall/videocall.component';
+import { MultipleCallComponent } from './multiple-call/multiple-call.component';
+import { MeetingroomComponent } from './meetingroom/meetingroom.component';
+import { AudiocallComponent } from './audiocall/audiocall.component';
 
 
 export const routes: Routes = [
@@ -29,4 +33,11 @@ export const routes: Routes = [
               { path: 'project-details/:id', component: ProjectdetailsComponent },
                 { path: 'sprint/:projectId/:sprintId', component: SprintComponent },
                   { path: 'task/:projectId/:sprintId/:task', component: TaskComponent },
+                    { path: 'videocall', component: VideocallComponent },
+                     { path: 'multiple', component: MultipleCallComponent },
+                      { path: 'meeting', component: MeetingroomComponent },
+ { path: 'call', component: AudiocallComponent },
+                      
+
+
 ];

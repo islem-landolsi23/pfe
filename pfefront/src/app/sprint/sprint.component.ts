@@ -14,7 +14,7 @@ import { FluidModule } from 'primeng/fluid';
 import { PanelModule } from 'primeng/panel';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
-import { ProjectService } from '../project.service';
+import { ProjectService } from '../service/project.service';
 import { Dialog } from 'primeng/dialog';
 import {
   FormArray,
@@ -23,7 +23,8 @@ import {
 import { DropdownModule } from 'primeng/dropdown';
 import { TagModule } from 'primeng/tag';
 import { log } from 'console';
-import { SprintService } from '../sprint.service';
+import { SprintService } from '../service/sprint.service';
+
 
 @Component({
   selector: 'app-sprint',
