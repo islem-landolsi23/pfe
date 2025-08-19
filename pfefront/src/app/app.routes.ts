@@ -16,6 +16,7 @@ import { MeetingroomComponent } from './meetingroom/meetingroom.component';
 import { AudiocallComponent } from './audiocall/audiocall.component';
 
 
+
 export const routes: Routes = [
 
     {path : 'kanban',component :KanbanboardComponent },
@@ -36,7 +37,8 @@ export const routes: Routes = [
                     { path: 'videocall', component: VideocallComponent },
                      { path: 'multiple', component: MultipleCallComponent },
                       { path: 'meeting', component: MeetingroomComponent },
- { path: 'call', component: AudiocallComponent },
+                       { path: 'call', component: AudiocallComponent }
+
                       
 
 
