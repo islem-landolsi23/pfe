@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, signal, ViewChild } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { CommonModule, NgIf } from '@angular/common';
 import { Router, RouterOutlet } from '@angular/router';
@@ -10,12 +10,14 @@ import { MenuItem } from 'primeng/api';
 import { BadgeModule } from 'primeng/badge';
 import { AvatarModule } from 'primeng/avatar';
 import { InputTextModule } from 'primeng/inputtext';
+import { CallService } from './service/call.service';
+import { AudiocallComponent } from './audiocall/audiocall.component';
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [ CommonModule,RouterOutlet,NgIf,
     ButtonModule,MenubarModule ,Menubar,
-     BadgeModule, AvatarModule, InputTextModule,
+     BadgeModule, AvatarModule, InputTextModule,AudiocallComponent,
       Ripple],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
@@ -24,10 +26,31 @@ export class AppComponent implements OnInit{
      items: MenuItem[] | undefined;
   title = 'pfefront';
   isDropdownOpen = false;
+  currentUser = ''; // Replace with logged-in user email
 
-constructor(private authService: AuthService,private router: Router){}
-  ngOnInit(): void {
-          this.items = [
+     showPopup = false;
+  inCall = false ;
+
+      
+constructor(private authService: AuthService,private router: Router,private callSvc: CallService){
+
+ 
+
+    
+}
+
+  ngOnInit() {
+ 
+    
+      this.setNavbarElement()
+  
+  }
+
+
+
+  setNavbarElement()
+  {
+    this.items = [
             {
                 label: 'Home',
                 icon: 'pi pi-home',
@@ -82,7 +105,6 @@ constructor(private authService: AuthService,private router: Router){}
   }
 
 
-
   loginwithGit()
   {
      // window.location.href = 'http://localhost:8080/oauth2/authorization/github';
@@ -92,20 +114,7 @@ constructor(private authService: AuthService,private router: Router){}
   logout()
   {
      this.authService.logout();
-// const clientId = 'Ov23li5mLKHDdsWg5LYY';
-// const redirectUri = 'http://localhost:8080/login/oauth2/code/github';
-// const loginUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=user:email&prompt=login`;
 
-// window.location.href = loginUrl;
- //window.location.href = 'http://localhost:8080/logout';
-//   fetch('http://localhost:8080/api/public/logout', {
-//     method: 'POST',
-//     credentials: 'include'
-//   }).then(() => {
-//     localStorage.clear();
-//   // Redirect manually
-//   window.location.href = 'http://localhost:4200';
-//   });
 
   }
 
@@ -125,4 +134,18 @@ constructor(private authService: AuthService,private router: Router){}
    
    this.router.navigateByUrl(path);
   }
+
+  setCurrentEmail()
+  {}
+
+
+
+
+
+
+
+
+
+
+
 }

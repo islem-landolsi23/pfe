@@ -1,66 +1,91 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, ElementRef, OnInit, signal, ViewChild } from '@angular/core';
 import { CallService } from '../service/call.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
+
 @Component({
   selector: 'app-audiocall',
   standalone: true,
-  imports: [CommonModule,FormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './audiocall.component.html',
   styleUrl: './audiocall.component.scss'
 })
+
 export class AudiocallComponent implements OnInit {
- email = '';
-  currentUser = ''; // Replace with logged-in user email
+  email = ''; currentUser = ''; // Replace with logged-in user email 
   incomingCall = signal<any | null>(null);
-   outgoingCall = signal<any | null>(null);
-
-   audio = new Audio("ringtone.mp3"); 
-
-  constructor(private callService: CallService) {
-this.getCurrentUser()
-
-}
-  ngOnInit(){
-      // listen for incoming calls
-    this.callService.listenToCalls(this.currentUser).subscribe((call) => {
-          if (call.type === 'CALL') {
-      this.incomingCall.set(call);
-      this.audio.loop = true;
-      this.audio.play();
-    }else if (call.type === 'ACCEPTED' || call.type === 'DECLINED') {
-        // response to my outgoing call
-        this.outgoingCall.set(call);
+  outgoingCall = signal<any | null>(null);
+  ringtone = new Audio("ringtone.mp3");
+  @ViewChild('remoteAudio', { static: false }) remoteAudioRef!: ElementRef<HTMLAudioElement>;
+  constructor(private callSvc: CallService) { this.getCurrentUser() }
+  ngOnInit() {
+    this.callSvc.listenToCalls(this.currentUser).subscribe(async (msg: any) => {
+      switch (msg.type) {
+        case 'CALL':
+          this.incomingCall.set(msg);
+          this.ringtone.currentTime = 3;
+          this.ringtone.loop = true;
+         
+          this.ringtone.play().catch(() => { });
+          break;
+        case 'ACCEPTED':
+          // I am caller; start WebRTC offer
+          this.outgoingCall.set(msg);
+          await this.callSvc.initPeer(true, msg.fromEmail, (s) => this.attachRemote(s));
+          // fill fromEmail in ICE publishes
+          (this.callSvc as any).publish =
+            this.wrapPublishFrom(this.callSvc.publish.bind(this.callSvc),
+              this.currentUser);
+          await this.callSvc.makeOffer(this.currentUser, msg.fromEmail); break;
+        case 'DECLINED':
+          this.outgoingCall.set(msg);
+          this.callSvc.cleanup();
+          break;
+        case 'SDP_OFFER': // I am callee; create answer 
+          await this.callSvc.initPeer(false, msg.fromEmail, (s) => this.attachRemote(s));
+          (this.callSvc as any).publish = this.wrapPublishFrom(this.callSvc.publish.bind(this.callSvc),
+            this.currentUser); await this.callSvc.handleOffer(msg, this.currentUser);
+          break;
+        case 'SDP_ANSWER':
+          await this.callSvc.handleAnswer(msg); break;
+        case 'ICE':
+          await this.callSvc.handleIce(msg); break;
       }
     });
   }
-  call() {
-    this.callService.startCall(this.currentUser, this.email);
-       this.outgoingCall.set({ toEmail: this.email, type: 'CALL' });
+
+
+
+  private attachRemote(stream: MediaStream) {
+    if (this.remoteAudioRef?.nativeElement) {
+      this.remoteAudioRef.nativeElement.srcObject = stream;
+      this.remoteAudioRef.nativeElement.play().catch(() => { });
+    }
   }
+  // helper so we don't forget fromEmail when sending ICE 
+  private wrapPublishFrom(orig: Function, fromEmail: string) { return (signal: any) => orig({ ...signal, fromEmail }); }
+  call() {
+    this.callSvc.publish({ fromEmail: this.currentUser, toEmail: this.email, type: 'CALL' });
+    this.outgoingCall.set({ toEmail: this.email, type: 'CALL' });
+  }
+
+
+
 
   acceptCall() {
-    this.audio.pause();
-    this.callService.respondToCall(this.incomingCall()!.fromEmail, this.currentUser, 'ACCEPTED');
+    this.ringtone.pause();
+    const caller = this.incomingCall()!.fromEmail;
+    this.callSvc.publish({ fromEmail: this.currentUser, toEmail: caller, type: 'ACCEPTED' });
     this.incomingCall.set(null);
-    alert('Call accepted (next step: WebRTC)');
   }
-
   declineCall() {
-    this.audio.pause();
-    this.callService.respondToCall(this.incomingCall()!.fromEmail, this.currentUser, 'DECLINED');
-    this.incomingCall.set(null);
-    alert('Call declined');
+    this.ringtone.pause();
+    const caller = this.incomingCall()!.fromEmail; this.callSvc.publish({ fromEmail: this.currentUser, toEmail: caller, type: 'DECLINED' });
+    this.incomingCall.set(null); this.callSvc.cleanup();
   }
-
-  getCurrentUser()
-  {
-
+  getCurrentUser() {
     const email = localStorage.getItem("email")
-    if(email)
-    {
-      this.currentUser =email
-    }
+    if (email) { this.currentUser = email }
   }
 }

@@ -8,36 +8,21 @@ import { BehaviorSubject, catchError, map, Observable, of, tap } from 'rxjs';
 export class AuthService {
   private loggedIn = new BehaviorSubject<boolean>(false);
    private loggedInSubject = new BehaviorSubject<boolean>(false);
+     private emailSubject = new BehaviorSubject<any>(null); // Initial value
+      public currentEmail: Observable<string> = this.emailSubject.asObservable();
   constructor(private http :HttpClient) { 
  // this.checkLoginStatus();
  this.checkSession()
     
   }
 
-  // login() {
-  //   this.isLoggedInSignal.set(true);
-  // }
    loginWithGitHub() {
     window.location.href = 'http://localhost:8080/oauth2/authorization/github';
   }
-  // logout() {
-  //   this.isLoggedInSignal.set(false);
-  // }
 
-  // isAuthenticated() {
-  //   return this.isLoggedInSignal();
-  // }
-
- 
-  // private checkLoginStatus() {
-  //   this.http.get('http://localhost:8080/api/public/me', { withCredentials: true }).subscribe({
-  //     next: () => this.loggedIn.next(true),
-  //     error: () => this.loggedIn.next(false),
-  //   });
-  // }
 
    checkSession(): Observable<boolean> {
- //const token = localStorage.getItem('jwt');
+
 
     if (typeof window !== 'undefined') {
     const token = localStorage.getItem('jwt');
@@ -57,7 +42,7 @@ export class AuthService {
     );
   }
    isLoggedIn(): boolean {
-  //  return this.loggedIn.value; // synchronous boolean
+
    return this.loggedInSubject.value;
   }
     
@@ -66,6 +51,7 @@ export class AuthService {
     localStorage.removeItem('jwt');
     localStorage.removeItem('email'); // or wherever you store it
 // router.navigate(['/login']);
+this.changeData(null);
     window.location.href = 'http://localhost:8080/logout';
     
   }
@@ -76,8 +62,13 @@ export class AuthService {
       tap(res => {
         localStorage.setItem('jwt', res.token);
          localStorage.setItem('email', email);
+         this.changeData(email)
 
       })
     );
 }
+
+   changeData(email: any) {
+        this.emailSubject.next(email);
+      }
 }

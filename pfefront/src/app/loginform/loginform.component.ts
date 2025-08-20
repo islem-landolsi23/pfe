@@ -19,13 +19,13 @@ export class LoginformComponent {
 constructor(private authService: AuthService,private router: Router) {}
 loginWithGit()
   {
-   //   window.location.href = 'http://localhost:8080/oauth2/authorization/github';
+ 
    this.authService.loginWithGitHub()
   }
 
     logout()
   {
-   // window.location.href = 'http://localhost:8080/logout';
+
 
  this.authService.logout();
   }
@@ -33,7 +33,7 @@ loginWithGit()
 
 login()
 {
-  console.log("11111111111111111")
+
   this.authService.login(this.email,this.password).subscribe(res=>{
      this.router.navigateByUrl('/kanban');
   })
