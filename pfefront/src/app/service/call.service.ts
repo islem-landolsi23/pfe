@@ -36,6 +36,7 @@ export class CallService {
 
 
      listenToCalls(userEmail: string) {
+      console.log("el email fil service",userEmail)
     this.stompClient.onConnect = () => {
       this.stompClient.subscribe(`/topic/call/${userEmail}`, (message) => {
         this.incomingCall$.next(JSON.parse(message.body));

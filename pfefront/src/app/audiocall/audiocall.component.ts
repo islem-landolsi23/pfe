@@ -20,39 +20,39 @@ export class AudiocallComponent implements OnInit {
   @ViewChild('remoteAudio', { static: false }) remoteAudioRef!: ElementRef<HTMLAudioElement>;
   constructor(private callSvc: CallService) { this.getCurrentUser() }
   ngOnInit() {
-    this.callSvc.listenToCalls(this.currentUser).subscribe(async (msg: any) => {
-      switch (msg.type) {
-        case 'CALL':
-          this.incomingCall.set(msg);
-          this.ringtone.currentTime = 3;
-          this.ringtone.loop = true;
+    // this.callSvc.listenToCalls(this.currentUser).subscribe(async (msg: any) => {
+    //   switch (msg.type) {
+    //     case 'CALL':
+    //       this.incomingCall.set(msg);
+    //       this.ringtone.currentTime = 3;
+    //       this.ringtone.loop = true;
          
-          this.ringtone.play().catch(() => { });
-          break;
-        case 'ACCEPTED':
-          // I am caller; start WebRTC offer
-          this.outgoingCall.set(msg);
-          await this.callSvc.initPeer(true, msg.fromEmail, (s) => this.attachRemote(s));
-          // fill fromEmail in ICE publishes
-          (this.callSvc as any).publish =
-            this.wrapPublishFrom(this.callSvc.publish.bind(this.callSvc),
-              this.currentUser);
-          await this.callSvc.makeOffer(this.currentUser, msg.fromEmail); break;
-        case 'DECLINED':
-          this.outgoingCall.set(msg);
-          this.callSvc.cleanup();
-          break;
-        case 'SDP_OFFER': // I am callee; create answer 
-          await this.callSvc.initPeer(false, msg.fromEmail, (s) => this.attachRemote(s));
-          (this.callSvc as any).publish = this.wrapPublishFrom(this.callSvc.publish.bind(this.callSvc),
-            this.currentUser); await this.callSvc.handleOffer(msg, this.currentUser);
-          break;
-        case 'SDP_ANSWER':
-          await this.callSvc.handleAnswer(msg); break;
-        case 'ICE':
-          await this.callSvc.handleIce(msg); break;
-      }
-    });
+    //       this.ringtone.play().catch(() => { });
+    //       break;
+    //     case 'ACCEPTED':
+    //       // I am caller; start WebRTC offer
+    //       this.outgoingCall.set(msg);
+    //       await this.callSvc.initPeer(true, msg.fromEmail, (s) => this.attachRemote(s));
+    //       // fill fromEmail in ICE publishes
+    //       (this.callSvc as any).publish =
+    //         this.wrapPublishFrom(this.callSvc.publish.bind(this.callSvc),
+    //           this.currentUser);
+    //       await this.callSvc.makeOffer(this.currentUser, msg.fromEmail); break;
+    //     case 'DECLINED':
+    //       this.outgoingCall.set(msg);
+    //       this.callSvc.cleanup();
+    //       break;
+    //     case 'SDP_OFFER': // I am callee; create answer 
+    //       await this.callSvc.initPeer(false, msg.fromEmail, (s) => this.attachRemote(s));
+    //       (this.callSvc as any).publish = this.wrapPublishFrom(this.callSvc.publish.bind(this.callSvc),
+    //         this.currentUser); await this.callSvc.handleOffer(msg, this.currentUser);
+    //       break;
+    //     case 'SDP_ANSWER':
+    //       await this.callSvc.handleAnswer(msg); break;
+    //     case 'ICE':
+    //       await this.callSvc.handleIce(msg); break;
+    //   }
+    // });
   }
 
 
