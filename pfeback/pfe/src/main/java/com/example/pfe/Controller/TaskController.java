@@ -1,5 +1,6 @@
 package com.example.pfe.Controller;
 
+import com.example.pfe.Entity.DTO.TaskDTO;
 import com.example.pfe.Entity.Sprint;
 import com.example.pfe.Entity.Task;
 import com.example.pfe.Service.TaskService;
@@ -26,7 +27,7 @@ public class TaskController {
 
 
     @PostMapping("/addTask")
-    public Task addTask(@RequestBody Task task)
+    public Task addTask(@RequestBody TaskDTO task)
     {
         return taskService.addTask(task) ;
     }

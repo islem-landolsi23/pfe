@@ -1,6 +1,8 @@
 package com.example.pfe.Controller;
 
 
+import com.example.pfe.Entity.DTO.Mapper;
+import com.example.pfe.Entity.DTO.ProjectDto;
 import com.example.pfe.Entity.Project;
 import com.example.pfe.Entity.Sprint;
 import com.example.pfe.Service.ProjectService;
@@ -17,6 +19,8 @@ public class ProjectController {
 
     @Autowired
     private ProjectService projectService;
+    @Autowired
+    private Mapper mapper ;
 
 
     @PostMapping("/add")
@@ -25,14 +29,14 @@ public class ProjectController {
     }
 
     @GetMapping("/getAll")
-    public List<Project> addProject() {
-        return projectService.getProjectList();
+    public List<ProjectDto> addProject() {
+        return projectService.getProjectList().stream().map(p->mapper.toDto(p)).toList();
     }
 
 
     @GetMapping("/getById/{id}")
-    public Project getProjectById(@PathVariable long id) {
-        return projectService.getProjecrById(id);
+    public ProjectDto getProjectById(@PathVariable long id) {
+        return mapper.toDto(projectService.getProjecrById(id));
     }
 
 

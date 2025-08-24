@@ -8,7 +8,7 @@ import { StompSubscription } from '@stomp/stompjs';
   providedIn: 'root'
 })
 export class CallService {
-
+private pendingCandidates: RTCIceCandidateInit[] = [];
 
     private stompClient: Client;
   private incomingCall$ = new Subject<any>();
@@ -117,17 +117,42 @@ respondToCall(fromEmail: string, toEmail: string, response: 'ACCEPTED' | 'DECLIN
     const answer = await this.pc.createAnswer();
     await this.pc.setLocalDescription(answer);
     this.publish({ fromEmail, toEmail: msg.fromEmail, type: 'SDP_ANSWER', sdp: JSON.stringify(answer) });
+
+     // flush queued ICE
+  for (const c of this.pendingCandidates) {
+    await this.pc.addIceCandidate(c);
+  }
+  this.pendingCandidates = [];
   }
 
   async handleAnswer(msg: SignalMessage):Promise<void> {
     if (!this.pc) return;
     const remoteDesc = new RTCSessionDescription(JSON.parse(msg.sdp));
     await this.pc.setRemoteDescription(remoteDesc);
+
+    // flush queued ICE
+  for (const c of this.pendingCandidates) {
+    await this.pc.addIceCandidate(c);
+  }
+  this.pendingCandidates = [];
   }
 
   async handleIce(msg: Extract<Signal, {type:'ICE'}>) {
-    if (!this.pc) return;
-    await this.pc.addIceCandidate(new RTCIceCandidate(msg.candidate));
+    // if (!this.pc) return;
+    // await this.pc.addIceCandidate(new RTCIceCandidate(msg.candidate));
+
+
+      if (!this.pc) return;
+
+  const candidate = new RTCIceCandidate(msg.candidate);
+
+  if (this.pc.remoteDescription) {
+    // safe to add now
+    await this.pc.addIceCandidate(candidate);
+  } else {
+    // queue until remote description is set
+    this.pendingCandidates.push(candidate);
+  }
   }
 
   cleanup() {
@@ -138,16 +163,24 @@ respondToCall(fromEmail: string, toEmail: string, response: 'ACCEPTED' | 'DECLIN
     this.localStream = null;
     this.remoteStream = null;
   }
+hangUp(peer: string , email :string) {
+  this.stompClient.publish({
+    destination: `/app/call/${peer}`,
+    body: JSON.stringify({ type: 'HANGUP', from: email })
+  });
+
+  this.cleanup();
+}
 }
 type Signal =
-  | { fromEmail: string; toEmail: string; type: 'CALL'|'ACCEPTED'|'DECLINED' }
+  | { fromEmail: string; toEmail: string; type: 'CALL'|'ACCEPTED'|'DECLINED'|'HANG_UP' }
   | { fromEmail: string; toEmail: string; type: 'SDP_OFFER'|'SDP_ANSWER'; sdp: string }
   | { fromEmail: string; toEmail: string; type: 'ICE'; candidate: { candidate: string; sdpMid: string; sdpMLineIndex: number } };
 
 
 
   export interface SignalMessage {
-  type: 'CALL' | 'CALL_ACCEPTED' | 'CALL_DECLINED' | 'SDP_OFFER' | 'SDP_ANSWER' | 'ICE_CANDIDATE';
+  type: 'CALL' | 'CALL_ACCEPTED' | 'CALL_DECLINED' | 'SDP_OFFER' | 'SDP_ANSWER' | 'ICE_CANDIDATE'|'HANG_UP';
   fromEmail: string;
   toEmail: string;
   sdp: string;

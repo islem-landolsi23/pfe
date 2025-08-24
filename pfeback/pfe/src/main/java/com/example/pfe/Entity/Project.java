@@ -30,8 +30,7 @@ public class Project {
     @JsonManagedReference
     private List<Sprint> sprints;
 
-//    private LocalDateTime startDate;
-//    private LocalDateTime endDate;
+
 
     private OffsetDateTime startDate;
    private OffsetDateTime endDate;

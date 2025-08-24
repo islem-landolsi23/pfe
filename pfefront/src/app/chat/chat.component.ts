@@ -1,5 +1,5 @@
 
-import { Component, OnInit, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewChecked, signal } from '@angular/core';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { PopoverModule } from 'primeng/popover';
@@ -25,6 +25,8 @@ import { ChatService } from '../service/chat.service';
 import { ConversationService } from '../service/conversation.service';
 import { FileService } from '../service/file.service';
 import { UserService } from '../service/user.service';
+import { NotificationService } from '../service/notification.service';
+import { CallService } from '../service/call.service';
 
 
 
@@ -41,7 +43,7 @@ import { UserService } from '../service/user.service';
 export class ChatComponent  implements OnInit, AfterViewChecked  {
 
 
-
+  outgoingCall = signal<any | null>(null);
 
 
 
@@ -54,24 +56,7 @@ export class ChatComponent  implements OnInit, AfterViewChecked  {
   selectedContact: any = null;
   conversationId :string ="";
   contacts :Contact[]= [
-    {
-      id: 1,
-      name: 'Alice Johnson',
-      email : "test@email.123",
-      avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1',
-      status: 'Online',
-      lastMessage: 'Hey, how are you?',
-      unread: 2
-    },
-    {
-      id: 2,
-      name: 'Bob Smith',
-      email : "test@email.123",
-      avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1',
-      status: 'Offline',
-      lastMessage: 'See you tomorrow!',
-      unread: 0
-    }
+   
   ];
 
 backendurl =  'http://localhost:8080'
@@ -80,6 +65,8 @@ backendurl =  'http://localhost:8080'
   messages :ChatMessage[] = [
     
   ];
+  email: any;
+
 
   get filteredContacts() {
     return this.contacts.filter(contact =>
@@ -88,7 +75,8 @@ backendurl =  'http://localhost:8080'
   }
   constructor(
   private chatService: ChatService, private userService :UserService , 
-  private conversationservice :ConversationService ,private fileservice :FileService
+  private conversationservice :ConversationService ,private fileservice :FileService,
+   private notificationService :NotificationService , private callSvc: CallService 
 )
 {
 
@@ -123,6 +111,19 @@ backendurl =  'http://localhost:8080'
     })
   }
 
+call() {
+ 
+        this.outgoingCall.set({ toEmail: this.selectedContact.email, type: 'CALL' });
+         this.notificationService.openPopUp( this.outgoingCall())
+    this.callSvc.publish({ fromEmail: this.userName, toEmail: this.selectedContact.email, type: 'CALL' });
+
+  }
+
+
+
+
+
+
   ngAfterViewChecked() {
     this.scrollToBottom();
   }
@@ -135,7 +136,7 @@ backendurl =  'http://localhost:8080'
   }
 
   selectContact(contact: any) {
-   // console.log("el contact",contact)
+   console.log("el contact",contact)
 
 if(this.getMyId()!=null){ 
   this.conversationservice.createOrGetPrivateChat(this.getMyId(),contact.id).subscribe(res=>{
@@ -196,11 +197,7 @@ if(this.getMyId()!=null){
    searchTerm: string = '';
 
 
-  // ngOnInit(): void {
-   
-  //   this.chatService.joinRoom("ABC");
-  //   this.lisenerMessage();
-  // }
+ 
 
 
   onClick()

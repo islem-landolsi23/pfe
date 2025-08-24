@@ -32,6 +32,7 @@ public class VideoSignalController {
     public void signaling(@DestinationVariable String roomId, SignalMessage message) {
         System.out.println("roomid = "+roomId);
         System.out.println("message = "+message);
+        System.out.println(message.getSender());
         // Broadcast to all clients in this room
         messagingTemplate.convertAndSend("/topic/" + roomId, message);
     }

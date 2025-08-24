@@ -1,4 +1,4 @@
-<div class="surface-card p-5 shadow-3 border-round-xl w-full max-w-6xl mx-auto mt-4">
+<div class="surface-card p-5 shadow-3 border-round-xl w-full max-w-10xl mx-auto mt-4">
 
   <h2 class="text-2xl font-semibold mb-5 text-primary">Sprint</h2>
 
@@ -38,7 +38,7 @@
 
       <p-panel [toggleable]="true" class="w-full  h-full" >
        
-          <ng-template pTemplate="header">
+          <!-- <ng-template pTemplate="header">
             <div class="text-md font-medium text-gray-700">task List</div>
           </ng-template>
 
@@ -48,7 +48,7 @@
                <ng-template #caption>
             <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
 
-                <!-- Left side -->
+             
                 <div style="display: flex; align-items: center; gap: 1rem;">
                     <p-button [outlined]="true" icon="pi pi-filter-slash" label="Clear" (click)="clear(dt)" />
                     <p-iconField iconPosition="left">
@@ -80,8 +80,8 @@
                 <td>{{ sprint.endDate | date }}</td>
               </tr>
             </ng-template>
-          </p-table>
-       
+          </p-table> -->
+       <app-jira-ticket-card [sprintId]="sprintId"></app-jira-ticket-card>
       </p-panel>
     </p-card>
 

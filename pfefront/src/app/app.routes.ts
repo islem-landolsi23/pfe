@@ -14,6 +14,7 @@ import { VideocallComponent } from './videocall/videocall.component';
 import { MultipleCallComponent } from './multiple-call/multiple-call.component';
 import { MeetingroomComponent } from './meetingroom/meetingroom.component';
 import { AudiocallComponent } from './audiocall/audiocall.component';
+import { JiraTicketCardComponent } from './jira-ticket-card/jira-ticket-card.component';
 
 
 
@@ -36,10 +37,10 @@ export const routes: Routes = [
                   { path: 'task/:projectId/:sprintId/:task', component: TaskComponent },
                     { path: 'videocall', component: VideocallComponent },
                      { path: 'multiple', component: MultipleCallComponent },
-                      { path: 'meeting', component: MeetingroomComponent },
-                       { path: 'call', component: AudiocallComponent }
+                      { path: 'meeting/:roomId', component: MeetingroomComponent },
+                       { path: 'call', component: AudiocallComponent },
 
-                      
+                       { path: 'test', component: JiraTicketCardComponent }
 
 
 ];

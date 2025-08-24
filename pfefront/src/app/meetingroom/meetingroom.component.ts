@@ -16,7 +16,8 @@ export class MeetingroomComponent implements OnInit{
    @ViewChild('localVideo') localVideo!: ElementRef<HTMLVideoElement>;
 
   roomId!: string;
-  me = 'user-' + Math.floor(Math.random() * 1_000_000);
+  //me = 'user-' + Math.floor(Math.random() * 1_000_000);
+  me :any
 
   localStream!: MediaStream;
   peers: PCMap = new Map();                 
@@ -34,6 +35,7 @@ export class MeetingroomComponent implements OnInit{
   async ngOnInit() {
     this.roomId = this.route.snapshot.paramMap.get('roomId') ?? 'room1';
     this.localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+   this.me = localStorage.getItem('email');
 
     // attach local video preview
     queueMicrotask(() => {

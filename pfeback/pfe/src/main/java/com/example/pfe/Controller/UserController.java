@@ -1,5 +1,7 @@
 package com.example.pfe.Controller;
 
+import com.example.pfe.Entity.DTO.Mapper;
+import com.example.pfe.Entity.DTO.UserDto;
 import com.example.pfe.Entity.User;
 import com.example.pfe.Repository.UserRepository;
 import jakarta.servlet.ServletException;
@@ -23,6 +25,10 @@ public class UserController {
 
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    Mapper mapper ;
+
+
     @GetMapping("/me")
     public Map<String, Object> getCurrentUser(@AuthenticationPrincipal OAuth2User principal) {
         return principal.getAttributes(); // contains GitHub info
@@ -74,9 +80,11 @@ public class UserController {
 
     @GetMapping("/getAllUsers")
 
-    public ResponseEntity<List<User>> getAllUsers()
+    public ResponseEntity<List<UserDto>> getAllUsers()
     {
-        return ResponseEntity.ok(userRepository.findAll());
+        return ResponseEntity.ok(userRepository.findAll()
+                .stream()
+                .map(u ->mapper.toDto(u)).toList());
     }
 
 

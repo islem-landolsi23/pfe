@@ -1,4 +1,13 @@
+
+<div class="container mx-auto px-4">
+  <!-- ... -->
+
+
+
+
 <div class="card">
+
+
     <p-table #dt [value]="projects" [paginator]="true" [rows]="5" [tableStyle]="{ 'min-width': '50rem' }"
         [rowsPerPageOptions]="[5, 10, 20]" [globalFilterFields]="['name', 'discription', 'startDate', 'endDate']">
         <!-- <ng-template #caption>
@@ -105,4 +114,6 @@
             </tr>
         </ng-template>
     </p-table>
+</div>
+
 </div>

@@ -1,6 +1,7 @@
 package com.example.pfe.Entity;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,17 +20,19 @@ public class Task {
     private String title;
     private String description;
 
-    @Enumerated(EnumType.STRING)
-    private TaskStatus status;
+
+    private String status ;
+    private String        priority;
 
     @ManyToOne
     @JoinColumn(name = "sprint_id")
+    @JsonBackReference // child
     private Sprint sprint;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User assignedUser;
-    private LocalDateTime createdAt;
-    private LocalDateTime dueDate;
+    private String createdAt;
+    private String dueDate;
 
 }

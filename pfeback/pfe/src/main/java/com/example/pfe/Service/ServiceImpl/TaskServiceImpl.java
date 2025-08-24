@@ -1,10 +1,12 @@
 package com.example.pfe.Service.ServiceImpl;
 
+import com.example.pfe.Entity.DTO.TaskDTO;
 import com.example.pfe.Entity.Project;
 import com.example.pfe.Entity.Sprint;
 import com.example.pfe.Entity.Task;
 import com.example.pfe.Entity.User;
 import com.example.pfe.Repository.ProjectRepository;
+import com.example.pfe.Repository.SprintRepository;
 import com.example.pfe.Repository.TaskRepository;
 import com.example.pfe.Repository.UserRepository;
 import com.example.pfe.Service.TaskService;
@@ -22,10 +24,29 @@ public class TaskServiceImpl implements TaskService {
     private ProjectRepository projectRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+  private  SprintRepository sprintRepository ;
 
     @Override
-    public Task addTask(Task task) {
-        return taskRepository.save(task);
+    public Task addTask(TaskDTO task) {
+
+        Task taskToAdd =new Task();
+        taskToAdd.setTitle(task.getTitle());
+        taskToAdd.setPriority(task.getPriority());
+        taskToAdd.setDescription(task.getDescription());
+        taskToAdd.setStatus(task.getStatus());
+
+
+        taskToAdd.setCreatedAt( LocalDateTime.now().toString());
+
+        taskToAdd.setDueDate(task.getDueDate());
+
+        taskToAdd.setAssignedUser(userRepository.
+                getReferenceById(task.getAssignedUserId()
+                       ));
+        taskToAdd.setSprint(sprintRepository.getReferenceById(task.getSprintId()));
+
+        return taskRepository.save(taskToAdd);
     }
 
     @Override

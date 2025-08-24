@@ -17,6 +17,7 @@ public class CallController {
     @SendTo("/topic/call/{email}")
     public CallNotification call(@DestinationVariable String email, CallNotification notification) {
         // just forward the notification
+        System.out.println(notification);
         return notification;
     }
 }
