@@ -37,7 +37,5 @@ public class Message {
     private User sender;
 
 
-/// ken l9it wa9et zidha
-//    @OneToMany(mappedBy = "message", cascade = CascadeType.ALL)
-//    private Set<MessageReadReceipt> readReceipts;
+
 }

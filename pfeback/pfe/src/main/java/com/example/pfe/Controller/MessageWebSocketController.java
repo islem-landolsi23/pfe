@@ -43,8 +43,7 @@ public class MessageWebSocketController {
     @MessageMapping("/chat/{roomId}")
     @SendTo("/topic/{roomId}")
     public ChatMessage chat(@DestinationVariable String roomId, ChatMessage message) {
-        System.out.println("wa wa ya wy5ayeni");
-        System.out.println(message);
+
         Message newMessage = new Message();
         newMessage.setContent(message.getContent());
         User user =userRepository.findByEmail(message.getUser()).get();

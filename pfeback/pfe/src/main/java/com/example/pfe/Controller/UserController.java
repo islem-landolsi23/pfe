@@ -54,27 +54,27 @@ public class UserController {
 
 
     @PostMapping("/addUser")
-    public ResponseEntity<User> addUser(@RequestBody User user)
+    public ResponseEntity<UserDto> addUser(@RequestBody User user)
     {
-        return ResponseEntity.ok(userRepository.save(user));
+        return ResponseEntity.ok(mapper.toDto(userRepository.save(user)));
     }
 
     @GetMapping("/checkUser/{email}")
-    public ResponseEntity<User> check(@PathVariable String email)
+    public ResponseEntity<UserDto> check(@PathVariable String email)
     {
         Optional<User> user = userRepository.findByEmail(email) ;
         System.out.println(email);
         System.out.println(user);
         if (user.isPresent())
-        return ResponseEntity.ok(user.get());
+        return ResponseEntity.ok(mapper.toDto(user.get()));
         else return  null ;
 
     }
 
     @GetMapping("/getUserByEmail/{email}")
-    public ResponseEntity<User> getUserByEmail(@PathVariable String email)
+    public ResponseEntity<UserDto> getUserByEmail(@PathVariable String email)
     {
-        return ResponseEntity.ok(userRepository.findByEmail(email).get());
+        return ResponseEntity.ok(mapper.toDto(userRepository.findByEmail(email).get()));
     }
 
 

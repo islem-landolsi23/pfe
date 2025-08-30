@@ -16,6 +16,7 @@ import { IncompingcallComponent } from './incompingcall/incompingcall.component'
 import { Subscription } from 'rxjs';
 import { NotificationService } from './service/notification.service';
 import { FormsModule } from '@angular/forms';
+import { ChatService } from './service/chat.service';
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -32,7 +33,7 @@ export class AppComponent implements OnInit {
   title = 'pfefront';
   isDropdownOpen = false;
   currentUser = ''; // Replace with logged-in user email
-
+  private subscription!: Subscription;
      showPopup = false;
   inCall = false ;
   incomingCall = signal<any | null>(null);
@@ -47,9 +48,12 @@ export class AppComponent implements OnInit {
 meetingpopup =false
 joinpopup =false ;
 meetingcode :any
-
+unreadNotificationsCount = 0;
+unreadMessagesCount = 0;
+  notificationCount: number = 0; // 🔹 track badge
 constructor(private authService: AuthService,private router: Router,private callSvc: CallService,
-  @Inject(PLATFORM_ID) private platformId: Object, private notificationService: NotificationService
+  @Inject(PLATFORM_ID) private platformId: Object, private notificationService: NotificationService,
+  private chatservice :ChatService
 ){
 
  
@@ -57,14 +61,15 @@ constructor(private authService: AuthService,private router: Router,private call
     
 }
  startlistening(){
-  console.log("ena fil start")
+   
+
     const email = localStorage.getItem("email")
     if(email){
-      console.log("enafil after party")
+     
       this.currentUser = email
         this.ringtone = new Audio("ringtone.mp3");
        this.callSvc.listenToCalls(email).subscribe(async (msg: any) => {
-        console.log(msg.type)
+      
 
       switch (msg.type) {
         case 'CALL':
@@ -112,17 +117,22 @@ constructor(private authService: AuthService,private router: Router,private call
       }
     });
     }
-  
+    
   }
 
   ngOnInit() {
+       this.setNavbarElement()
  
-    // if (isPlatformBrowser(this.platformId)) {
-    //   this.startlistening()
-    // }
+   // 🔹 Subscribe to notification events
+    this.subscription = this.chatservice.getNotifications().subscribe(( notifications) => {
+      console.log("listenint to notification")
+  
+      this.updateBadge(notifications);
+    });
+  
   this.generatedString = Math.random().toString(36).substring(2, 10).toUpperCase();
     this.notificationService.call$.subscribe(res=>{
-      console.log("ena el res ena elres ena el res ",res)
+     
       this.openPopUp = res
          this.callingMsg=true
      //  this.outgoingCall=res
@@ -130,14 +140,14 @@ constructor(private authService: AuthService,private router: Router,private call
 
 
     this.authService.currentEmail.subscribe(res =>{
-      console.log("hello im how jeck")
+    
       const email =localStorage.getItem("email")
      if(email)
      {
       this.startlistening()
      }
     })
-      this.setNavbarElement()
+   
   
   }
 
@@ -146,16 +156,18 @@ constructor(private authService: AuthService,private router: Router,private call
   setNavbarElement()
   {
     this.items = [
-            {
-                label: 'Home',
-                icon: 'pi pi-home',
-            },
-              {
+          {
                 label: 'Profile',
                 icon: 'pi pi-user',
                 path:'user'
                 
             },
+            {
+                label: 'My Tasks',
+                icon: 'pi pi-th-large',
+                path:'/kanban'
+            },
+          
             {
                 label: 'Projects',
                 icon: 'pi pi-briefcase',
@@ -170,11 +182,11 @@ constructor(private authService: AuthService,private router: Router,private call
             },{
                 label:"Notifications",
                icon: 'pi pi-bell',
-                badge : "2"
+                badge :  this.unreadNotificationsCount > 0 ? String(this.unreadNotificationsCount) : undefined
             },{
                label:"Messages",
                icon: 'pi pi-envelope',
-                badge : "2",
+                badge : this.unreadMessagesCount > 0 ? String(this.unreadMessagesCount) : undefined,
                 path:'/chat'
             }
             ,{
@@ -223,12 +235,12 @@ constructor(private authService: AuthService,private router: Router,private call
 
    toggleDropdown(): void {
     this.isDropdownOpen = !this.isDropdownOpen;
-    console.log(this.isDropdownOpen )
+   
   }
 
   goToRout(path:string)
   {
-    console.log("putadel merda",path)
+    
    
     if(path &&path!='/meeting' && path!='startmeeting' && path!='join')
    this.router.navigateByUrl(path);
@@ -249,14 +261,22 @@ startMeeting(){
 }
 joinMeeting(){
    this.joinpopup =false
-   console.log("ele code el code el code",this.meetingcode)
+  
   //  this.router.navigateByUrl("/meeting");
       this.router.navigate(['/meeting',this.meetingcode]);
 }
 
 
 
-
+  updateBadge(notifications :any[]) {
+    const notifItem = this.items.find(i => i.label === 'Messages');
+    if (notifItem) {
+          this.notificationCount++;
+          let nbr = notifications.length
+     // notifItem.badge = this.notificationCount > 0 ? this.notificationCount.toString() : undefined;
+        notifItem.badge = this.notificationCount > 0 ? nbr.toString() : undefined;
+    }
+  }
   setCurrentEmail()
   {}
 
@@ -285,8 +305,7 @@ joinMeeting(){
   acceptCall() {
     this.ringtone.pause();
     const caller = this.incomingCall()!.fromEmail;
-    console.log(    "out"  ,    this.outgoingCall)
-     console.log(    "in"  ,    this.incomingCall)
+   
     this.callSvc.publish({ fromEmail: this.currentUser, toEmail: caller, type: 'ACCEPTED' });
   //  this.incomingCall.set(null);
   }
@@ -299,11 +318,11 @@ joinMeeting(){
   }
 
 hangup()
-  {     console.log(    "out"  ,    this.openPopUp)
+  {     
     
        const caller = this.openPopUp.toEmail; 
        
-       console.log(caller)
+   
     this.callSvc.publish({ fromEmail: this.currentUser, toEmail: caller, type: 'HANG_UP' });
     this.notificationService.closePopup()
     
@@ -314,6 +333,12 @@ hangup()
     
   }
 
+  closePopUpJoin(){
+   this. joinpopup =false ;
+  }
+closePopUpStart(){
+  this.meetingpopup =false
+}
 
 
 }

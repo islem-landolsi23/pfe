@@ -1,11 +1,11 @@
 package com.example.pfe.Entity.DTO;
 
 
-import com.example.pfe.Entity.Project;
-import com.example.pfe.Entity.Sprint;
-import com.example.pfe.Entity.Task;
-import com.example.pfe.Entity.User;
+import com.example.pfe.Entity.*;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class Mapper {
@@ -59,6 +59,37 @@ public class Mapper {
                 user.getName(),
                 user.getEmail(),
                 user.getAvatarUrl()
+        );
+    }
+
+
+    public ConversationDto toDto(Conversation conversation) {
+        List<UserDto> participantDtos = conversation.getParticipants().stream()
+                .map(u -> new UserDto(u.getId(), u.getName(), u.getEmail(), u.getAvatarUrl()))
+                .collect(Collectors.toList());
+
+        return new ConversationDto(
+                conversation.getId(),
+                conversation.getTitle(),
+                conversation.isGroup(),
+                conversation.getCreatedAt(),
+                participantDtos
+        );
+    }
+
+    public  NotificationDTO toDTO(Notification notification) {
+        if (notification == null) {
+            return null;
+        }
+
+        return new NotificationDTO(
+                notification.getTitle(),
+                notification.getMessage(),
+                notification.getReceiver() != null ? notification.getReceiver().getEmail() : null,
+                notification.getTimestamp(),
+                notification.getSender() != null ? notification.getSender().getEmail() : null,
+                notification.getType(),
+                notification.getTaskUrl()
         );
     }
 }

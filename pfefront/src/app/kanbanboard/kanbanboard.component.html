@@ -1,8 +1,8 @@
-<div>
+<!-- <div>
   <button class="button is-small is-primary " (click)="fillme()">
     click me
   </button>
-</div>
+</div> -->
 
 
 <div class="board p-p-3">
@@ -39,7 +39,7 @@
         <div class="tasks-container p-flex p-flex-column gap-2"
      cdkDropList
      [cdkDropListData]="column.tasks"
-     (cdkDropListDropped)="drop($event)"
+     (cdkDropListDropped)="drop($event,column)"
      [cdkDropListConnectedTo]="getConnectedDropLists()"
      [style.min-height.px]="50"
      class="drop-zone" 

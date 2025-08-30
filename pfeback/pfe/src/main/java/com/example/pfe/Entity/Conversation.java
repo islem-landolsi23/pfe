@@ -1,5 +1,6 @@
 package com.example.pfe.Entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -27,6 +28,7 @@ public class Conversation {
             joinColumns = @JoinColumn(name = "conversation_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
+
     private Set<User> participants;
 
     @OneToMany(mappedBy = "conversation", cascade = CascadeType.ALL)

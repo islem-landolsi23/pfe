@@ -65,13 +65,26 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<Task> getTaskBySprint(Sprint sprint) {
+    public List<Task> getTaskBySprint(Long sprintId) {
+        Sprint sprint =sprintRepository.getReferenceById(sprintId);
         return  taskRepository.getBySprint(sprint) ;
 
     }
 
     @Override
-    public List<Task> getTaskByUser(Long userId) {
-        return List.of();
+    public List<Task> getTaskByUser(String email) {
+      //  User user =userRepository.getReferenceById(userId);
+        User user = userRepository.findByEmail(email).get() ;
+        return  taskRepository.getByAssignedUser(user) ;
+    }
+
+    @Override
+    public Task updateTaskStatus(TaskDTO task) {
+
+        Task taskToUpdate = taskRepository.getReferenceById(task.getId());
+
+        taskToUpdate.setStatus(task.getStatus());
+
+        return taskRepository.save(taskToUpdate);
     }
 }

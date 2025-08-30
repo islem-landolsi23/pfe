@@ -28,36 +28,6 @@ public class ConversationService {
 
     public Conversation createOrGetConversation(Long userAId, Long userBId) {
 
-
-
-
-        // Check if exists
-//        Optional<Conversation> existing = conversationRepository
-//                .findPrivateConversationBetweenUsers(userAId, userBId);
-//
-//        if (existing.isPresent()) {
-//            return existing.get();
-//        }
-//
-//        // Create new conversation
-//        User userA = userRepository.findById(userAId)
-//                .orElseThrow(() -> new RuntimeException("User not found: " + userAId));
-//        User userB = userRepository.findById(userBId)
-//                .orElseThrow(() -> new RuntimeException("User not found: " + userBId));
-//
-//        Conversation conversation = new Conversation();
-//        conversation.setGroup(false);
-//
-//        conversation.setCreatedAt(LocalDateTime.now().toString());
-//        conversation.setParticipants(new HashSet<>(Arrays.asList(userA, userB)));
-//        conversation.setCreatedBy(userA); // ✅ important
-//        conversation.setTitle(userA.getName() + " & " + userB.getName());
-//
-//        System.out.println("el conversation"+ conversation.toString());
-//        return conversationRepository.save(conversation);
-
-
-
             if (userAId.equals(userBId)) {
                 // Handle self-chat (conversation with only one participant)
                 Optional<Conversation> existing = conversationRepository

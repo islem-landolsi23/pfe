@@ -14,6 +14,7 @@ public interface TaskService {
     public Task updateTask(Task task) ;
     public void deleteTask(long id) ;
     public  Task getTaskById(long id) ;
-    public List<Task> getTaskBySprint(Sprint sprint);
-    public List<Task>getTaskByUser(Long userId);
+    public List<Task> getTaskBySprint(Long sprintId);
+    public List<Task>getTaskByUser(String email );
+    public Task updateTaskStatus(TaskDTO task );
 }

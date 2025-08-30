@@ -621,7 +621,12 @@
 
 <!-- popup creat meet -->
 <div *ngIf="meetingpopup" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+  
   <div class="bg-white p-6 rounded-2xl shadow-lg w-96 text-center">
+      <div class="flex justify-end -mt-2 mb-4 ">
+   
+    <i class="pi pi-times cursor-pointer "  (click)="closePopUpStart()" ></i>
+    </div>
     <h2 class="text-xl font-bold mb-4">Your Meeting Code</h2>
     <p class="text-lg font-mono bg-gray-100 p-3 rounded-lg mb-6">{{ generatedString }}</p>
     
@@ -636,7 +641,11 @@
 <!-- popup join meet -->
 <div *ngIf="joinpopup" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
   <div class="bg-white p-6 rounded-2xl shadow-lg w-96 text-center animate-fade-in">
-    
+     <div class="flex justify-end -mt-2 mb-4 ">
+   
+    <i class="pi pi-times cursor-pointer "  (click)="closePopUpJoin()" ></i>
+    </div>
+  
     <!-- Title -->
     <h2 class="text-2xl font-semibold text-gray-800 mb-6">Join a Meeting</h2>
     

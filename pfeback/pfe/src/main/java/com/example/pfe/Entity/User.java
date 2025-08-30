@@ -1,5 +1,6 @@
 package com.example.pfe.Entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -44,5 +45,6 @@ public class User {
 
 
     @ManyToMany(mappedBy = "participants")
+
     private Set<Conversation> conversations;
 }

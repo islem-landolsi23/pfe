@@ -3,6 +3,8 @@ package com.example.pfe.Controller;
 
 import com.example.pfe.Entity.ChatMessage;
 import com.example.pfe.Entity.Conversation;
+import com.example.pfe.Entity.DTO.ConversationDto;
+import com.example.pfe.Entity.DTO.Mapper;
 import com.example.pfe.Entity.Message;
 import com.example.pfe.Repository.MessageRepository;
 import com.example.pfe.Service.ServiceImpl.ConversationService;
@@ -19,17 +21,19 @@ public class ConversationController {
 
     private final ConversationService conversationService;
     @Autowired
- private    MessageRepository messageRepository ;
+ private  MessageRepository messageRepository ;
+    @Autowired
+    Mapper mapper ;
 
     public ConversationController(ConversationService conversationService) {
         this.conversationService = conversationService;
     }
 
     @PostMapping("/private")
-    public Conversation createOrGetPrivateChat(@RequestParam Long userAId, @RequestParam Long userBId) {
+    public ConversationDto createOrGetPrivateChat(@RequestParam Long userAId, @RequestParam Long userBId) {
 
         System.out.println(userAId + "++++"+userBId);
-        return conversationService.createOrGetConversation(userAId, userBId);
+        return mapper.toDto(conversationService.createOrGetConversation(userAId, userBId));
     }
 
     @GetMapping("/getMessages/{conversationId}")

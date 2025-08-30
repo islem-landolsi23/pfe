@@ -27,6 +27,7 @@ import { FileService } from '../service/file.service';
 import { UserService } from '../service/user.service';
 import { NotificationService } from '../service/notification.service';
 import { CallService } from '../service/call.service';
+import { NotificationdataService } from '../service/notificationdata.service';
 
 
 
@@ -66,6 +67,8 @@ backendurl =  'http://localhost:8080'
     
   ];
   email: any;
+  myName :any
+  myImage :any ;
 
 
   get filteredContacts() {
@@ -76,11 +79,40 @@ backendurl =  'http://localhost:8080'
   constructor(
   private chatService: ChatService, private userService :UserService , 
   private conversationservice :ConversationService ,private fileservice :FileService,
-   private notificationService :NotificationService , private callSvc: CallService 
+   private notificationService :NotificationService , private callSvc: CallService ,
+   private notificationDataservice :NotificationdataService
 )
 {
 
 }
+
+
+setNotification(email: any) {
+  this.notificationDataservice.getNotification(email).subscribe(res => {
+    let notificationMap: Map<string, number> = new Map();
+
+    res.forEach(el => {
+      const sender = el.senderEmail; // make sure this matches your backend field
+      if (!notificationMap.has(sender)) {
+        notificationMap.set(sender, 1);
+      } else {
+        let value = notificationMap.get(sender) || 0;
+        notificationMap.set(sender, value + 1);
+      }
+    });
+
+    console.log("notificationMap", notificationMap);
+
+    notificationMap.forEach((value, key) => {
+      const contact = this.contacts.find(c => c.email === key);
+      if (contact) {
+        contact['unread'] = value;
+      }
+    });
+  });
+}
+
+
 
   ngOnInit() {
 
@@ -91,10 +123,9 @@ backendurl =  'http://localhost:8080'
     if(useremail)
     this.userName = useremail ;
    this.getAllUsers()
-
-    
-    this.selectedContact = this.contacts[0];
-     this.chatService.joinRoom("ABC");
+this.getMe()
+   
+//this.chatService.joinRoom("ABC");
     this.lisenerMessage();
   }
 
@@ -105,9 +136,25 @@ backendurl =  'http://localhost:8080'
       console.log("all users", res)
       res.forEach((element: { id: number; name: string;email :string, avatarUrl: string; }) => {
         
-        let newconatc =new Contact(element.id,element.name,element.email,element.avatarUrl,"Online","lol",2)
+        let newconatc =new Contact(element.id,element.name,element.email,element.avatarUrl,"Online","",0)
         this.contacts.push(newconatc)
       });
+       
+    this.selectedContact = this.contacts.find(c=> c.email == this.userName);
+    this.selectContact( this.selectedContact);
+    this.setNotification(this.userName)
+    })
+  }
+
+  getMe()
+  {
+
+    this.userService.getUserByEmail(  this.userName ).subscribe(info =>{
+      console.log("info info info",info)
+      this.myName = info.name
+      this.myImage = info.avatarUrl
+      console.log("my image",this.myImage)
+
     })
   }
 
@@ -143,6 +190,7 @@ if(this.getMyId()!=null){
      console.log("el grande americano",res)
         this.selectedContact = contact;
         this.conversationId =res.id ;
+          this.chatService.joinRoom(res.id);
         this.getMessageConversation(res.id)
 
 
@@ -159,24 +207,7 @@ if(this.getMyId()!=null){
  
   }
 
-  // sendlocalMessage() {
-  //   if (this.newMessage.trim()) {
-  //     this.messages.push({
-  //       text: this.newMessage,
-  //       user: 'true',
-  //       time: new Date()
-  //     });
-  //     console.log("send message local",this.messages)
-  //     this.newMessage = '';
-  //     setTimeout(() => {
-  //       this.messages.push({
-  //         text: "hiiiiiiiiiiiiiii",
-  //         user: 'false',
-  //         time: new Date()
-  //       });
-  //     }, 1000);
-  //   }
-  // }
+ 
 
 
 
@@ -224,17 +255,19 @@ if(this.getMyId()!=null){
         receiverEmail: this.selectedContact.email
 
     } as  ChatMessage
-    this.chatService.sendMessage("ABC", chatMessage);
-     this.messages.push({
+  
+     this.chatService.sendMessage( this.conversationId, chatMessage);
+    //  this.messages.push({
      
-       user: this.userName,
-         content: this.newMessage,
-       timestamp: new Date().toString(),
-       file_Url: '',
-       conversationID: '',
-       receiverEmail:'',
-       fileType: 'TEXT'
-     });
+    //    user: this.userName,
+    //      content: this.newMessage,
+    //    timestamp: new Date().toString(),
+    //    file_Url: '',
+    //    conversationID: '',
+    //    receiverEmail:'',
+    //    fileType: 'TEXT'
+    //  });
+     
            console.log("send message lo5ra",this.messages)
     this.newMessage = '';
   
@@ -248,13 +281,16 @@ if(this.getMyId()!=null){
    
   lisenerMessage() {
     this.chatService.getMessageSubject().subscribe((messages: any) => {
-      console.log("ena el bandoura el 7amra",messages)
+    
   
 
-       this.messages = messages.map((item: any)=> ({
-        ...item,
+      //  this.messages = messages.map((item: any)=> ({
+      //   ...item,
      
-      }))
+      // }))
+      //  this.messages = [...this.messages, messages];
+
+      this.messages = [...this.messages, ...messages.map((item: any) => ({ ...item }))];
     });
   }
   
@@ -265,7 +301,7 @@ getMessageConversation(id:any)
 {
   this.conversationservice.getMessagesByConversation(id).subscribe(res=>{
 
-    console.log("fanta fata fanat",res)
+  
   
         this.messages = res.map((item: any)=> ({
         ...item,
@@ -295,7 +331,7 @@ else return null;
 }
 
 uploadFile(file: File) {
- console.log("batiiiiista")
+
 
  this.fileservice.saveFile(file).subscribe(res=>{
 let fileType= this.detectFileType(res.fileUrl)
@@ -312,7 +348,7 @@ console.log("el file url",res.fileUrl,"elfile type")
 
     } as  ChatMessage
 
-      this.chatService.sendMessage("ABC", chatMessage);
+      this.chatService.sendMessage(this.conversationId, chatMessage);
       this.messages.push(chatMessage)
  })
 

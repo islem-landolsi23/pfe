@@ -1,6 +1,6 @@
 
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, Input, OnChanges, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { PrimeIcons, MenuItem } from 'primeng/api';
 import { UserService } from '../service/user.service';
@@ -12,7 +12,7 @@ import { TaskserviceService } from '../service/taskservice.service';
   templateUrl: './jira-ticket-card.component.html',
   styleUrl: './jira-ticket-card.component.scss'
 })
-export class JiraTicketCardComponent implements OnInit{
+export class JiraTicketCardComponent implements OnInit , OnChanges {
 
 
 
@@ -52,11 +52,49 @@ tickets: any[] = [];
       dueDate: ["", Validators.required]
     });
   }
+  ngOnChanges(): void {
+ // this.fillTable()
+  }
 
   ngOnInit() {
-    this.loadMockData();
+    //this.loadMockData();
+this.fillTable()
+ 
     this.applyFilters();
   }
+
+
+fillTable()
+{console.log(this.sprintId)
+  if(this.sprintId){
+ this.taskservice.getBySprint(this.sprintId).subscribe(res=>{
+
+    console.log("hello", res)
+    res.forEach(el =>{
+      
+      
+    let task: any = {};
+      task.id =el.id
+      task.title =el.title
+      task.status =el.status
+      task.priority =el.priority
+      task.dueDate=el.dueDate
+      task.description =el.description
+      task.createdAt =null
+     let user = this.allUsers.find(u=> u.id == el.assignedUserId)
+       // console.log("alllllllllllllllllllllllllllllllllllllllllll",this.allUsers.find(u=> u.id ==el.id))
+     console.log("***********************************************",user)
+       task.assignedTo =user.name
+      this.tickets.push(task)})
+    console.log("tikiwet",this.tickets)
+       this.applyFilters();
+  })
+
+}
+
+}
+
+
   openTicketModal() {
     this.editMode = false;
     this.currentTicket = null;
@@ -89,6 +127,7 @@ tickets: any[] = [];
 
   applyFilters() {
     let filtered = [...this.tickets];
+    console.log("filtred wildred",filtered)
 
     if (this.searchQuery) {
       const query = this.searchQuery.toLowerCase();

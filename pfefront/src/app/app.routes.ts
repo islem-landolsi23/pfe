@@ -15,6 +15,7 @@ import { MultipleCallComponent } from './multiple-call/multiple-call.component';
 import { MeetingroomComponent } from './meetingroom/meetingroom.component';
 import { AudiocallComponent } from './audiocall/audiocall.component';
 import { JiraTicketCardComponent } from './jira-ticket-card/jira-ticket-card.component';
+import { TicketDetailsComponent } from './ticket-details/ticket-details.component';
 
 
 
@@ -39,7 +40,7 @@ export const routes: Routes = [
                      { path: 'multiple', component: MultipleCallComponent },
                       { path: 'meeting/:roomId', component: MeetingroomComponent },
                        { path: 'call', component: AudiocallComponent },
-
+{ path: 'ticketDetails', component: TicketDetailsComponent },
                        { path: 'test', component: JiraTicketCardComponent }
 
 

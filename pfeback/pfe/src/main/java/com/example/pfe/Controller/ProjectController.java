@@ -24,12 +24,12 @@ public class ProjectController {
 
 
     @PostMapping("/add")
-    public Project addProject(@RequestBody Project project) {
-        return projectService.creatProject(project);
+    public ProjectDto addProject(@RequestBody Project project) {
+        return mapper.toDto(projectService.creatProject(project));
     }
 
     @GetMapping("/getAll")
-    public List<ProjectDto> addProject() {
+    public List<ProjectDto> getProject() {
         return projectService.getProjectList().stream().map(p->mapper.toDto(p)).toList();
     }
 
@@ -41,7 +41,7 @@ public class ProjectController {
 
 
     @PostMapping("/addSprints")
-    public Project addSprints(@RequestBody Project p)
+    public ProjectDto addSprints(@RequestBody Project p)
     {
         Project project =projectService.getProjecrById(p.getId()) ;
 
@@ -51,6 +51,6 @@ public class ProjectController {
 
         });
         project.setSprints(sprintList);
-      return  projectService.updateProject(project) ;
+      return mapper.toDto(projectService.updateProject(project))  ;
     }
 }
