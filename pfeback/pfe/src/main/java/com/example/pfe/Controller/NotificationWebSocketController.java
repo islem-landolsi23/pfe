@@ -36,7 +36,7 @@ public class NotificationWebSocketController {
     // Client sends notification to /app/notify/{receiverEmail}
     @MessageMapping("/notify/{receiverEmail}")
     @SendTo("/queue/{receiverEmail}")
-    public List<NotificationDTO> sendNotification(@DestinationVariable String receiverEmail, NotificationDTO notificationDTO) {
+    public NotificationDTO sendNotification(@DestinationVariable String receiverEmail, NotificationDTO notificationDTO) {
         // Find receiver
         User receiver = userRepository.findByEmail(receiverEmail)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -62,14 +62,8 @@ public class NotificationWebSocketController {
 //                   saved.getMessage(), receiverEmail, saved.getTimestamp(),
 //                   sender.getEmail(),notificationDTO.getType() ,notificationDTO.getTaskUrl()) ;
 
-        List<NotificationDTO> listNotofication =  notificationService.getUnreadNotifications(notificationDTO.getReceiverEmail()).stream().map(
-                notification -> mapper.toDTO(notification)
-        ).toList();
 
-        listNotofication.forEach( n->{
-            System.out.println(n.toString());
-        });
-        return  listNotofication;
+        return  mapper.toDTO(saved);
 
 
 

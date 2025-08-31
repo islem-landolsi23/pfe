@@ -11,12 +11,19 @@ export class ChatService {
   private stompClient: any
   private messageSubject: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
     private notificationsSubject = new BehaviorSubject<NotificationDTO[]>([]);
+      private activeChatUserSource = new BehaviorSubject<string | null>(null);
+
+
+        // Observable for subscribers (navbar, notification system, etc.)
+  activeChatUser$ = this.activeChatUserSource.asObservable();
   constructor() { 
 
        this. initConnenctionSocket() 
   }
 
-
+  setActiveChatUser(userEmail: string | null) {
+    this.activeChatUserSource.next(userEmail);
+  }
 
 
   
@@ -60,6 +67,7 @@ joinRoom(roomId: string) {
     const currentMessage = this.messageSubject.getValue();
     currentMessage.push(messageContent);
     this.messageSubject.next(currentMessage);
+  
   });
 }
 
@@ -113,31 +121,14 @@ joinRoom(roomId: string) {
 
 
 
-  // Subscribe for this user only
-// subscribeToNotifications(userEmail: string) {
-//   console.log("notificatino recived email",userEmail)
-//   if (!this.stompClient || !this.stompClient.connected) {
-//     console.error("WebSocket not connected yet");
-//     return;
-//   }
-// //  /queue/notifications/${userEmail}
-//   this.stompClient.subscribe(`/user/queue/notifications`, (message: any) => {
-//     const notification: NotificationDTO = JSON.parse(message.body);
-//     const current = this.notificationsSubject.getValue();
-//     this.notificationsSubject.next([...current, notification]);
-//     console.log("Notification received for user:", userEmail, notification);
-//   });
-// }
+
 
 
   getNotifications(): Observable<NotificationDTO[]> {
     return this.notificationsSubject.asObservable();
   }
 
-  // Optional: send a notification (frontend-initiated)
-  // sendNotification(receiverEmail: string, notification: NotificationDTO) {
-  //   this.stompClient.send(`/app/notify/${receiverEmail}`, {}, JSON.stringify(notification));
-  // }
+ 
 
 
 

@@ -17,6 +17,7 @@ import { Subscription } from 'rxjs';
 import { NotificationService } from './service/notification.service';
 import { FormsModule } from '@angular/forms';
 import { ChatService } from './service/chat.service';
+import { NotificationdataService } from './service/notificationdata.service';
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -52,8 +53,8 @@ unreadNotificationsCount = 0;
 unreadMessagesCount = 0;
   notificationCount: number = 0; // 🔹 track badge
 constructor(private authService: AuthService,private router: Router,private callSvc: CallService,
-  @Inject(PLATFORM_ID) private platformId: Object, private notificationService: NotificationService,
-  private chatservice :ChatService
+   private notificationService: NotificationService,
+  private chatservice :ChatService , private notificationdataservice : NotificationdataService
 ){
 
  
@@ -65,7 +66,7 @@ constructor(private authService: AuthService,private router: Router,private call
 
     const email = localStorage.getItem("email")
     if(email){
-     
+   
       this.currentUser = email
         this.ringtone = new Audio("ringtone.mp3");
        this.callSvc.listenToCalls(email).subscribe(async (msg: any) => {
@@ -120,16 +121,38 @@ constructor(private authService: AuthService,private router: Router,private call
     
   }
 
+  initBadge(email :any,notification :any)
+  {
+    this.notificationdataservice.getNotification(email)
+    .subscribe(res =>{
+        this.chatservice.activeChatUser$.subscribe(activeUserEmail =>{
+
+          if(activeUserEmail){
+            this.unreadMessagesCount =res.filter( notifItem => notifItem.senderEmail !=activeUserEmail ).length
+          
+            if(notification.length!=0){
+              console.log("ena li fou9 job is done boss",notification)
+          this.notificationdataservice.markMessageAsread(notification).subscribe(()=>{
+            console.log("job is done bosse")
+          })
+          }}
+      else 
+        this.unreadMessagesCount =res.length
+         const notifItem = this.items.find(i => i.label === 'Messages');
+           notifItem.badge =  this.unreadMessagesCount.toString()
+        })
+   
+    })
+  }
+
   ngOnInit() {
        this.setNavbarElement()
+
+   
  
    // 🔹 Subscribe to notification events
-    this.subscription = this.chatservice.getNotifications().subscribe(( notifications) => {
-      console.log("listenint to notification")
-  
-      this.updateBadge(notifications);
-    });
-  
+   
+
   this.generatedString = Math.random().toString(36).substring(2, 10).toUpperCase();
     this.notificationService.call$.subscribe(res=>{
      
@@ -144,11 +167,20 @@ constructor(private authService: AuthService,private router: Router,private call
       const email =localStorage.getItem("email")
      if(email)
      {
+   //   this.initBadge(email)
+
+       this.subscription = this.chatservice.getNotifications().subscribe(( notifications) => {
+      console.log("listenint to notification")
+     
+  
+     // this.updateBadge(notifications);
+      this.initBadge(email ,notifications)
+    });
       this.startlistening()
      }
     })
    
-  
+ 
   }
 
 
@@ -216,7 +248,7 @@ constructor(private authService: AuthService,private router: Router,private call
 
   loginwithGit()
   {
-     // window.location.href = 'http://localhost:8080/oauth2/authorization/github';
+ 
      this.authService.loginWithGitHub()
   }
 
@@ -269,13 +301,14 @@ joinMeeting(){
 
 
   updateBadge(notifications :any[]) {
-    const notifItem = this.items.find(i => i.label === 'Messages');
-    if (notifItem) {
+     const notifItem = this.items.find(i => i.label === 'Messages');
+     if (notifItem) {
           this.notificationCount++;
+          this.unreadMessagesCount ++ ;
           let nbr = notifications.length
-     // notifItem.badge = this.notificationCount > 0 ? this.notificationCount.toString() : undefined;
-        notifItem.badge = this.notificationCount > 0 ? nbr.toString() : undefined;
-    }
+      notifItem.badge = this.notificationCount > 0 ? this.notificationCount.toString() : undefined;
+        notifItem.badge = this.unreadMessagesCount > 0 ? nbr.toString() : undefined;
+     }
   }
   setCurrentEmail()
   {}

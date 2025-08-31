@@ -94,7 +94,10 @@ console.log(this.message)
     this.userService.getUserByEmail(   this.userName  ).subscribe(info =>{
      // console.log("info info info",info)
       this.myName = info.name
+      if(this.isGitAvatar(info.avatar_url))
       this.myImage = info.avatarUrl
+    else
+       this.myImage ="http://localhost:8080"+ info.avatarUrl
     //  console.log("my image",this.myImage)
 
     })
@@ -125,6 +128,13 @@ goTodetails(p :any){
     
 
     }
+
+      isGitAvatar(url: string): boolean {
+    console.log("ena fil is ",url)
+  if (!url) return false; // handle empty or null
+  // Check if the URL contains a GitHub domain (or other git provider)
+  return url.includes('githubusercontent.com') || url.includes('gitlab.com') || url.includes('bitbucket.org');
+}
 
 
 changeStatus(status : any)

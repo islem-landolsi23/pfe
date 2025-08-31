@@ -37,7 +37,6 @@ public class User {
     private String avatarUrl;
 
     @OneToMany(mappedBy = "assignedUser")
-    @JsonManagedReference
     private List<Task> assignedTasks = new ArrayList<>();
 
     @OneToMany(mappedBy = "author")

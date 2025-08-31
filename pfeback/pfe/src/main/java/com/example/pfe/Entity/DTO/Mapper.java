@@ -82,7 +82,7 @@ public class Mapper {
             return null;
         }
 
-        return new NotificationDTO(
+        NotificationDTO newDto = new NotificationDTO(
                 notification.getTitle(),
                 notification.getMessage(),
                 notification.getReceiver() != null ? notification.getReceiver().getEmail() : null,
@@ -91,5 +91,8 @@ public class Mapper {
                 notification.getType(),
                 notification.getTaskUrl()
         );
+
+        newDto.setId(notification.getId());
+        return newDto ;
     }
 }

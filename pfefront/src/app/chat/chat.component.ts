@@ -1,5 +1,5 @@
 
-import { Component, OnInit, ViewChild, ElementRef, AfterViewChecked, signal } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewChecked, signal, OnDestroy } from '@angular/core';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { PopoverModule } from 'primeng/popover';
@@ -21,13 +21,14 @@ import { ListboxModule } from 'primeng/listbox';
 
 import { error } from 'console';
 import { ChatMessage } from '../Entities/ChatMessage';
-import { ChatService } from '../service/chat.service';
+import { ChatService, NotificationDTO } from '../service/chat.service';
 import { ConversationService } from '../service/conversation.service';
 import { FileService } from '../service/file.service';
 import { UserService } from '../service/user.service';
 import { NotificationService } from '../service/notification.service';
 import { CallService } from '../service/call.service';
 import { NotificationdataService } from '../service/notificationdata.service';
+import { Subscription } from 'rxjs';
 
 
 
@@ -41,7 +42,7 @@ import { NotificationdataService } from '../service/notificationdata.service';
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss'
 })
-export class ChatComponent  implements OnInit, AfterViewChecked  {
+export class ChatComponent  implements OnInit, AfterViewChecked ,OnDestroy {
 
 
   outgoingCall = signal<any | null>(null);
@@ -92,7 +93,7 @@ setNotification(email: any) {
     let notificationMap: Map<string, number> = new Map();
 
     res.forEach(el => {
-      const sender = el.senderEmail; // make sure this matches your backend field
+      const sender = el.senderEmail; 
       if (!notificationMap.has(sender)) {
         notificationMap.set(sender, 1);
       } else {
@@ -104,7 +105,7 @@ setNotification(email: any) {
     console.log("notificationMap", notificationMap);
 
     notificationMap.forEach((value, key) => {
-      const contact = this.contacts.find(c => c.email === key);
+      const contact = this.contacts.find(c => c.email == key && c.email !== this.selectedContact.email);
       if (contact) {
         contact['unread'] = value;
       }
@@ -112,7 +113,7 @@ setNotification(email: any) {
   });
 }
 
-
+  private subscription !: Subscription;
 
   ngOnInit() {
 
@@ -127,6 +128,12 @@ this.getMe()
    
 //this.chatService.joinRoom("ABC");
     this.lisenerMessage();
+
+     this.subscription = this.chatService.getNotifications().subscribe(( notifications)=>{
+
+       console.log("listenint to notification")
+       this.setNotification(this.userName)
+     })
   }
 
 
@@ -191,7 +198,12 @@ if(this.getMyId()!=null){
         this.selectedContact = contact;
         this.conversationId =res.id ;
           this.chatService.joinRoom(res.id);
-        this.getMessageConversation(res.id)
+        this.getMessageConversation(res.id);
+        this.markasRead(contact.email,this.userName)
+       
+  this.chatService.setActiveChatUser(contact.email);
+
+       
 
 
 
@@ -282,15 +294,11 @@ if(this.getMyId()!=null){
   lisenerMessage() {
     this.chatService.getMessageSubject().subscribe((messages: any) => {
     
-  
 
-      //  this.messages = messages.map((item: any)=> ({
-      //   ...item,
-     
-      // }))
-      //  this.messages = [...this.messages, messages];
 
       this.messages = [...this.messages, ...messages.map((item: any) => ({ ...item }))];
+
+    
     });
   }
   
@@ -372,6 +380,47 @@ private detectFileType(fileName: string): string {
   return 'file';
 }
 
+
+
+markasRead(senderEmail :any,receiverEmail :any)
+{
+let notificatinoDto :NotificationDTO ={
+    title: "delete",
+  message: "delete",
+  receiverEmail: receiverEmail,
+  senderEmail : senderEmail ,
+  timestamp: "no one care",
+  type :"still dont care" ,
+  taskurl : null
+}
+
+this.notificationDataservice.markListAsread(notificatinoDto).subscribe(res=>{
+  console.log("done") 
+
+    const contact = this.contacts.find(c => c.email === senderEmail);
+      if (contact) {
+        contact['unread'] = 0;
+      }
+})
+}
+
+getImagePath(image:any)
+{
+if(this.isGitAvatar(image))
+  return image ;
+else
+  return this.backendurl +image
+}
+      isGitAvatar(url: string): boolean {
+   
+  if (!url) return false; // handle empty or null
+  // Check if the URL contains a GitHub domain (or other git provider)
+  return url.includes('githubusercontent.com') || url.includes('gitlab.com') || url.includes('bitbucket.org');
+}
+
+ngOnDestroy() {
+  this.chatService.setActiveChatUser(null);
+}
 
 }
 

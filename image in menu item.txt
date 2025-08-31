@@ -1,0 +1,64 @@
+<p-menubar [model]="items">
+    <ng-template let-item pTemplate="item">
+        <a [routerLink]="item.routerLink" *ngIf="!item.separator" class="p-menuitem-link">
+            <!-- Show image if imageUrl exists -->
+            <img *ngIf="item.imageUrl" [src]="item.imageUrl" class="menu-img" />
+            <!-- Or fallback to icon -->
+            <i *ngIf="item.icon && !item.imageUrl" [class]="item.icon"></i>
+            <span>{{ item.label }}</span>
+        </a>
+    </ng-template>
+</p-menubar>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+items: MenuItem[] | undefined;
+
+ngOnInit() {
+    this.items = [
+        {
+            label: 'Home',
+            icon: 'pi pi-home'
+        },
+        {
+            label: 'Custom Image',
+            // Custom property to pass to template
+            imageUrl: 'assets/my-image.png',
+            styleClass: 'custom-image-item'
+        },
+        {
+            label: 'Contact',
+            icon: 'pi pi-envelope'
+        }
+    ];
+}
+
+
+
+
+
+
+
+
+
+.menu-img {
+    width: 16px;
+    height: 16px;
+    margin-right: 0.5rem;
+    vertical-align: middle;
+}

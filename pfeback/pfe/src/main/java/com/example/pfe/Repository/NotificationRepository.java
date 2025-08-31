@@ -8,4 +8,11 @@ import java.util.List;
 public interface NotificationRepository  extends JpaRepository<Notification, Long> {
     List<Notification> findByReceiverEmailAndReadFalse(String email);
     List<Notification> findBySenderEmailAndReadFalse(String email);
+    List<Notification> findByReceiverEmailAndReadFalseAndType(String receiverEmail, String type);
+
+    List<Notification> findByReceiverEmailAndSenderEmailAndReadFalseAndType(
+            String receiverEmail,
+            String senderEmail,
+            String type
+    );
 }

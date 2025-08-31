@@ -41,4 +41,16 @@ public class NotificationService {
 
     }
 
+
+    public List<Notification> turnAllARead(String receiverEmail ,  String senderEmail) {
+
+
+        String type ="chat Notification";
+     return      notificationRepository.findByReceiverEmailAndSenderEmailAndReadFalseAndType(
+                  receiverEmail,
+                  senderEmail,
+                  type) ;
+
+    }
+
 }

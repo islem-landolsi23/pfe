@@ -56,7 +56,27 @@ public class UserController {
     @PostMapping("/addUser")
     public ResponseEntity<UserDto> addUser(@RequestBody User user)
     {
-        return ResponseEntity.ok(mapper.toDto(userRepository.save(user)));
+        if (userRepository.findByEmail(user.getEmail()).isPresent())
+        {
+            User user1 =userRepository.findByEmail(user.getEmail()).get();
+            user1.setName(user.getName());
+            user1.setPassword(user.getPassword());
+            user1.setAvatarUrl(user.getAvatarUrl());
+            return ResponseEntity.ok(mapper.toDto(userRepository.save(user1)));
+        } else{
+
+            User user1 = new User();
+            user1.setName(user.getName());
+            user1.setPassword(user.getPassword());
+            user1.setAvatarUrl(user.getAvatarUrl());
+            user1.setEmail(user.getEmail());
+            user1.setComments(null);
+            user1.setAssignedTasks(null);
+            user1.setGithubId(user.getGithubId());
+            user1.setConversations(null);
+            return ResponseEntity.ok(mapper.toDto(userRepository.save(user1)));
+        }
+
     }
 
     @GetMapping("/checkUser/{email}")
@@ -87,5 +107,25 @@ public class UserController {
                 .map(u ->mapper.toDto(u)).toList());
     }
 
+
+    @PostMapping("/saveImageUser")
+    public ResponseEntity<UserDto> saveuserImage(@RequestBody User user)
+    {
+        System.out.println("ena el user email");
+        if (userRepository.findByEmail(user.getEmail()).isPresent())
+        {
+            System.out.println("ena fil if ");
+            User user1 = userRepository.findByEmail(user.getEmail()).get() ;
+            user1.setAvatarUrl(user.getAvatarUrl());
+            return ResponseEntity.ok(mapper.toDto(userRepository.save(user1)));
+        }else {
+            System.out.println("ena fil else ");
+           User user1 = new User();
+           user1.setEmail(user.getEmail());
+
+            user1.setAvatarUrl(user.getAvatarUrl());
+            return ResponseEntity.ok(mapper.toDto(userRepository.save(user1)));
+        }
+    }
 
 }
