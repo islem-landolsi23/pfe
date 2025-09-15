@@ -15,6 +15,7 @@ import { DatePickerModule } from 'primeng/datepicker';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FluidModule } from 'primeng/fluid';
 
+import { Dialog, DialogModule } from 'primeng/dialog';
 import { log } from 'console';
 import { HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
@@ -24,7 +25,7 @@ import { ProjectService } from '../service/project.service';
   selector: 'app-project',
   standalone: true,
   imports: [ TableModule, TagModule,ButtonModule,InputTextModule ,DatePickerModule,FluidModule,TextareaModule,
-     IconFieldModule, InputTextModule,
+     IconFieldModule, InputTextModule,Dialog,
       InputIconModule, MultiSelectModule, SelectModule, FormsModule,DrawerModule,Avatar,ReactiveFormsModule,
       CommonModule],
   templateUrl: './project.component.html',
@@ -36,51 +37,12 @@ export class ProjectComponent implements OnInit{
 searchValue :any
   visible: boolean = false;
 
+ visibledelete: boolean = false;
 
-   customers = [
-    {
-        "name": "James Butt",
-        "country": "Algeria",
-        "contact": "Benton, John B Jr",
-        "associate": "Ioni Bowcher"
-    },
-    {
-        "name": "Josephine Darakjy",
-        "country": "Egypt",
-        "contact": "Chanay, Jeffrey A Esq",
-        "associate": "Amy Elsner"
-    },
-    {
-        "name": "Art Venere",
-        "country": "Panama",
-        "contact": "Chemel, James L Cpa",
-        "associate": "Asiya Javayant"
-    },
-    {
-        "name": "Lenna Paprocki",
-        "country": "Slovenia",
-        "contact": "Feltz Printing Service",
-        "associate": "Xuxue Feng"
-    },
-    {
-        "name": "Donette Foller",
-        "country": "South Africa",
-        "contact": "Printing Dimensions",
-        "associate": "Asiya Javayant"
-    },
-     {
-        "name": "Donette Foller",
-        "country": "South Africa",
-        "contact": "Printing Dimensions",
-        "associate": "Asiya Javayant"
-    },
-     {
-        "name": "Donette Foller",
-        "country": "South Africa",
-        "contact": "Printing Dimensions",
-        "associate": "Asiya Javayant"
+    showdeletDialog() {
+        this.visibledelete = true;
     }
-]
+  
  projects: any[] = [];
 
 
@@ -107,7 +69,7 @@ this.projectForm = this.fb.group({
      getdataList()
      {
         this. projectservice.getListProject().subscribe(res=>{
-      console.log(res);
+    
       this.projects=res
       
      })
@@ -143,10 +105,10 @@ onGlobalFilter(event: Event, table: Table) {
     saveProject()
     {
  
-      console.log(this.projectForm.value)
+  
 this.projectservice.addProject(this.projectForm.value).subscribe(
   res=>{
-    console.log("hello ",res)
+   
     this.getdataList();
     this.visible=false
 
@@ -159,5 +121,8 @@ this.projectservice.addProject(this.projectForm.value).subscribe(
     
 
     }
+
+
+    
    
 }

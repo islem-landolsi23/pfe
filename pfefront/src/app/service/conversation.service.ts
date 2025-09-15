@@ -38,4 +38,28 @@ export class ConversationService {
   
         return this.http.get<any>("http://localhost:8080/api/conversations/getMessages/"+conversationID) ;
   }
+
+    creatGroupe(participants :any[],createdById:any, title:any):Observable<any>{
+const body = { participants };
+     const params = new HttpParams()
+      .set('createdById', createdById)
+      .set('title', title)
+      .set('isGroup',true);
+    
+  
+        return this.http.post<any>("http://localhost:8080/api/conversations/createGroup",body,{params}) ;
+  }
+
+
+  getByGroup(userId :any)
+  {
+
+      return this.http.get<any>("http://localhost:8080/api/conversations/groups/"+userId) ;
+  }
+
+    getById(convid :any)
+  {
+
+      return this.http.get<any>("http://localhost:8080/api/conversations/getbyId/"+convid) ;
+  }
 }

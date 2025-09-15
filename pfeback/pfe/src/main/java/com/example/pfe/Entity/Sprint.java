@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString(exclude = {"project"}) // empêche la boucle infinie
 public class Sprint {
 
     @Id
@@ -24,10 +26,10 @@ public class Sprint {
 
     @ManyToOne
     @JoinColumn(name = "project_id")
-    @JsonBackReference
     private Project project;
 
-    @OneToMany(mappedBy = "sprint", cascade = CascadeType.ALL)
+    @OneToMany( cascade = CascadeType.ALL)
+    @JoinColumn(name = "sprint_id") // unidirectional join
     private List<Task> tasks;
 
     private OffsetDateTime startDate;

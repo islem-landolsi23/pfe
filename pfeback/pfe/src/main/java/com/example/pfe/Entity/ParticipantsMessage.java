@@ -9,7 +9,9 @@ import java.util.Set;
 public class ParticipantsMessage {
 
     private Set<String> participants;
-
+    public ParticipantsMessage() {
+        // no-args constructor needed for Jackson
+    }
     public ParticipantsMessage(Set<String> participants) {
         this.participants = participants;
     }

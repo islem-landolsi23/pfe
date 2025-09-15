@@ -1,10 +1,12 @@
 package com.example.pfe.Controller;
 
 
+import com.example.pfe.Entity.Conversation;
 import com.example.pfe.Entity.DTO.Mapper;
 import com.example.pfe.Entity.DTO.NotificationDTO;
 import com.example.pfe.Entity.Notification;
 import com.example.pfe.Entity.User;
+import com.example.pfe.Repository.ConversationRepository;
 import com.example.pfe.Repository.UserRepository;
 import com.example.pfe.Service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +26,8 @@ public class NotificationWebSocketController {
     private final SimpMessagingTemplate messagingTemplate;
     private final NotificationService notificationService;
     private final UserRepository userRepository;
-
+@Autowired
+private ConversationRepository conversationRepository ;
     public NotificationWebSocketController(SimpMessagingTemplate messagingTemplate,
                                            NotificationService notificationService,
                                            UserRepository userRepository) {
@@ -38,33 +41,55 @@ public class NotificationWebSocketController {
     @SendTo("/queue/{receiverEmail}")
     public NotificationDTO sendNotification(@DestinationVariable String receiverEmail, NotificationDTO notificationDTO) {
         // Find receiver
-        User receiver = userRepository.findByEmail(receiverEmail)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+       // if(notificationDTO.getIsGroup()== false) {
+            User receiver = userRepository.findByEmail(receiverEmail)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
 
-        User sender = null;
-        if (notificationDTO.getSenderEmail() != null) {
-            sender = userRepository.findByEmail(notificationDTO.getSenderEmail()).orElse(null);
-        }
+            User sender = null;
+            if (notificationDTO.getSenderEmail() != null) {
+                if(notificationDTO.getIsGroup() == false)
+                sender = userRepository.findByEmail(notificationDTO.getSenderEmail()).orElse(null);
 
-        // Save in DB
-        Notification saved = notificationService.createNotification(
-                notificationDTO.getTitle(),
-                notificationDTO.getMessage(),
-                receiver,
-                sender,
-                notificationDTO.getType() ,
-                notificationDTO.getTaskUrl()
-        );
+            }
 
-        // old
+            // Save in DB
+            Notification saved = notificationService.createNotification(
+                    notificationDTO.getTitle(),
+                    notificationDTO.getMessage(),
+                    receiver,
+                    sender,
+                    notificationDTO.getType(),
+                    notificationDTO.getTaskUrl()
+            );
+
+        System.out.println("ena fil web li bech netsayba"+saved);
+
+            // old
 
 //           return new NotificationDTO(saved.getTitle(),
 //                   saved.getMessage(), receiverEmail, saved.getTimestamp(),
 //                   sender.getEmail(),notificationDTO.getType() ,notificationDTO.getTaskUrl()) ;
 
 
-        return  mapper.toDTO(saved);
-
+            return mapper.toDTO(saved);
+ //       }
+        //////////   send to groupe members
+//        else{
+//            Conversation conversation = conversationRepository.findById(notificationDTO.getId()).orElse(null);
+//
+//          User  sender = userRepository.findByEmail(notificationDTO.getSenderEmail()).orElse(null);
+//            conversation.getParticipants().forEach(user -> {
+//                Notification savedNotification = notificationService.createNotification(
+//                    notificationDTO.getTitle(),
+//                    notificationDTO.getMessage(),
+//                    user,
+//                    sender,
+//                    notificationDTO.getType(),
+//                    notificationDTO.getTaskUrl()
+//            );
+//            });
+//            return notificationDTO ;
+//        }
 
 
 

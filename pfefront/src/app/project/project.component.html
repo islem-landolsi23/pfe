@@ -102,20 +102,41 @@
         <ng-template #header>
             <tr>
                 <th style="width:25%">Name</th>
-                <th style="width:25%">discription</th>
-                <th style="width:25%">start date</th>
-                <th style="width:25%">end date</th>
+                <th style="width:25%">Discription</th>
+                <th style="width:25%">Start date</th>
+                <th style="width:25%">End date</th>
             </tr>
         </ng-template>
         <ng-template #body let-p>
-            <tr   (click)="goTodetails(p)">
+            <tr   (dblclick)="goTodetails(p)">
                 <td>{{ p.name }}</td>
                 <td>{{ p.description }}</td>
-                <td>{{ p.startDate }}</td>
-                <td>{{ p.endDate }}</td>
+                <td>{{ p.startDate |date:'shortDate'}}</td>
+                <td>{{ p.endDate |date:'shortDate' }}</td>
+                 <td> <button (click)="showdeletDialog()">
+                  <i class="pi pi-trash " style="color: red;"></i>
+                 </button></td>
             </tr>
         </ng-template>
     </p-table>
 </div>
 
 </div> </div>
+
+
+
+<p-dialog header="Edit Profile" [modal]="true" [(visible)]="visibledelete" [style]="{ width: '25rem' }">
+    <span class="p-text-secondary block mb-8">Update your information.</span>
+    <div class="flex items-center gap-4 mb-4">
+        <label for="username" class="font-semibold w-24">Username</label>
+        <input pInputText id="username" class="flex-auto" autocomplete="off" />
+    </div>
+    <div class="flex items-center gap-4 mb-8">
+        <label for="email" class="font-semibold w-24">Email</label>
+        <input pInputText id="email" class="flex-auto" autocomplete="off" />
+    </div>
+    <div class="flex justify-end gap-2">
+        <p-button label="Cancel" severity="secondary" (click)="visibledelete = false" />
+        <p-button label="Save" (click)="visibledelete = false" />
+    </div>
+</p-dialog>

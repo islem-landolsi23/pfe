@@ -19,7 +19,7 @@ constructor( private callservice :CallService){
 }
 
   ngOnInit() {
-        console.log("en jiiiit")
+      
   }
   ngOnChanges(changes: SimpleChanges) {
   
@@ -27,9 +27,9 @@ constructor( private callservice :CallService){
     if(currentEmail)
 
    {
-    console.log("ena fil changes")
+    
      this.callservice.listenToCalls(currentEmail).subscribe(res=>{
-    console.log(res)
+    
 
     })
    }

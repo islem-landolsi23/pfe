@@ -87,17 +87,16 @@
                         <p-fluid>
                             <p-floatLabel>
 
-                                <p-password   formControlName="password" [feedback]="false"
-                                    [toggleMask]="true" />
+                                <p-password formControlName="password" [feedback]="false" [toggleMask]="true" />
                                 <label for="password">Password</label>
                             </p-floatLabel>
                         </p-fluid>
 
 
                     </div>
-                    </form>
+                </form>
             </p-panel>
-            <p-panel [toggleable]="true" class="w-full h-full">
+            <!-- <p-panel [toggleable]="true" class="w-full h-full">
                 <ng-template #header>
                     <div class="flex align-items-center gap-3">
                         Projects
@@ -107,20 +106,23 @@
                 <ng-template #icons>
                     <p-button icon="pi pi-cog" severity="secondary" rounded text />
                 </ng-template>
-                <!--                          seconde panel                           -->
+              
                 <label for=""> Project : </label> porjeycmo
                 <p-divider />
                 <p>
                     <label for=""> Project :</label> lolo wow
                 </p>
                 <p-divider />
-                <label for=""> Project :</label> kiki gio
+                <label for=""> Project :</label> kiki gio 
 
-            </p-panel>
+            </p-panel>-->
         </div>
         <br>
-        <button pButton pRipple label="Save" class="p-button-success" (click)="saveUser()">
-        </button>
+        <div class="flex justify-end">
+            <button pButton pRipple label="Save" class="p-button-success" (click)="saveUser()">
+            </button>
+        </div>
+
     </p-card>
 </div>
 
@@ -140,10 +142,11 @@
         <div class="flex flex-col items-center">
             <div class="relative w-48 h-48 mb-4" (dragover)="onDragOver($event)" (drop)="onDrop($event)"
                 (click)="fileInput.click()">
-                <div
-                    class="absolute inset-0 rounded-full border-2 border-dashed border-gray-300 hover:border-blue-500 transition-colors cursor-pointer flex items-center justify-center overflow-hidden">
+                <div class="absolute inset-0 rounded-full border-2 border-dashed border-gray-300 
+         hover:border-blue-500 transition-colors cursor-pointer 
+         flex flex-col items-center justify-center overflow-hidden">
                     <ng-container *ngIf="!previewUrl; else imagePreview">
-                        <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-12 h-12 text-gray-400 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5">
                             </path>

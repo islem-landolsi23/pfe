@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/notification")
@@ -30,14 +31,21 @@ public class NotificationController {
     @GetMapping("/getNotification/{email}")
     public List<NotificationDTO> getNotification(@PathVariable String email)
     {
-        List<Notification  > notifications = notificationService.getUnreadNotifications(email);
-        return  notifications.
-                stream().
-                map( notification -> mapper.toDTO(notification)).toList();
+        return notificationService.getUnreadMessageNotification(email)
+                .stream()
+                .map(mapper::toDTO)
+               // safety, optional
+                .peek(dto -> {
+                    if (dto.getSenderEmail() == null) {
+                        dto.setSenderEmail(dto.getTitle());
+                    }
+                })
+                .toList();
     }
     @PostMapping("/markAsRead")
     public List<NotificationDTO> markAsRead(@RequestBody NotificationDTO notificationDTO)
     {
+        System.out.println("ena fil marl "+notificationDTO);
         List<Notification > notifications = notificationService.turnAllARead(
                 notificationDTO.getReceiverEmail(),notificationDTO.getSenderEmail()) ;
         List<Notification>ReadList = new ArrayList<>();
@@ -55,5 +63,13 @@ public class NotificationController {
 
        notificationService.markAsRead(notificationDTO.getId());
       //  return ReadList.stream().map(n -> mapper.toDTO(n)  ).toList() ;
+    }
+
+
+    @GetMapping("/getUnreadTaskNotification/{email}")
+    public List<NotificationDTO> getUnreadTaskNotification(@PathVariable String email)
+    {
+        return notificationService.getUnreadTaskNotification(email).
+                stream().map(notification -> mapper.toDTO(notification)).toList() ;
     }
 }

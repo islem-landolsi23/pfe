@@ -30,7 +30,7 @@ public class Message {
     private LocalDateTime timestamp;
     @ManyToOne
     @JoinColumn(name = "conversation_id")
-    @JsonIgnore
+    //@JsonIgnore
     private Conversation conversation;
     @ManyToOne
     @JoinColumn(name = "sender_id")

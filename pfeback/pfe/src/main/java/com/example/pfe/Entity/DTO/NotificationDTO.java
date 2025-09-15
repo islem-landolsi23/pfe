@@ -14,6 +14,7 @@ public class NotificationDTO {
     private String senderEmail ;
     private  String type ;
     private  String taskUrl ;
+    private  Boolean isGroup ;
 
     public NotificationDTO() {}
 

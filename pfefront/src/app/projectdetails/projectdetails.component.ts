@@ -175,9 +175,7 @@ getSeverity(status: string):'success' | 'info' | 'warn' | 'danger' | 'secondary'
 
   checkSprint()
   {
-    // console.log(this.form.get('sprints')?.value );
-    // this.project.sprints=this.form.get('sprints')?.value
-    // console.log(this.project)
+   
 
     const sprintsRaw = this.form.get('sprints')?.value || [];
 

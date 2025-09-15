@@ -15,4 +15,6 @@ public interface NotificationRepository  extends JpaRepository<Notification, Lon
             String senderEmail,
             String type
     );
+
+
 }

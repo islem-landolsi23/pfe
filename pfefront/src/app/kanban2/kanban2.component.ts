@@ -1,9 +1,12 @@
 
-import { Component, OnInit } from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { FormsModule } from "@angular/forms";
+import { FormBuilder, FormGroup, FormsModule, Validators } from "@angular/forms";
 import { DragDropModule, CdkDragDrop, moveItemInArray, transferArrayItem } from "@angular/cdk/drag-drop";
 import { PrimeIcons, MenuItem } from 'primeng/api';
+import { UserService } from "../service/user.service";
+import { TaskserviceService } from "../service/taskservice.service";
+import { ChatService } from "../service/chat.service";
 
 @Component({
   selector: 'app-kanban2',
@@ -16,6 +19,29 @@ import { PrimeIcons, MenuItem } from 'primeng/api';
 
 
 export class Kanban2Component {
+
+
+
+@Input() sprintId :any;
+  allUsers: any;
+  users: any;
+  ticketForm: FormGroup;
+
+  constructor(private fb: FormBuilder , private  userService:UserService 
+    ,private taskservice :TaskserviceService , private chatservice :ChatService) {
+   
+    this.ticketForm = this.fb.group({
+      title: ["", Validators.required],
+      description: [""],
+      priority: ["Medium", Validators.required],
+      status: ["Open", Validators.required],
+      assignedTo: ["", Validators.required],
+      dueDate: ["", Validators.required]
+    });
+  }
+
+
+
   // board = {
   //   columns: [
   //     {
@@ -68,32 +94,77 @@ export class Kanban2Component {
   isDarkMode = false;
 
   ngOnInit() {
+
+this. getAllUsers();
     this.loadInitialData();
     this.loadThemePreference();
   }
 
+  getAllUsers()
+  {
+    this.userService.getAllUsers().subscribe(res=>{
+      console.log("all users", res)
+      this.allUsers = res
+      res.forEach(el=>{
+        let name = el.name;
+        this.users.push(name)
+      })
+   
+      });
+
+      console.log("users list",this.users)
+   
+  }
+fillTable() {
+
+    console.log(this.sprintId)
+    if (this.sprintId) {
+      this.taskservice.getBySprint(this.sprintId).subscribe(res => {
+
+        console.log("hello", res)
+        res.forEach(el => {
+
+
+          let task: any = {};
+          task.id = el.id
+          task.title = el.title
+          task.status = el.status
+          task.priority = el.priority
+          task.dueDate = el.dueDate
+          task.description = el.description
+          task.createdAt = null
+          let user = this.allUsers.find(u => u.id == el.assignedUserId)
+
+          task.assignedTo = user
+
+         let column = this.columns.find(c => c.title === task.status);
+    if (column) {
+      column.tasks.push(task);
+    }
+      
+        })
+
+     
+      })
+
+    }
+
+  }
+
+
+
   loadInitialData() {
-    const mockTasks: Task[] = [
-      {
-        id: "t1",
-        title: "Implement Authentication",
-        description: "Set up user authentication system",
-        priority: "High",
-        dueDate: "2024-02-15",
-        assignee: {
-          name: "John Doe",
-          avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-        }
-      }
-    ];
+   
 
     this.columns = [
-      { id: "1", title: "Backlog", isDefault: true, isEditing: false, tasks: [] },
-      { id: "2", title: "To Do", isDefault: true, isEditing: false, tasks: mockTasks },
-      { id: "3", title: "In Progress", isDefault: true, isEditing: false, tasks: [] },
-      { id: "4", title: "Review", isDefault: true, isEditing: false, tasks: [] },
-      { id: "5", title: "Done", isDefault: true, isEditing: false, tasks: [] }
+      { id: "1", title: "Open", isDefault: true, isEditing: false, tasks: [] },
+      { id: "2", title: "In Progress", isDefault: true, isEditing: false, tasks: [] },
+      { id: "3", title: "Resolved", isDefault: true, isEditing: false, tasks: [] },
+      { id: "4", title: "Closed", isDefault: true, isEditing: false, tasks: [] },
+     
     ];
+
+    this.fillTable()
   }
 
   loadThemePreference() {
@@ -155,11 +226,22 @@ export class Kanban2Component {
       description: "",
       priority: "Medium",
       dueDate: new Date().toISOString().split("T")[0],
-      assignee: {
-        name: "Unassigned",
-        avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-      }
-    };
+      assignedTo: ""
+    }
+  }
+
+   isGitAvatar(url: string): boolean {
+
+  if (!url) return false; // handle empty or null
+  // Check if the URL contains a GitHub domain (or other git provider)
+  return url.includes('githubusercontent.com') || url.includes('gitlab.com') || url.includes('bitbucket.org');
+}
+
+ getImagePath(image: any) {
+    if (this.isGitAvatar(image))
+      return image;
+    else
+      return 'http://localhost:8080' + image
   }
 
   editTask(task: Task) {
@@ -212,10 +294,7 @@ interface Task {
   description: string;
   priority: "Low" | "Medium" | "High";
   dueDate: string;
-  assignee: {
-    name: string;
-    avatar: string;
-  };
+  assignedTo: any
 }
 
 interface Column {

@@ -21,7 +21,8 @@ constructor(private taskservice :TaskserviceService) {}
   if(email)
   {
     this.taskservice.getBygetByUser(email).subscribe(res=>{
-     // console.log("ya baba7 ya baba7",res)
+      console.log("res",res)
+    
 
       res.forEach( task =>{
           let taskToadd :Task ={
@@ -63,7 +64,7 @@ constructor(private taskservice :TaskserviceService) {}
 
 
     drop(event: CdkDragDrop<Task[]>,column?: any) {
-      console.log("ele event",event)
+     
     if (event.previousContainer === event.container) {
       console.log("same array")
 
@@ -99,12 +100,7 @@ constructor(private taskservice :TaskserviceService) {}
   }
   click(column :any,index: any,event: any)
   {
-//     console.log("el column",column);
-    
-//     console.log("index",index);
-    
-// console.log("el event",event);
-//this.board.columns[column].tasks.splice(index,1)
+
 console.log(column.name);
 
 this.removeTask(this.board,column.name,index)
@@ -116,7 +112,7 @@ this.removeTask(this.board,column.name,index)
     
  let index =board.columns.findIndex(col => col.name == columnName)
 
-//console.log( board.columns[index].tasks.splice(taskToRemoveIndex,1))
+
  
 }
 getConnectedDropLists() {

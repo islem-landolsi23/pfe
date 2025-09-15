@@ -24,7 +24,7 @@ export class TaskserviceService {
     
 
          getBySprint(sprintId:any):Observable<any>{
-          console.log("ena d5alit")
+      
        const token = localStorage.getItem('jwt');
          const headers = new HttpHeaders({
           'Authorization': `Bearer ${token}`,
@@ -37,7 +37,7 @@ export class TaskserviceService {
           
     }
          getBygetByUser(userEmail:any):Observable<any>{
-          console.log("ena d5alit")
+        
        const token = localStorage.getItem('jwt');
          const headers = new HttpHeaders({
           'Authorization': `Bearer ${token}`,
@@ -52,7 +52,7 @@ export class TaskserviceService {
 
 
         delete(id:any):Observable<any>{
-          console.log("ena d5alit")
+        
        const token = localStorage.getItem('jwt');
          const headers = new HttpHeaders({
           'Authorization': `Bearer ${token}`,

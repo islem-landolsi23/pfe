@@ -2,10 +2,7 @@ package com.example.pfe.Entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -17,6 +14,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString(exclude = {"sprints"}) // si Project a une liste de sprints
 public class Project {
 
     @Id
@@ -26,8 +24,8 @@ public class Project {
     private String name;
     private String description;
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @OneToMany( cascade = CascadeType.ALL)
+    @JoinColumn(name = "project_id")
     private List<Sprint> sprints;
 
 

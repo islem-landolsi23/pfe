@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class NotificationService {
@@ -52,5 +54,24 @@ public class NotificationService {
                   type) ;
 
     }
+
+    public List<Notification> getUnreadTaskNotification( String email)
+
+    {
+        return notificationRepository.findByReceiverEmailAndReadFalseAndType(email,"TaskNotification") ;
+    }
+
+    public List<Notification> getUnreadMessageNotification( String email)
+
+    {
+        List<Notification> chatNotifications =    notificationRepository.findByReceiverEmailAndReadFalseAndType(email,"chat Notification") ;
+        List<Notification> groupNotifications =     notificationRepository.findByReceiverEmailAndReadFalseAndType(email,"groupe") ;
+        List<Notification> allNotifications = Stream.concat(chatNotifications.stream(), groupNotifications.stream())
+                .collect(Collectors.toList());
+        System.out.println(allNotifications);
+        return allNotifications ;
+    }
+
+
 
 }

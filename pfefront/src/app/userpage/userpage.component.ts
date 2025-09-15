@@ -26,170 +26,165 @@ import { UserService } from '../service/user.service';
 @Component({
   selector: 'app-userpage',
   standalone: true,
-  imports: [Avatar,AvatarGroup,AvatarModule, DividerModule ,CommonModule,ReactiveFormsModule,
-    OverlayBadgeModule,AccordionModule,RippleModule,PasswordModule,
-    PanelModule,ButtonModule,CardModule , Fluid
-    ,MenuModule , FormsModule, InputTextModule,FloatLabel],
+  imports: [Avatar, AvatarGroup, AvatarModule, DividerModule, CommonModule, ReactiveFormsModule,
+    OverlayBadgeModule, AccordionModule, RippleModule, PasswordModule,
+    PanelModule, ButtonModule, CardModule, Fluid
+    , MenuModule, FormsModule, InputTextModule, FloatLabel],
   templateUrl: './userpage.component.html',
   styleUrl: './userpage.component.scss'
 })
-export class UserpageComponent implements OnInit ,AfterViewInit {
+export class UserpageComponent implements OnInit, AfterViewInit {
   isLoggedIn = false;
-  avatar_url =''
-  user : any
-  password =""
-isOpen =false ;
+  avatar_url = ''
+  user: any
+  password = ""
+  isOpen = false;
   userForm: FormGroup;
-constructor(private http: HttpClient,private router: Router, private fileservice : FileService ,
-  private fb: FormBuilder , private userservice:UserService
+  constructor(private http: HttpClient, private router: Router, private fileservice: FileService,
+    private fb: FormBuilder, private userservice: UserService
 
-) {
+  ) {
 
-  this.userForm = this.fb.group({
-  name: ['',Validators.required],
-  email: [{ value: "", disabled: true }],
-  password: ['',Validators.required]
-});
-}
+    this.userForm = this.fb.group({
+      name: ['', Validators.required],
+      email: [{ value: "", disabled: true }],
+      password: ['', Validators.required]
+    });
+  }
   ngAfterViewInit(): void {
-   // throw new Error('Method not implemented.');
-    
+    // throw new Error('Method not implemented.');
+
   }
 
-  setFormValues()
+  setFormValues() {
 
-  {
-    
-    console.log("ena el user el rahiiiib",this.user)
-    
-      this.userForm.patchValue({
-    name: this.user.name,
-    email: this.user.email,
-    password: this.user.password
+
+
+    this.userForm.patchValue({
+      name: this.user.name,
+      email: this.user.email,
+      password: this.user.password
     });
   }
 
- 
+
 
 
   ngOnInit() {
- const jwtToken = localStorage.getItem('jwt');
-  const savedEmail = localStorage.getItem('email');
-  const headers = {
-    'Authorization': `Bearer ${jwtToken}`
-  };
+    const jwtToken = localStorage.getItem('jwt');
+    const savedEmail = localStorage.getItem('email');
+    const headers = {
+      'Authorization': `Bearer ${jwtToken}`
+    };
 
-  // 1️⃣ Try with saved email + token first
-  this.http.get<User>('http://localhost:8080/api/public/getUserByEmail/' + savedEmail, { headers })
-    .subscribe({
-      next: (res) => {
-        if(this.isGitAvatar(res.avatarUrl) == true)
-       { console.log("ena fil if")
-        this.avatar_url = res.avatarUrl;} 
-      else
-        {this.avatar_url ="http://localhost:8080"+ res.avatarUrl
-          console.log("ena fil el else")
+    // 1️⃣ Try with saved email + token first
+    this.http.get<User>('http://localhost:8080/api/public/getUserByEmail/' + savedEmail, { headers })
+      .subscribe({
+        next: (res) => {
+          if (this.isGitAvatar(res.avatarUrl) == true) {
+            this.avatar_url = res.avatarUrl;
+          }
+          else {
+            this.avatar_url = "http://localhost:8080" + res.avatarUrl
+
+          }
+          this.user = res;
+          this.isLoggedIn = true;
+          this.setFormValues();
+        },
+        error: (err) => {
+          console.error("Erreur lors de l’appel API (getUserByEmail), fallback to /me:", err);
+
+          // 2️⃣ If that fails, fallback to /me
+          this.http.get('http://localhost:8080/api/public/me', { withCredentials: true })
+            .subscribe({
+              next: (user: any) => {
+                this.isLoggedIn = true;
+                this.avatar_url = user.avatar_url;
+                this.user = user;
+                this.setFormValues();
+              },
+              error: (err2) => {
+                console.error("Erreur lors de l’appel API (/me):", err2);
+              }
+            });
         }
-        this.user = res;
-        this.isLoggedIn = true;
-        this.setFormValues();
-      },
-      error: (err) => {
-        console.error("Erreur lors de l’appel API (getUserByEmail), fallback to /me:", err);
+      });
 
-        // 2️⃣ If that fails, fallback to /me
-        this.http.get('http://localhost:8080/api/public/me', { withCredentials: true })
-          .subscribe({
-            next: (user: any) => {
-              this.isLoggedIn = true;
-              this.avatar_url = user.avatar_url;
-              this.user = user;
-              this.setFormValues();
-            },
-            error: (err2) => {
-              console.error("Erreur lors de l’appel API (/me):", err2);
-            }
-          });
+  }
+
+  saveUser() {
+
+    let password = "";
+    if (this.password.length == 0)
+      password = "change me"
+    else
+      password = this.password
+    let userToadd: User = new User(this.userForm.get('name')?.value, this.user.github_id,
+      this.user.email,
+      this.userForm.get('password')?.value,
+      this.avatar_url);
+
+    console.log(userToadd)
+
+    this.userservice.saveUser(userToadd).subscribe({
+      next: (res) => {
+        console.log("user saved", res)
+      }, error: (err) => {
+        console.log(err)
       }
-    });
-  
+    }
+    )
+
+
+  }
+  isGitAvatar(url: string): boolean {
+
+    if (!url) return false; // handle empty or null
+    // Check if the URL contains a GitHub domain (or other git provider)
+    return url.includes('githubusercontent.com') || url.includes('gitlab.com') || url.includes('bitbucket.org');
   }
 
-saveUser()
-{
-
-  let password="" ;
-  if(this.password.length == 0)
-    password = "change me"
-  else
-    password = this.password
-  let userToadd : User= new User(this.userForm.get('name')?.value,this.user.github_id,
-  this.user.email,
-  this.userForm.get('password')?.value,
-  this.avatar_url);
-  
-
-
-  this.userservice.saveUser(userToadd).subscribe({ next:(res)=>{
-    console.log("user saved",res)
-  } ,error: (err)=>{
-    console.log(err)
-  }}
-)
-
- 
-  }
-   isGitAvatar(url: string): boolean {
-    console.log("ena fil is ",url)
-  if (!url) return false; // handle empty or null
-  // Check if the URL contains a GitHub domain (or other git provider)
-  return url.includes('githubusercontent.com') || url.includes('gitlab.com') || url.includes('bitbucket.org');
-}
-
-  
 
 
 
 
-  checkUserGit(email : string)
-  {
 
-    console.log("hani d5alite ")
-    console.log("el email",email)
+  checkUserGit(email: string) {
+
+
     //  `http://localhost:8080/api/public/checkUser/${email}`
-     this.http.get('http://localhost:8080/api/public/checkUser/'+email, { withCredentials: true })
+    this.http.get('http://localhost:8080/api/public/checkUser/' + email, { withCredentials: true })
       .subscribe({
         next: (user: any) => {
-          console.log(user)
-          if(user != null)
-          {
-            console.log(111111111111111111111111111111111111111111111111111111111)
-        
 
-      
-   
-            
-          }else
-          {
-                   const jwtToken = localStorage.getItem('jwt');
-             const savedEmail = localStorage.getItem('email');
-             const headers = {
-    'Authorization': `Bearer ${jwtToken}`
-  };
-               console.log("email :",savedEmail ,"token :",jwtToken)
-                this.http.get<User>('http://localhost:8080/api/public/getUserByEmail/' + savedEmail, { headers })
-    .subscribe({
-      next: (res) => {
-        this.avatar_url = res.avatarUrl;
-        this.user = res;
-      },
-      error: (err) => {
-        console.error("Erreur lors de l’appel API :", err);
-      }
-    });
+          if (user != null) {
+
+
+
+
+
+
+          } else {
+            const jwtToken = localStorage.getItem('jwt');
+            const savedEmail = localStorage.getItem('email');
+            const headers = {
+              'Authorization': `Bearer ${jwtToken}`
+            };
+
+            this.http.get<User>('http://localhost:8080/api/public/getUserByEmail/' + savedEmail, { headers })
+              .subscribe({
+                next: (res) => {
+                  this.avatar_url = res.avatarUrl;
+                  this.user = res;
+                },
+                error: (err) => {
+                  console.error("Erreur lors de l’appel API :", err);
+                }
+              });
           }
 
-    
+
         },
         error: () => {
           this.isLoggedIn = false;
@@ -198,12 +193,12 @@ saveUser()
   }
 
 
- openModal(){
-  this.isOpen=true
- }
- closeModal(){
-  this.isOpen=false
- }
+  openModal() {
+    this.isOpen = true
+  }
+  closeModal() {
+    this.isOpen = false
+  }
 
 
 
@@ -227,14 +222,14 @@ saveUser()
       this.processFile(file);
     }
   }
-   previewUrl: string | null = null;
+  previewUrl: string | null = null;
   errorMessage: string | null = null;
   selectedFile: File | null = null;
 
   private readonly maxFileSize = 5 * 1024 * 1024; // 5MB
   private readonly allowedTypes = ["image/jpeg", "image/png", "image/gif"];
 
- processFile(file: File): void {
+  processFile(file: File): void {
     this.errorMessage = null;
 
     if (!this.allowedTypes.includes(file.type)) {
@@ -254,34 +249,34 @@ saveUser()
     };
     reader.readAsDataURL(file);
   }
-    saveImage(): void {
+  saveImage(): void {
     if (this.selectedFile) {
 
-      console.log("previewUrl",this.previewUrl)
-    console.log(this.selectedFile)
-    this.fileservice.saveFile(this.selectedFile).subscribe(res=>{
-      console.log("job is fathemable",res)
-      let user ={
-        email : this.user.email,
-        avatarUrl : res.fileUrl
 
-      }
-      this.userservice.saveUserImage(user).subscribe(res=>{
-        console.log("aj styles ")
+
+      this.fileservice.saveFile(this.selectedFile).subscribe(res => {
+
+        let user = {
+          email: this.user.email,
+          avatarUrl: res.fileUrl
+
+        }
+        this.userservice.saveUserImage(user).subscribe(res => {
+
+        })
+
       })
-
-    })
 
 
       this.closeModal();
     }
-}
+  }
 
 }
 
 export class User {
-    constructor(public name: string, public github_id: string ,public email:string,public password :string ,
-      public avatarUrl :string
-    ) {}
+  constructor(public name: string, public github_id: string, public email: string, public password: string,
+    public avatarUrl: string
+  ) { }
 }
 

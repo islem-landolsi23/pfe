@@ -31,9 +31,6 @@ public class Notification {
     @ManyToOne
     @JoinColumn(name = "sender_id")
     private User sender;
-
-
-
     private String type ;
     private  String taskUrl ;
 

@@ -13,7 +13,7 @@ export class NotificationdataService {
 
 
     getNotification(email:any):Observable<any>{
-            console.log("ena d5alit")
+          
          const token = localStorage.getItem('jwt');
            const headers = new HttpHeaders({
             'Authorization': `Bearer ${token}`,
@@ -28,7 +28,7 @@ export class NotificationdataService {
 
 
          markListAsread(notification:NotificationDTO):Observable<any>{
-            console.log("ena d5alit")
+           
          const token = localStorage.getItem('jwt');
            const headers = new HttpHeaders({
             'Authorization': `Bearer ${token}`,
@@ -42,7 +42,7 @@ export class NotificationdataService {
       }
 
            markMessageAsread(notification:NotificationDTO):Observable<void>{
-            console.log("ena d5alit")
+           
          const token = localStorage.getItem('jwt');
            const headers = new HttpHeaders({
             'Authorization': `Bearer ${token}`,
@@ -50,6 +50,21 @@ export class NotificationdataService {
           });
       
             return this.http.post<void>("http://localhost:8080/api/notification/markMessageAsRead",notification,{headers}) ;
+  
+  
+            
+      }
+
+
+          getTasksNotifications(email :any ):Observable<any[]>{
+           
+         const token = localStorage.getItem('jwt');
+           const headers = new HttpHeaders({
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          });
+      
+            return this.http.get<any[]>("http://localhost:8080/api/notification/getUnreadTaskNotification/"+email,{headers}) ;
   
   
             

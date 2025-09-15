@@ -36,9 +36,11 @@ public class TaskController {
     public List<TaskDTO> getTaskByUser(@PathVariable String userEmail)
     {
 
-        System.out.println("ena d5aloit");
-//        List<Task> list = taskService.getTaskBySprint(sprintId) ;
-//        System.out.println(list.size());
+//        System.out.println("ena d5aloit");
+//        taskService.getTaskByUser(userEmail).forEach(task -> {
+//            System.out.println(task);
+//        });
+
         return taskService.getTaskByUser(userEmail).stream().map(task -> mapper.toDto(task)).toList() ;
     }
 

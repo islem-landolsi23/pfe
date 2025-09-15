@@ -22,15 +22,16 @@ public class Conversation {
     @JoinColumn(name = "created_by")
     private User createdBy;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "conversation_participants",
             joinColumns = @JoinColumn(name = "conversation_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
 
-    private Set<User> participants;
+    private List<User> participants;
 
-    @OneToMany(mappedBy = "conversation", cascade = CascadeType.ALL)
-    private Set<Message> messages;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "conversation_id")
+    private List<Message> messages;
 }

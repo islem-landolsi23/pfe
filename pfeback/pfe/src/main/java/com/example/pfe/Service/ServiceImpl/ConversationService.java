@@ -2,9 +2,11 @@ package com.example.pfe.Service.ServiceImpl;
 
 
 import com.example.pfe.Entity.Conversation;
+import com.example.pfe.Entity.DTO.ConversationDto;
 import com.example.pfe.Entity.User;
 import com.example.pfe.Repository.ConversationRepository;
 import com.example.pfe.Repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -43,7 +45,7 @@ public class ConversationService {
                 conversation.setCreatedAt(LocalDateTime.now().toString());
                 conversation.setCreatedBy(user);
                 conversation.setTitle("Notes to self");
-                conversation.setParticipants(Set.of(user));
+                conversation.setParticipants(List.of(user));
 
                 return conversationRepository.save(conversation);
             } else {
@@ -63,7 +65,8 @@ public class ConversationService {
                 conversation.setCreatedAt(LocalDateTime.now().toString());
                 conversation.setCreatedBy(userA);
                 conversation.setTitle(userA.getName() + " & " + userB.getName());
-                conversation.setParticipants(new HashSet<>(Arrays.asList(userA, userB)));
+                List<User> userList = Arrays.asList(userA, userB);
+                conversation.setParticipants(userList);
 
                 return conversationRepository.save(conversation);
             }
@@ -72,5 +75,52 @@ public class ConversationService {
 
 
 
+    @Transactional
+    public Conversation createConversation(List<Long> userIds, String title, Long createdById, boolean isGroup) {
+        // Fetch users
+        List<User> participants = new ArrayList<>(userRepository.findAllById(userIds));
 
+        if (participants.isEmpty()) {
+            throw new IllegalArgumentException("No valid participants found for conversation");
+        }
+
+        // Creator
+        User creator = userRepository.findById(createdById)
+                .orElseThrow(() -> new IllegalArgumentException("Creator not found"));
+
+        // Build conversation
+        Conversation conversation = new Conversation();
+        conversation.setTitle(isGroup ? title : null); // optional for 1-to-1
+        conversation.setGroup(isGroup);
+        conversation.setCreatedAt(LocalDateTime.now().toString());
+        conversation.setCreatedBy(creator);
+        conversation.setParticipants(participants);
+
+        // Save conversation
+        return conversationRepository.save(conversation);
+    }
+
+
+//    public List<Conversation> getGroupConversationsByUser(Long userId) {
+//        return conversationRepository.findByParticipants_IdAndIsGroupTrue(userId);
+//    }
+
+
+
+   // @Transactional()
+    public List<Conversation> getGroupConversationsByUser(Long userId) {
+        List<Conversation> convs = conversationRepository.findGroupConversationsByUserId(userId);
+
+        // debug logging to verify participants are present BEFORE mapping
+        convs.forEach(c -> {
+            System.out.println("Conversation id=" + c.getId() +
+                    " participants.size=" + (c.getParticipants() == null ? "null" : c.getParticipants().size()));
+        });
+
+        return convs;
+    }
+    @Transactional
+    public List<Conversation> getAllGroupConversations() {
+        return conversationRepository.findAllGroupConversationsWithParticipants();
+    }
 }

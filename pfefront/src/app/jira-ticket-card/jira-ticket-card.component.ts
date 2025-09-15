@@ -5,20 +5,22 @@ import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } 
 import { PrimeIcons, MenuItem } from 'primeng/api';
 import { UserService } from '../service/user.service';
 import { TaskserviceService } from '../service/taskservice.service';
+import { ChatService, NotificationDTO } from '../service/chat.service';
+import { Kanban2Component } from '../kanban2/kanban2.component';
 @Component({
   selector: 'app-jira-ticket-card',
   standalone: true,
-  imports: [CommonModule, FormsModule ,ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, Kanban2Component],
   templateUrl: './jira-ticket-card.component.html',
   styleUrl: './jira-ticket-card.component.scss'
 })
-export class JiraTicketCardComponent implements OnInit , OnChanges {
+export class JiraTicketCardComponent implements OnInit, OnChanges {
 
 
 
-@Input() sprintId :any;
-allUsers :any[]=[];
-tickets: any[] = [];
+  @Input() sprintId: any;
+  allUsers: any[] = [];
+  tickets: any[] = [];
   filteredTickets: any[] = [];
   searchQuery: string = "";
   filterStatus: string = "";
@@ -41,7 +43,10 @@ tickets: any[] = [];
   priorityOptions: string[] = ["High", "Medium", "Low"];
   users: string[] = [];
 
-  constructor(private fb: FormBuilder , private  userService:UserService ,private taskservice :TaskserviceService) {
+  table = true;
+
+  constructor(private fb: FormBuilder, private userService: UserService
+    , private taskservice: TaskserviceService, private chatservice: ChatService) {
     this.getAllUsers()
     this.ticketForm = this.fb.group({
       title: ["", Validators.required],
@@ -53,46 +58,47 @@ tickets: any[] = [];
     });
   }
   ngOnChanges(): void {
- // this.fillTable()
+    // this.fillTable()
   }
 
   ngOnInit() {
     //this.loadMockData();
-this.fillTable()
- 
+    this.fillTable()
+
     this.applyFilters();
   }
 
 
-fillTable()
-{console.log(this.sprintId)
-  if(this.sprintId){
- this.taskservice.getBySprint(this.sprintId).subscribe(res=>{
+  fillTable() {
 
-    console.log("hello", res)
-    res.forEach(el =>{
-      
-      
-    let task: any = {};
-      task.id =el.id
-      task.title =el.title
-      task.status =el.status
-      task.priority =el.priority
-      task.dueDate=el.dueDate
-      task.description =el.description
-      task.createdAt =null
-     let user = this.allUsers.find(u=> u.id == el.assignedUserId)
-       // console.log("alllllllllllllllllllllllllllllllllllllllllll",this.allUsers.find(u=> u.id ==el.id))
-     console.log("***********************************************",user)
-       task.assignedTo =user.name
-      this.tickets.push(task)})
-    console.log("tikiwet",this.tickets)
-       this.applyFilters();
-  })
+    console.log(this.sprintId)
+    if (this.sprintId) {
+      this.taskservice.getBySprint(this.sprintId).subscribe(res => {
 
-}
+        console.log("hello", res)
+        res.forEach(el => {
 
-}
+
+          let task: any = {};
+          task.id = el.id
+          task.title = el.title
+          task.status = el.status
+          task.priority = el.priority
+          task.dueDate = el.dueDate
+          task.description = el.description
+          task.createdAt = null
+          let user = this.allUsers.find(u => u.id == el.assignedUserId)
+
+          task.assignedTo = user.name
+          this.tickets.push(task)
+        })
+
+        this.applyFilters();
+      })
+
+    }
+
+  }
 
 
   openTicketModal() {
@@ -127,14 +133,14 @@ fillTable()
 
   applyFilters() {
     let filtered = [...this.tickets];
-    console.log("filtred wildred",filtered)
+
 
     if (this.searchQuery) {
       const query = this.searchQuery.toLowerCase();
       filtered = filtered.filter(ticket =>
         ticket.title.toLowerCase().includes(query) ||
         ticket.description.toLowerCase().includes(query) ||
-         ticket.assignedTo.toLowerCase().includes(query)
+        ticket.assignedTo.toLowerCase().includes(query)
       );
     }
 
@@ -155,7 +161,7 @@ fillTable()
 
     this.totalItems = filtered.length;
     this.totalPages = Math.ceil(this.totalItems / this.itemsPerPage);
-    
+
     const start = (this.currentPage - 1) * this.itemsPerPage;
     this.startIndex = start;
     this.endIndex = Math.min(start + this.itemsPerPage, this.totalItems);
@@ -204,15 +210,36 @@ fillTable()
 
   submitTicket() {
     if (this.ticketForm.valid) {
-      let taskdto :TaskDTO = this.ticketForm.value;
-      const formData = this.ticketForm.value ;
-      taskdto.sprintId=this.sprintId
-      let username = this.ticketForm.get('assignedTo')?.value ;
-      let user = this.allUsers.find(u=> u.name == username)
-      taskdto.assignedUserId =user.id
+      let taskdto: TaskDTO = this.ticketForm.value;
+      const formData = this.ticketForm.value;
+      taskdto.sprintId = this.sprintId
+      let username = this.ticketForm.get('assignedTo')?.value;
+      let user = this.allUsers.find(u => u.name == username)
+      taskdto.assignedUserId = user.id
 
-      this.taskservice.addTask(taskdto).subscribe(res =>{
-        console.log("hello new world",res)
+      this.taskservice.addTask(taskdto).subscribe({
+        next: (res) => {
+          console.log("hello new world", res)
+
+          let notificatinoDto: NotificationDTO = {
+            id: null,
+            title: "the task " + res.title + " was assigned to you ",
+            type: "TaskNotification",
+            senderEmail: "",
+            isGroup: false,
+            receiverEmail: user.email,
+            taskUrl: null,
+            message: res.priority,
+            timestamp: new Date().toDateString()
+
+
+
+          }
+          this.chatservice.sendNotification(user.email, notificatinoDto)
+        }, error: (err) => {
+          console.log(err)
+        }
+
       })
 
 
@@ -241,34 +268,38 @@ fillTable()
   }
 
 
-  getAllUsers()
-  {
-    this.userService.getAllUsers().subscribe(res=>{
+  getAllUsers() {
+    this.userService.getAllUsers().subscribe(res => {
       console.log("all users", res)
       this.allUsers = res
-      res.forEach(el=>{
+      res.forEach(el => {
         let name = el.name;
         this.users.push(name)
       })
-   
-      });
 
-      console.log("users list",this.users)
-   
+    });
+
+    console.log("users list", this.users)
+
+  }
+
+
+  kanban() {
+    this.table = !this.table;
   }
 
 }
 
- export interface TaskDTO {
-  
+export interface TaskDTO {
+
   title: string;
   description: string;
   status: string;
   priority: string;
-  assignedTo :string
-    sprintId: any;
-      assignedUserId: any;
-      dueDate :any
+  assignedTo: string
+  sprintId: any;
+  assignedUserId: any;
+  dueDate: any
 }
 
 

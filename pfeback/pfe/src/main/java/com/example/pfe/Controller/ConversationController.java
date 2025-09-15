@@ -6,6 +6,7 @@ import com.example.pfe.Entity.Conversation;
 import com.example.pfe.Entity.DTO.ConversationDto;
 import com.example.pfe.Entity.DTO.Mapper;
 import com.example.pfe.Entity.Message;
+import com.example.pfe.Entity.ParticipantsMessage;
 import com.example.pfe.Repository.MessageRepository;
 import com.example.pfe.Service.ServiceImpl.ConversationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +60,50 @@ chatMessageList.forEach(m ->{
 });
         return  ResponseEntity.ok(chatMessageList) ;
 
+    }
+
+
+
+
+    @PostMapping("/createGroup")
+    public ResponseEntity<ConversationDto> createConversation(
+            @RequestBody ParticipantsMessage participantsMessage,
+            @RequestParam Long createdById,
+            @RequestParam boolean isGroup,
+            @RequestParam(required = false) String title) {
+
+        // Here participantsMessage contains emails → you can fetch userIds first
+        // convert emails → ids via UserRepository
+        List<Long> userIds = new ArrayList<>();
+        for (String p : participantsMessage.getParticipants()) {
+            Long parseLong = Long.parseLong(p);
+            userIds.add(parseLong);
+        }
+
+        Conversation conversation = conversationService.createConversation(userIds, title, createdById, isGroup);
+        return ResponseEntity.ok(mapper.toDto(conversation));
+    }
+
+
+
+
+    @GetMapping("/groups/{userId}")
+    public List<ConversationDto> getGroupConversations(@PathVariable Long userId) {
+
+        System.out.println(conversationService.getConversationById(5L));
+        return conversationService.getGroupConversationsByUser(userId).stream()
+                .map( conversation -> mapper.toDto(conversation)).toList();
+
+       // return conversationService.getGroupConversationsByUser(userId) ;
+    }
+
+    @GetMapping("/getbyId/{Id}")
+    public ConversationDto getById(@PathVariable Long Id) {
+
+
+        return mapper.toDto(conversationService.getConversationById(Id).get()) ;
+
+        // return conversationService.getGroupConversationsByUser(userId) ;
     }
 }
 

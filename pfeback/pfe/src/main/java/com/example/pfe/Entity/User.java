@@ -36,14 +36,12 @@ public class User {
 
     private String avatarUrl;
 
-    @OneToMany(mappedBy = "assignedUser")
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
     private List<Task> assignedTasks = new ArrayList<>();
 
-    @OneToMany(mappedBy = "author")
-    private List<Comment> comments = new ArrayList<>();
 
 
-    @ManyToMany(mappedBy = "participants")
 
-    private Set<Conversation> conversations;
+
 }

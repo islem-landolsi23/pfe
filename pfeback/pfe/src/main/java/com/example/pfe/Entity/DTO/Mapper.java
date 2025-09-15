@@ -58,14 +58,15 @@ public class Mapper {
                 user.getId(),
                 user.getName(),
                 user.getEmail(),
-                user.getAvatarUrl()
+                user.getAvatarUrl(),
+                user.getPassword()
         );
     }
 
 
     public ConversationDto toDto(Conversation conversation) {
         List<UserDto> participantDtos = conversation.getParticipants().stream()
-                .map(u -> new UserDto(u.getId(), u.getName(), u.getEmail(), u.getAvatarUrl()))
+                .map(u -> new UserDto(u.getId(), u.getName(), u.getEmail(), u.getAvatarUrl(),u.getPassword()))
                 .collect(Collectors.toList());
 
         return new ConversationDto(

@@ -70,10 +70,10 @@ public class UserController {
             user1.setPassword(user.getPassword());
             user1.setAvatarUrl(user.getAvatarUrl());
             user1.setEmail(user.getEmail());
-            user1.setComments(null);
+           // user1.setComments(null);
             user1.setAssignedTasks(null);
             user1.setGithubId(user.getGithubId());
-            user1.setConversations(null);
+
             return ResponseEntity.ok(mapper.toDto(userRepository.save(user1)));
         }
 

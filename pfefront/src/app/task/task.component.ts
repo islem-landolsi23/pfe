@@ -9,6 +9,7 @@ import { UserService } from '../service/user.service';
 import { TaskserviceService } from '../service/taskservice.service';
 import { stat } from 'fs';
 import { Router } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
 @Component({
   selector: 'app-task',
   standalone: true,
@@ -92,16 +93,25 @@ console.log(this.message)
     this.userName = useremail ;
 
     this.userService.getUserByEmail(   this.userName  ).subscribe(info =>{
-     // console.log("info info info",info)
+   
       this.myName = info.name
-      if(this.isGitAvatar(info.avatar_url))
-      this.myImage = info.avatarUrl
+    
+      if(this.isGitAvatar(info.avatarUrl))
+      {this.myImage = info.avatarUrl}
     else
-       this.myImage ="http://localhost:8080"+ info.avatarUrl
-    //  console.log("my image",this.myImage)
+      {this.myImage ="http://localhost:8080"+ info.avatarUrl} 
+
+  
+    
+   
 
     })
+
+    
   }
+
+
+  
 
 closeModal(): void {
     this.isModalOpen = false;
@@ -130,11 +140,12 @@ goTodetails(p :any){
     }
 
       isGitAvatar(url: string): boolean {
-    console.log("ena fil is ",url)
+
   if (!url) return false; // handle empty or null
   // Check if the URL contains a GitHub domain (or other git provider)
   return url.includes('githubusercontent.com') || url.includes('gitlab.com') || url.includes('bitbucket.org');
 }
+//http://localhost:8080https://avatars.githubusercontent.com/u/100875995?v=4
 
 
 changeStatus(status : any)
@@ -142,10 +153,7 @@ changeStatus(status : any)
   let task :any= {id : this.message.id ,
                   status :status
   }
- // console.log("ttttttttttttt",task)
-  // this.taskservice.updateStatus(task).subscribe(res =>{
-  //   console.log(res)
-  // })
+ 
 
 }
 

@@ -26,7 +26,7 @@ public class Task {
 
     @ManyToOne
     @JoinColumn(name = "sprint_id")
-    @JsonBackReference // child
+   // child
     private Sprint sprint;
 
     @ManyToOne

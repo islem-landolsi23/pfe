@@ -3,7 +3,10 @@ import { Stomp } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ChatMessage } from '../Entities/ChatMessage';
-
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { ConversationService } from './conversation.service';
+import { UserService } from './user.service';
+import { forkJoin } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
@@ -16,7 +19,7 @@ export class ChatService {
 
         // Observable for subscribers (navbar, notification system, etc.)
   activeChatUser$ = this.activeChatUserSource.asObservable();
-  constructor() { 
+  constructor(private conversationservice :ConversationService , private userservice: UserService) { 
 
        this. initConnenctionSocket() 
   }
@@ -33,12 +36,13 @@ export class ChatService {
     // Create a SockJS connection to your server's WebSocket endpoint
     const socket = new SockJS(url);
     // Wrap the SockJS connection with Stomp
-    console.log("hani d5alite")
+   
     this.stompClient = Stomp.over(socket)
 
       // Connect only once
   this.stompClient.connect({}, () => {
     console.log("Connected to WebSocket");
+      console.log("listenint to notification");
       const currentUserEmail = localStorage.getItem('email'); // or however you store it
     if (currentUserEmail) {
       this.subscribeToNotifications(currentUserEmail);
@@ -74,26 +78,34 @@ joinRoom(roomId: string) {
 
 
 
-  sendMessage(roomId: string, chatMessage: ChatMessage) {
+  sendMessage(roomId: string, chatMessage: ChatMessage,isGroup :boolean) {
     console.log("room ID",roomId);
     
-      
+   
       this.stompClient.send(`/app/chat/${roomId}`, {}, JSON.stringify(chatMessage))
       let notification : NotificationDTO ={
-
+        id :roomId ,
         message : chatMessage.content ,
         receiverEmail : chatMessage.receiverEmail ,
         timestamp : chatMessage.timestamp ,
         title : "test message",
         type :"chat Notification",
         senderEmail :chatMessage.user ,
-        taskurl : null
+        isGroup : isGroup ,
+        taskUrl : null
 
 
       } ;
       
-
-      this.sendNotification(chatMessage.receiverEmail,notification)
+      if(isGroup == false)
+    {
+    
+       this.sendNotification(chatMessage.receiverEmail,notification)}
+    else
+    {
+      notification.title = notification.receiverEmail
+    this.sendMiltipleNotifications(notification)
+    }
     }
   
     getMessageSubject(){
@@ -111,7 +123,7 @@ joinRoom(roomId: string) {
 
     this.stompClient.subscribe(`/queue/${userEmail}`, (messages) => {
       const notifications: NotificationDTO [] = JSON.parse(messages.body);
-      console.log("lebron james lebron james ",notifications)
+      
       const current = this.notificationsSubject.getValue();
       this.notificationsSubject.next(notifications);
       console.log("Notification received:", notifications);
@@ -123,28 +135,48 @@ joinRoom(roomId: string) {
 
 
 
-
   getNotifications(): Observable<NotificationDTO[]> {
     return this.notificationsSubject.asObservable();
   }
 
+
+  sendMiltipleNotifications(notificatinoDto :NotificationDTO)
+  {
+   
+    this.conversationservice.getById(notificatinoDto.id).subscribe(res=>{
+      res.participants.forEach(el=>{
+      
+        notificatinoDto.senderEmail=notificatinoDto.title
+        notificatinoDto.receiverEmail = el.email
+           //notificatinoDto.senderEmail =notificatinoDto.receiverEmail
+           notificatinoDto.type ="groupe"
+         
+        this.sendNotification(el.email,notificatinoDto)
+      })
+    });
+
+  }
  
 
 
 
   sendNotification(receiverEmail: string, notification: NotificationDTO) {
+console.log(notification)
+    
   this.stompClient.send(`/app/notify/${receiverEmail}`, {}, JSON.stringify(notification));
 }
 }
 
 export interface NotificationDTO {
+  id:any
   title: string;
   message: string;
   receiverEmail: string;
   senderEmail : string ;
   timestamp: string;
   type :string ;
-  taskurl :any 
+  taskUrl:any
+  isGroup :any 
 }
 
 
