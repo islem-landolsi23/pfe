@@ -23,13 +23,16 @@ import { CommonModule } from "@angular/common";
 import { FileService } from '../service/file.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UserService } from '../service/user.service';
+import { MessageService } from 'primeng/api';
+import { Toast } from 'primeng/toast';
 @Component({
   selector: 'app-userpage',
   standalone: true,
   imports: [Avatar, AvatarGroup, AvatarModule, DividerModule, CommonModule, ReactiveFormsModule,
-    OverlayBadgeModule, AccordionModule, RippleModule, PasswordModule,
+    OverlayBadgeModule, AccordionModule, RippleModule, PasswordModule, Toast,
     PanelModule, ButtonModule, CardModule, Fluid
     , MenuModule, FormsModule, InputTextModule, FloatLabel],
+  providers: [MessageService],
   templateUrl: './userpage.component.html',
   styleUrl: './userpage.component.scss'
 })
@@ -41,7 +44,7 @@ export class UserpageComponent implements OnInit, AfterViewInit {
   isOpen = false;
   userForm: FormGroup;
   constructor(private http: HttpClient, private router: Router, private fileservice: FileService,
-    private fb: FormBuilder, private userservice: UserService
+    private fb: FormBuilder, private userservice: UserService, private messageService: MessageService
 
   ) {
 
@@ -114,7 +117,11 @@ export class UserpageComponent implements OnInit, AfterViewInit {
   }
 
   saveUser() {
-
+    if (this.hasEmptyFields(this.userForm)) {
+      console.log('Form has empty fields');
+      this.showError("Form has empty fields")
+      return;
+    }
     let password = "";
     if (this.password.length == 0)
       password = "change me"
@@ -130,8 +137,10 @@ export class UserpageComponent implements OnInit, AfterViewInit {
     this.userservice.saveUser(userToadd).subscribe({
       next: (res) => {
         console.log("user saved", res)
+        this.showSucess()
       }, error: (err) => {
         console.log(err)
+        this.showError(err.message)
       }
     }
     )
@@ -262,6 +271,7 @@ export class UserpageComponent implements OnInit, AfterViewInit {
 
         }
         this.userservice.saveUserImage(user).subscribe(res => {
+          window.location.reload();
 
         })
 
@@ -271,7 +281,20 @@ export class UserpageComponent implements OnInit, AfterViewInit {
       this.closeModal();
     }
   }
+  showError(message: string) {
+    this.messageService.add({ severity: 'error', summary: 'Error', detail: message });
+  }
+  showSucess() {
+    this.messageService.add({ severity: 'success', summary: 'success', detail: 'saved successfully ' });
+  }
 
+  hasEmptyFields(formGroup: FormGroup): boolean {
+    return Object.keys(formGroup.controls).some(key => {
+      const control = formGroup.get(key);
+      return control?.value === null || control?.value === '';
+    });
+
+  }
 }
 
 export class User {

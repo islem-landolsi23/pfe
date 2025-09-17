@@ -41,14 +41,14 @@ import { Toast } from 'primeng/toast';
   standalone: true,
   imports: [CommonModule, FileUploadModule,
     IconFieldModule, InputIconModule, PopoverModule, TextareaModule, FormsModule, InputTextModule, CardModule, AvatarModule, ScrollPanelModule,
-    SplitterModule, ButtonModule, PanelModule, ScrollPanelModule, InputText, ListboxModule,Toast],
-      providers: [MessageService]  ,
+    SplitterModule, ButtonModule, PanelModule, ScrollPanelModule, InputText, ListboxModule, Toast],
+  providers: [MessageService],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss'
 })
 export class ChatComponent implements OnInit, AfterViewChecked, OnDestroy {
 
-
+  messageSub?: Subscription;
   outgoingCall = signal<any | null>(null);
 
 
@@ -61,16 +61,13 @@ export class ChatComponent implements OnInit, AfterViewChecked, OnDestroy {
   newMessage: string = '';
   selectedContact: any = null;
   conversationId: string = "";
-  contacts: Contact[] = [
-
-  ];
-groupename :any ;
+  contacts: Contact[] = [];
+  groupename: any;
   backendurl = 'http://localhost:8080'
 
 
-  messages: ChatMessage[] = [
-
-  ];
+  // messages: ChatMessage[] = [];
+  messages = new Set<ChatMessage>();
   email: any;
   myName: any
   myImage: any;
@@ -85,7 +82,7 @@ groupename :any ;
     private chatService: ChatService, private userService: UserService,
     private conversationservice: ConversationService, private fileservice: FileService,
     private notificationService: NotificationService, private callSvc: CallService,
-    private notificationDataservice: NotificationdataService,private messageService: MessageService
+    private notificationDataservice: NotificationdataService, private messageService: MessageService
   ) {
 
   }
@@ -105,7 +102,7 @@ groupename :any ;
         }
       });
 
-    
+
 
       notificationMap.forEach((value, key) => {
         const contact = this.contacts.find(c => c.email == key && c.email !== this.selectedContact.email);
@@ -142,10 +139,10 @@ groupename :any ;
 
   getAllUsers() {
     this.userService.getAllUsers().subscribe(res => {
-     
+
       res.forEach((element: { id: number; name: string; email: string, avatarUrl: string; }) => {
 
-        let newconatc = new Contact(element.id, element.name, element.email, element.avatarUrl, "Online", "", 0,false)
+        let newconatc = new Contact(element.id, element.name, element.email, element.avatarUrl, "Online", "", 0, false)
         this.contacts.push(newconatc)
       });
 
@@ -159,10 +156,10 @@ groupename :any ;
   getMe() {
 
     this.userService.getUserByEmail(this.userName).subscribe(info => {
-     
+
       this.myName = info.name
       this.myImage = info.avatarUrl
-     
+
 
     })
   }
@@ -192,37 +189,40 @@ groupename :any ;
   }
 
   selectContact(contact: any) {
-   
-if(contact.isGroup == false)
-  { if (this.getMyId() != null) {
-      this.conversationservice.createOrGetPrivateChat(this.getMyId(), contact.id).subscribe(res => {
-      
-        this.selectedContact = contact;
-        this.conversationId = res.id;
-        this.chatService.joinRoom(res.id);
-        this.getMessageConversation(res.id);
-        this.markasRead(contact.email, this.userName)
+    // Unsubscribe from any old subscription
 
-        this.chatService.setActiveChatUser(contact.email);
+    if (contact.isGroup == false) {
+      if (this.getMyId() != null) {
+        this.conversationservice.createOrGetPrivateChat(this.getMyId(), contact.id).subscribe(res => {
 
-      }, error => { console.log("ena fil error ", error) }
+          this.selectedContact = contact;
 
-      )
+          this.conversationId = res.id;
+          this.chatService.joinRoom(res.id);
+          //  this.messages = []
+          this.getMessageConversation(res.id);
+          this.markasRead(contact.email, this.userName)
 
+          this.chatService.setActiveChatUser(contact.email);
+
+        }, error => { console.log("ena fil error ", error) }
+
+        )
+
+      }
+
+      else
+        console.log("raj3it null")
+
+    } else {
+      this.selectedContact = contact;
+      this.conversationId = contact.id;
+      this.chatService.setActiveChatUser(contact.email);
+      this.getMessageConversation(contact.id);
+      this.chatService.joinRoom(contact.id);
     }
 
-    else
-      console.log("raj3it null")
-
-  }else{
-     this.selectedContact = contact;
-      this.conversationId = contact.id;
-        this.chatService.setActiveChatUser(contact.email);
-         this.getMessageConversation(contact.id);
-           this.chatService.joinRoom(contact.id);
   }
-
-}
 
 
 
@@ -259,7 +259,7 @@ if(contact.isGroup == false)
 
 
   sendMessage() {
- 
+
 
     const chatMessage = {
 
@@ -271,7 +271,7 @@ if(contact.isGroup == false)
 
     } as ChatMessage
 
-    this.chatService.sendMessage(this.conversationId, chatMessage,this.selectedContact.isGroup);
+    this.chatService.sendMessage(this.conversationId, chatMessage, this.selectedContact.isGroup);
     //  this.messages.push({
 
     //    user: this.userName,
@@ -283,7 +283,7 @@ if(contact.isGroup == false)
     //    fileType: 'TEXT'
     //  });
 
-   
+
     this.newMessage = '';
 
 
@@ -295,11 +295,18 @@ if(contact.isGroup == false)
 
 
   lisenerMessage() {
-    this.chatService.getMessageSubject().subscribe((messages: any) => {
+    this.messageSub?.unsubscribe();
+    this.messageSub = this.chatService.getMessageSubject().subscribe((messages: any) => {
+      console.log("ena el message eli jit ", messages)
 
-
-
-      this.messages = [...this.messages, ...messages.map((item: any) => ({ ...item }))];
+      if (messages.conversationID == this.conversationId) {
+        console.log("ena li bech netekteb", messages)
+        console.log("ena li 9dime", this.messages)
+        //   this.messages = [...this.messages, messages];
+        this.messages.add(messages);
+        console.log("ena li jdide", this.messages)
+      }
+      // this.messages = [...this.messages, ...messages.map((item: any) => ({ ...item }))];
 
 
     });
@@ -309,14 +316,19 @@ if(contact.isGroup == false)
 
 
   getMessageConversation(id: any) {
+    //  this.messageSub?.unsubscribe();
     this.conversationservice.getMessagesByConversation(id).subscribe(res => {
 
-
-
-      this.messages = res.map((item: any) => ({
-        ...item,
-        //  message_side: item.user === this.userName ? 'sender': 'receiver'
-      }))
+      // this.messages = res.map((item: any) => ({
+      //   ...item,
+      //   //  message_side: item.user === this.userName ? 'sender': 'receiver'
+      // }))
+      this.messages = new Set(
+        res.map((item: any) => ({
+          ...item,
+          // message_side: item.user === this.userName ? 'sender': 'receiver'
+        }))
+      );
     })
   }
 
@@ -344,7 +356,7 @@ if(contact.isGroup == false)
 
     this.fileservice.saveFile(file).subscribe(res => {
       let fileType = this.detectFileType(res.fileUrl)
-    
+
       const chatMessage = {
 
         user: this.userName,
@@ -357,8 +369,9 @@ if(contact.isGroup == false)
 
       } as ChatMessage
 
-      this.chatService.sendMessage(this.conversationId, chatMessage,this.selectedContact.isGroup);
-      this.messages.push(chatMessage)
+      this.chatService.sendMessage(this.conversationId, chatMessage, this.selectedContact.isGroup);
+      this.messages.add(chatMessage);
+      // this.messages.push(chatMessage)
     })
 
 
@@ -385,19 +398,19 @@ if(contact.isGroup == false)
 
   markasRead(senderEmail: any, receiverEmail: any) {
     let notificatinoDto: NotificationDTO = {
-      id : 401,
+      id: 401,
       title: "delete",
       message: "delete",
       receiverEmail: receiverEmail,
       senderEmail: senderEmail,
       timestamp: "no one care",
       type: "still dont care",
-      isGroup : false ,
+      isGroup: false,
       taskUrl: null
     }
 
     this.notificationDataservice.markListAsread(notificatinoDto).subscribe(res => {
-    
+
 
       const contact = this.contacts.find(c => c.email === senderEmail);
       if (contact) {
@@ -420,6 +433,7 @@ if(contact.isGroup == false)
   }
 
   ngOnDestroy() {
+    this.messageSub?.unsubscribe();
     this.chatService.setActiveChatUser(null);
   }
 
@@ -427,30 +441,29 @@ if(contact.isGroup == false)
   ///////////////////////////////////// conversationgrope 
 
 
- isModalOpen = false;
+  isModalOpen = false;
   users: UserConversation[] = [
-    
-      
+
+
   ];
 
 
-   openModal(): void {
+  openModal(): void {
 
-this.contacts.forEach( el=>{
+    this.contacts.forEach(el => {
 
 
-if(el.isGroup == false)
-{
-let user :UserConversation ={
-     id: el.id,
-  name: el.name,
-  email: el.email,
-  avatar: el.avatar,
-  selected: false,
-  }
-  this.users.push(user)
-}
-})
+      if (el.isGroup == false) {
+        let user: UserConversation = {
+          id: el.id,
+          name: el.name,
+          email: el.email,
+          avatar: el.avatar,
+          selected: false,
+        }
+        this.users.push(user)
+      }
+    })
 
     this.isModalOpen = true;
   }
@@ -459,25 +472,24 @@ let user :UserConversation ={
 
 
 
-   this.users = []
+    this.users = []
     this.isModalOpen = false;
-   // this.getGroups()
+    // this.getGroups()
   }
 
-  getGroups()
-  {
-    this.conversationservice.getByGroup(this.getMyId()).subscribe(res=>{
+  getGroups() {
+    this.conversationservice.getByGroup(this.getMyId()).subscribe(res => {
 
 
-let imgurl :string ="/uploads/2025081116093544.png"
-      res.forEach(element =>{
-       
- let newconatc = new Contact(element.id, element.title, element.title, imgurl, "Online", "", 0,true)
+      let imgurl: string = "/uploads/2025081116093544.png"
+      res.forEach(element => {
+
+        let newconatc = new Contact(element.id, element.title, element.title, imgurl, "Online", "", 0, true)
         this.contacts.push(newconatc)
       })
-    
 
-})
+
+    })
   }
 
   toggleSelection(user: UserConversation): void {
@@ -491,15 +503,16 @@ let imgurl :string ="/uploads/2025081116093544.png"
     let listparticipent = selectedUsers.map(e => e.id)
     let createdby = this.getMyId()
 
-    this.conversationservice.creatGroupe(listparticipent,createdby,this.groupename).subscribe({
-      next: (res: any)=>{
-      
-       this.showSuccess()
-    this.closeModal();
-    },error: (err)=>{
-     
-      this.showerror(err.message)
-    }})
+    this.conversationservice.creatGroupe(listparticipent, createdby, this.groupename).subscribe({
+      next: (res: any) => {
+
+        this.showSuccess()
+        this.closeModal();
+      }, error: (err) => {
+
+        this.showerror(err.message)
+      }
+    })
 
   }
 
@@ -507,33 +520,18 @@ let imgurl :string ="/uploads/2025081116093544.png"
     const img = event.target as HTMLImageElement;
     img.src = "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde";
   }
-   avatarUrl(url: string, size = 16): string {
-  try {
-    const u = new URL(url);
-    // if (u.hostname.endsWith('images.unsplash.com')) {
-      // Ask Unsplash for a small, square, face-cropped thumbnail
-      u.searchParams.set('w', String(size));
-      u.searchParams.set('h', String(size));
-      u.searchParams.set('fit', 'crop');
-      u.searchParams.set('crop', 'faces');   // center on faces when possible
-      u.searchParams.set('auto', 'format');  // better format (webp/avif)
-      u.searchParams.set('dpr', '2');        // crisp on HiDPI screens
-   // }
-    return u.toString();
-  } catch {
-    // Non-URL strings (e.g., relative paths) just return as-is
-    return url;
+
+
+  showSuccess() {
+    this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Message Content' });
   }
-}
 
-     showSuccess() {
-        this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Message Content' });
-    }
-
-      showerror(text : string) {
-        this.messageService.add({ severity: 'error', summary: 'error', detail: text });
-    }
-
+  showerror(text: string) {
+    this.messageService.add({ severity: 'error', summary: 'error', detail: text });
+  }
+  get messagesArray(): ChatMessage[] {
+    return Array.from(this.messages);
+  }
 
 }
 
@@ -548,10 +546,10 @@ class Contact {
   status: string;
   lastMessage: string;
   unread: number;
-  isGroup :boolean
+  isGroup: boolean
 
-  constructor(id: number, name: string, email: string, avatar: string, status: string, lastMessage: string, 
-    unread: number,isGroup :boolean) {
+  constructor(id: number, name: string, email: string, avatar: string, status: string, lastMessage: string,
+    unread: number, isGroup: boolean) {
     this.id = id
     this.name = name;
     this.email = email
@@ -559,7 +557,7 @@ class Contact {
     this.status = status;
     this.lastMessage = lastMessage;
     this.unread = unread;
-    this.isGroup =isGroup
+    this.isGroup = isGroup
   }
 
 

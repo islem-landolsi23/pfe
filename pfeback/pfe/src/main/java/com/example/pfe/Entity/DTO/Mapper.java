@@ -4,6 +4,7 @@ package com.example.pfe.Entity.DTO;
 import com.example.pfe.Entity.*;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,19 +14,32 @@ public class Mapper {
 
 
     public ProjectDto toDto(Project project) {
+        List<SprintDto>sprintList = new ArrayList<>();
+        if(project.getSprints()!= null){
+            sprintList =project.getSprints().stream()
+                    .map(this::toDto)
+                    .toList() ;
+        }else {sprintList=null ;}
         return new ProjectDto(
                 project.getId(),
                 project.getName(),
                 project.getDescription(),
                 project.getStartDate(),
                 project.getEndDate(),
-                project.getSprints().stream()
-                        .map(this::toDto)
-                        .toList()
+                sprintList
         );
     }
 
     public SprintDto toDto(Sprint sprint) {
+
+        List<TaskDTO> taskDTOList = new ArrayList<>() ;
+        if( sprint.getTasks()!= null)
+        {
+            taskDTOList =    sprint.getTasks().stream()
+                    .map(this::toDto)
+                    .toList();
+        }else {taskDTOList =null ;}
+
         return new SprintDto(
                 sprint.getId(),
                 sprint.getName(),
@@ -33,9 +47,8 @@ public class Mapper {
                 sprint.getEndDate(),
                 sprint.getStatus(),
                 sprint.getProject() != null ? sprint.getProject().getId() : null,
-                sprint.getTasks().stream()
-                        .map(this::toDto)
-                        .toList()
+                taskDTOList
+
         );
     }
 

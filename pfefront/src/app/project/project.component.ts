@@ -20,109 +20,138 @@ import { log } from 'console';
 import { HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { ProjectService } from '../service/project.service';
+import { Toast } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-project',
   standalone: true,
-  imports: [ TableModule, TagModule,ButtonModule,InputTextModule ,DatePickerModule,FluidModule,TextareaModule,
-     IconFieldModule, InputTextModule,Dialog,
-      InputIconModule, MultiSelectModule, SelectModule, FormsModule,DrawerModule,Avatar,ReactiveFormsModule,
-      CommonModule],
+  imports: [TableModule, TagModule, ButtonModule, InputTextModule, DatePickerModule, FluidModule, TextareaModule,
+    IconFieldModule, InputTextModule, Dialog, Toast,
+    InputIconModule, MultiSelectModule, SelectModule, FormsModule, DrawerModule, Avatar, ReactiveFormsModule,
+    CommonModule],
+  providers: [MessageService],
   templateUrl: './project.component.html',
   styleUrl: './project.component.scss'
 })
-export class ProjectComponent implements OnInit{
+export class ProjectComponent implements OnInit {
   projectForm!: FormGroup
 
-searchValue :any
+  searchValue: any
   visible: boolean = false;
+  todelete: any;
 
- visibledelete: boolean = false;
+  visibledelete: boolean = false;
 
-    showdeletDialog() {
-        this.visibledelete = true;
-    }
-  
- projects: any[] = [];
+  showdeletDialog(id: any) {
+    console.log("project id", id)
+    this.todelete = id;
+    this.visibledelete = true;
+  }
+  deleteproject(id: any) {
+    this.projectservice.deleteProject(id).subscribe(res => {
+      console.log("delete sucessfully ", res)
+      this.getdataList();
+      this.visibledelete = false;
+    })
+  }
+  projects: any[] = [];
 
 
-    constructor(private projectservice :ProjectService,private fb: FormBuilder,private router: Router) {}
+  constructor(private projectservice: ProjectService, private fb: FormBuilder, private router: Router
+    , private messageService: MessageService
+  ) { }
 
-    ngOnInit() {
-   
+  ngOnInit() {
 
 
-this.getdataList();
 
-    
-    
-this.projectForm = this.fb.group({
+    this.getdataList();
+
+
+
+    this.projectForm = this.fb.group({
       name: [''],
       description: [''],
       startDate: [null],
       endDate: [null]
     });
-      
+
+  }
+
+
+  getdataList() {
+    this.projectservice.getListProject().subscribe(res => {
+
+      this.projects = res
+
+    })
+
+  }
+  onGlobalFilter(event: Event, table: Table) {
+    const input = event.target as HTMLInputElement;
+    table.filterGlobal(input.value, 'contains');
+  }
+  clear(table: Table) {
+    table.clear();
+  }
+
+  // getSeverity(status: string) {
+  //     switch (status) {
+  //         case 'unqualified':
+  //             return 'danger';
+
+  //         case 'qualified':
+  //             return 'success';
+
+  //         case 'new':
+  //             return 'info';
+
+  //         case 'negotiation':
+  //             return 'warn';
+
+
+  //     }
+  // }
+
+
+  saveProject() {
+    if (this.hasEmptyFields(this.projectForm)) {
+      console.log('Form has empty fields');
+      this.showError("Form has empty fields")
+      return;
     }
+    console.log("ena bech nsavi project", this.projectForm.value)
+    this.projectservice.addProject(this.projectForm.value).subscribe(
+      res => {
+
+        this.getdataList();
+        this.visible = false
+        this.showSucess()
+      })
+  }
+
+  goTodetails(p: any) {
+
+    this.router.navigate(['/project-details', p.id]);
 
 
-     getdataList()
-     {
-        this. projectservice.getListProject().subscribe(res=>{
-    
-      this.projects=res
-      
-     })
+  }
 
-     }
-onGlobalFilter(event: Event, table: Table) {
-  const input = event.target as HTMLInputElement;
-  table.filterGlobal(input.value, 'contains');
-}
-    clear(table: Table) {
-        table.clear();
-    }
+  showError(message: string) {
+    this.messageService.add({ severity: 'error', summary: 'Error', detail: message });
+  }
+  showSucess() {
+    this.messageService.add({ severity: 'success', summary: 'success', detail: 'saved successfully ' });
+  }
 
-    // getSeverity(status: string) {
-    //     switch (status) {
-    //         case 'unqualified':
-    //             return 'danger';
+  hasEmptyFields(formGroup: FormGroup): boolean {
+    return Object.keys(formGroup.controls).some(key => {
+      const control = formGroup.get(key);
+      return control?.value === null || control?.value === '';
+    });
 
-    //         case 'qualified':
-    //             return 'success';
-
-    //         case 'new':
-    //             return 'info';
-
-    //         case 'negotiation':
-    //             return 'warn';
-
-          
-    //     }
-    // }
-  
-
-    saveProject()
-    {
- 
-  
-this.projectservice.addProject(this.projectForm.value).subscribe(
-  res=>{
-   
-    this.getdataList();
-    this.visible=false
-
-  })
-    }
-
-    goTodetails(p :any){
-   
-        this.router.navigate(['/project-details',p.id]);
-    
-
-    }
+  }
 
 
-    
-   
 }

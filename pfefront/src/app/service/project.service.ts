@@ -8,50 +8,73 @@ export class ProjectService {
 
 
 
-   constructor(private http :HttpClient) { 
+  constructor(private http: HttpClient) {
 
-    
+
   }
 
 
 
 
- addProject(project :any) :Observable<any> {
-   const token = localStorage.getItem('jwt');
-     const headers = new HttpHeaders({
+  addProject(project: any): Observable<any> {
+    const token = localStorage.getItem('jwt');
+    const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'
     });
-  return this.http.post<any>("http://localhost:8080/api/projects/add",project,{headers}) ;
-   
-}
+    return this.http.post<any>("http://localhost:8080/api/projects/add", project, { headers });
 
- getListProject() :Observable<any[]> {
-   const token = localStorage.getItem('jwt');
-     const headers = new HttpHeaders({
+  }
+
+  UpdateProject(project: any): Observable<any> {
+    const token = localStorage.getItem('jwt');
+    const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'
     });
-  return this.http.get<any[]>("http://localhost:8080/api/projects/getAll",{headers}) ;
-   
-}
+    console.log("token", token)
+    return this.http.post<any>("http://localhost:8080/api/projects/gengercool", project, { headers });
 
-getProjectById(prjectId :string):Observable<any>{
-   const token = localStorage.getItem('jwt');
-     const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    });
+  }
 
-      return this.http.get<any>("http://localhost:8080/api/projects/getById/"+prjectId,{headers}) ;
-}
-saveSprints(project:any):Observable<any>{
-   const token = localStorage.getItem('jwt');
-     const headers = new HttpHeaders({
+  getListProject(): Observable<any[]> {
+    const token = localStorage.getItem('jwt');
+    const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'
     });
 
-      return this.http.post<any>("http://localhost:8080/api/projects/addSprints",project,{headers}) ;
-}
+    return this.http.get<any[]>("http://localhost:8080/api/projects/getAll", { headers });
+
+  }
+
+  getProjectById(prjectId: string): Observable<any> {
+    const token = localStorage.getItem('jwt');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+
+    return this.http.get<any>("http://localhost:8080/api/projects/getById/" + prjectId, { headers });
+  }
+
+
+  deleteProject(prjectId: string): Observable<any> {
+    const token = localStorage.getItem('jwt');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+
+    return this.http.delete<any>("http://localhost:8080/api/projects/Delete/" + prjectId, { headers });
+  }
+  saveSprints(project: any): Observable<any> {
+    const token = localStorage.getItem('jwt');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+
+    return this.http.post<any>("http://localhost:8080/api/projects/addSprints", project, { headers });
+  }
 }

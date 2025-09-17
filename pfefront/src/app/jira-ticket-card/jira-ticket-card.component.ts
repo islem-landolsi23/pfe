@@ -86,7 +86,7 @@ export class JiraTicketCardComponent implements OnInit, OnChanges {
           task.priority = el.priority
           task.dueDate = el.dueDate
           task.description = el.description
-          task.createdAt = null
+          task.createdAt = el.createdAt
           let user = this.allUsers.find(u => u.id == el.assignedUserId)
 
           task.assignedTo = user.name

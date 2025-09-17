@@ -53,4 +53,22 @@ public class ProjectController {
         project.setSprints(sprintList);
       return mapper.toDto(projectService.updateProject(project))  ;
     }
+
+    @DeleteMapping("/Delete/{id}")
+  public void   deletproject(@PathVariable long id)
+    {
+      Project p=  projectService.getProjecrById(id);
+        this.projectService.deleteProject(p);
+    }
+    @PostMapping("/gengercool")
+    public ProjectDto updateProject(@RequestBody Project p)
+    {
+        System.out.println("ena fil gengercool "+ mapper.toDto(p).toString());
+        Project update = projectService.getProjecrById(p.getId());
+        update.setName(p.getName());
+        update.setDescription(p.getDescription());
+        update.setStartDate(p.getStartDate());
+        update.setEndDate(p.getEndDate());
+       return mapper.toDto(projectService.updateProject(update)) ;
+    }
 }

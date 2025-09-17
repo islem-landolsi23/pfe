@@ -1,23 +1,26 @@
-   <button (click)="kanban()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-1">
-   view Mode   <i *ngIf="table" class="pi pi-th-large"></i>  <i *ngIf="!table" class="pi pi-table"></i>  
-    </button>
+<button (click)="kanban()"
+  class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-1">
+  view Mode <i *ngIf="table" class="pi pi-th-large"></i> <i *ngIf="!table" class="pi pi-table"></i>
+</button>
 
-<div class="container mx-auto p-4" *ngIf ="table">
+<div class="container mx-auto p-4" *ngIf="table">
   <!-- Header Section -->
   <div class="flex justify-between items-center mb-6">
     <!-- <h1 class="text-2xl font-bold text-gray-800">Task Management</h1> -->
-         <h1 class="text-2xl font-bold text-gray-800"></h1>
-    <button (click)="openTicketModal()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center gap-1">
+    <h1 class="text-2xl font-bold text-gray-800"></h1>
+    <button (click)="openTicketModal()"
+      class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center gap-1">
       <i class="pi pi-plus"></i> New Ticket
     </button>
-    
+
   </div>
 
   <!-- Filters Section -->
   <div class="bg-white p-4 rounded-lg shadow mb-6">
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
       <div class="relative">
-        <input type="text" [(ngModel)]="searchQuery" placeholder="Search tickets..." class="w-full border rounded-lg px-3 py-2" (change)=" applyFilters()">
+        <input type="text" [(ngModel)]="searchQuery" placeholder="Search tickets..."
+          class="w-full border rounded-lg px-3 py-2" (change)=" applyFilters()">
       </div>
       <select [(ngModel)]="filterStatus" class="border rounded-lg px-3 py-2" (change)=" applyFilters()">
         <option value="">All Status</option>
@@ -36,18 +39,19 @@
     <table class="min-w-full">
       <thead class="bg-gray-50">
         <tr>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+          <!-- <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th> -->
           <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
           <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Priority</th>
           <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
           <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Assigned To</th>
           <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created Date</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Due Date</th>
           <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
         </tr>
       </thead>
       <tbody class="bg-white divide-y divide-gray-200">
         <tr *ngFor="let ticket of filteredTickets" class="hover:bg-gray-50">
-          <td class="px-6 py-4 whitespace-nowrap">{{ticket.id}}</td>
+          <!-- <td class="px-6 py-4 whitespace-nowrap">{{ticket.id}}</td> -->
           <td class="px-6 py-4">{{ticket.title}}</td>
           <td class="px-6 py-4">
             <span [ngClass]="getPriorityClass(ticket.priority)" class="px-2 py-1 rounded-full text-xs">
@@ -60,13 +64,14 @@
             </span>
           </td>
           <td class="px-6 py-4">{{ticket.assignedTo}}</td>
-          <td class="px-6 py-4">{{ticket.createdDate | date:'short'}}</td>
+          <td class="px-6 py-4">{{ ticket.createdAt |date:'shortDate' }}</td>
+          <td class="px-6 py-4">{{ticket.dueDate |date:'shortDate'}}</td>
           <td class="px-6 py-4">
-         
+
             <button (click)="editTicket(ticket)" class="text-green-600 hover:text-green-800 mr-2">
               <i class="pi pi-pencil"></i>
             </button>
-               <button (click)="viewTicketDetails(ticket)" class="text-red-600 hover:text-red-800 mr-2">
+            <button (click)="viewTicketDetails(ticket)" class="text-red-600 hover:text-red-800 mr-2">
               <i class="pi pi-trash"></i>
             </button>
           </td>
@@ -84,7 +89,8 @@
       <button [disabled]="currentPage === 1" (click)="changePage(currentPage - 1)" class="px-3 py-1 rounded border">
         Previous
       </button>
-      <button [disabled]="currentPage === totalPages" (click)="changePage(currentPage + 1)" class="px-3 py-1 rounded border">
+      <button [disabled]="currentPage === totalPages" (click)="changePage(currentPage + 1)"
+        class="px-3 py-1 rounded border">
         Next
       </button>
     </div>
@@ -142,6 +148,6 @@
   </div>
 </div>
 <div *ngIf="!table">
-<app-kanban2  [sprintId]="sprintId"></app-kanban2>
+  <app-kanban2 [sprintId]="sprintId"></app-kanban2>
 
 </div>

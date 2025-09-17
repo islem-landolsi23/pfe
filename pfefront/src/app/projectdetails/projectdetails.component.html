@@ -7,181 +7,151 @@
     <!-- Project Name -->
     <div>
       <label for="projectName" class="block text-sm font-medium mb-2">Project Name</label>
-       <p-fluid>
-      <input id="projectName" type="text" pInputText formControlName="name" placeholder="Enter project name" 
-       />
+      <p-fluid>
+        <input id="projectName" type="text" pInputText formControlName="name" placeholder="Enter project name" />
       </p-fluid>
     </div>
 
     <!-- Description -->
     <div>
       <label for="description" class="block text-sm font-medium mb-2">Project Description</label>
-        <p-fluid>
-      <textarea id="description" rows="5" pTextarea formControlName="description" placeholder="Write project details..."
-      ></textarea>
+      <p-fluid>
+        <textarea id="description" rows="5" pTextarea formControlName="description"
+          placeholder="Write project details..."></textarea>
       </p-fluid>
     </div>
 
     <!-- Dates -->
     <div class="grid ">
-        
+
       <div class="col-12 md:col-6">
         <label for="startDate" class="block text-sm font-medium mb-2">Start Date</label>
-        <p-datepicker inputId="startDate" formControlName="startDate" [showIcon]="true"   styleClass="w-full"
-       
+        <p-datepicker inputId="startDate" formControlName="startDate" [showIcon]="true" styleClass="w-full"
           placeholder="Start Date"></p-datepicker>
       </div>
 
       <div class="col-12 md:col-6">
         <label for="endDate" class="block text-sm font-medium mb-2">End Date</label>
-        <p-datepicker inputId="endDate" formControlName="endDate" [showIcon]="true" placeholder="End Date" 
-         styleClass="w-full"></p-datepicker>
+        <p-datepicker inputId="endDate" formControlName="endDate" [showIcon]="true" placeholder="End Date"
+          styleClass="w-full"></p-datepicker>
       </div>
     </div>
- </form>
-    <!-- Sprints Accordion in a Card -->
-    <p-card class="w-11 shadow-4">
-   
+  </form>
+  <!-- Sprints Accordion in a Card -->
+  <p-card class="w-11 shadow-4">
 
-      <p-panel [toggleable]="true" class="w-full  h-full" >
-       
-          <ng-template pTemplate="header">
-            <div class="text-md font-medium text-gray-700">Sprint List</div>
-          </ng-template>
 
-          <p-table [value]="listsprints" [paginator]="true" [rows]="5" #dt 
-           responsiveLayout="scroll" class="p-datatable-sm mt-3" [globalFilterFields]="['name', 'status', 'startDate', 'endDate']"
-           >
-               <ng-template #caption>
-            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+    <p-panel [toggleable]="true" class="w-full  h-full">
 
-                <!-- Left side -->
-                <div style="display: flex; align-items: center; gap: 1rem;">
-                    <p-button [outlined]="true" icon="pi pi-filter-slash" label="Clear" (click)="clear(dt)" />
-                    <p-iconField iconPosition="left">
-                        <p-inputIcon>
-                            <i class="pi pi-search"></i>
-                        </p-inputIcon>
-                        <input pInputText type="text" [(ngModel)]="searchValue" (input)="onGlobalFilter($event, dt)"
-                            placeholder="Keyboard Search" />
-                    </p-iconField>
-                </div>
-                      <button pButton (click)="showDialog()" icon="pi pi-plus"></button>
-                </div>
-                </ng-template>
-            <ng-template pTemplate="header">
-              <tr>
-                <th>Name</th>
-                <th>Status</th>
-                <th>Start Date</th>
-                <th>End Date</th>
-              </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-sprint>
-              <tr   (click)="navigateToSprint(sprint)">
-                <td>{{ sprint.name }}</td>
-                 <td>
-                    <p-tag [value]="sprint.status" [severity]="getSeverity(sprint.status)" />
-                </td>
-                <td>{{ sprint.startDate | date }}</td>
-                <td>{{ sprint.endDate | date }}</td>
-              </tr>
-            </ng-template>
-          </p-table>
-       
-      </p-panel>
-    </p-card>
+      <ng-template pTemplate="header">
+        <div class="text-md font-medium text-gray-700">Sprint List</div>
+      </ng-template>
 
-    <!-- Save Button -->
-    <!-- <div class="flex justify-end mt-4">
+      <p-table [value]="listsprints" [paginator]="true" [rows]="5" #dt responsiveLayout="scroll"
+        class="p-datatable-sm mt-3" [globalFilterFields]="['name', 'status', 'startDate', 'endDate']">
+        <ng-template #caption>
+          <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+
+            <!-- Left side -->
+            <div style="display: flex; align-items: center; gap: 1rem;">
+              <p-button [outlined]="true" icon="pi pi-filter-slash" label="Clear" (click)="clear(dt)" />
+              <p-iconField iconPosition="left">
+                <p-inputIcon>
+                  <i class="pi pi-search"></i>
+                </p-inputIcon>
+                <input pInputText type="text" [(ngModel)]="searchValue" (input)="onGlobalFilter($event, dt)"
+                  placeholder="Keyboard Search" />
+              </p-iconField>
+            </div>
+            <button pButton (click)="showDialog()" icon="pi pi-plus"></button>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Name</th>
+            <th>Status</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-sprint>
+          <tr (click)="navigateToSprint(sprint)">
+            <td>{{ sprint.name }}</td>
+            <td>
+              <p-tag [value]="sprint.status" [severity]="getSeverity(sprint.status)" />
+            </td>
+            <td>{{ sprint.startDate | date:'shortDate' }}</td>
+            <td>{{ sprint.endDate | date:'shortDate' }}</td>
+          </tr>
+        </ng-template>
+      </p-table>
+
+    </p-panel>
+  </p-card>
+
+  <!-- Save Button -->
+  <!-- <div class="flex justify-end mt-4">
       <button pButton type="button" label="Save Project" icon="pi pi-save" class="p-button-primary" (click)="saveProject()"></button>
     </div> -->
 
- 
+  <div class="flex justify-end mt-3">
+    <button pButton pRipple label="Save" class="p-button-success" (click)="updateProject()">
+    </button>
+  </div>
 </div>
-<p-dialog header="Add Sprint" [modal]="true" [(visible)]="visible" [style]="{ width: '50rem' }" [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }">
-        <div class="surface-card p-4 border-round shadow-2">
-  <form [formGroup]="form" class="p-fluid">
-    <div formArrayName="sprints">
-      <div
-        *ngFor="let sprint of sprints.controls; let i = index"
-        [formGroupName]="i"
-        class="mb-5 border-1 border-round p-4 border-gray-300"
-      >
-        <h5>Sprint {{ i + 1 }}</h5>
+<p-dialog header="Add Sprint" [modal]="true" [(visible)]="visible" [style]="{ width: '50rem' }"
+  [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }">
+  <div class="surface-card p-4 border-round shadow-2">
+    <form [formGroup]="form" class="p-fluid">
+      <div formArrayName="sprints">
+        <div *ngFor="let sprint of sprints.controls; let i = index" [formGroupName]="i"
+          class="mb-5 border-1 border-round p-4 border-gray-300">
+          <h5>Sprint {{ i + 1 }}</h5>
 
-        <div class="field flex align-items-center gap-3">
-          <label for="name" class="block mr-2">Name</label>
-          <input
-            pInputText
-            type="text"
-            formControlName="name"
-            placeholder="Sprint name"
-          />
+          <div class="field flex align-items-center gap-3">
+            <label for="name" class="block mr-2">Name</label>
+            <input pInputText type="text" formControlName="name" placeholder="Sprint name" />
+          </div>
+
+          <div class="field flex align-items-center gap-3">
+            <label for="startDate">Start Date</label>
+            <p-datepicker formControlName="startDate" dateFormat="mm/dd/yy"></p-datepicker>
+          </div>
+
+          <div class="field flex align-items-center gap-3">
+            <label for="endDate">End Date</label>
+            <p-datepicker formControlName="endDate" dateFormat="mm/dd/yy"></p-datepicker>
+          </div>
+
+          <div class="field flex align-items-center gap-3">
+            <label for="status">Status</label>
+            <p-dropdown [options]="statusOptions" formControlName="status" placeholder="Select a status"
+              optionLabel="label">
+              <!-- Template for dropdown items -->
+              <ng-template let-option pTemplate="item">
+                <p-tag [value]="option.label" [severity]="getSeverity(option.value)"></p-tag>
+              </ng-template>
+
+              <!-- Template for selected item -->
+              <ng-template let-selectedOption pTemplate="selectedItem">
+                <p-tag *ngIf="selectedOption" [value]="selectedOption.label"
+                  [severity]="getSeverity(selectedOption.value)"></p-tag>
+              </ng-template>
+            </p-dropdown>
+          </div>
+
+          <button pButton type="button" label="Remove" class="p-button-danger mt-3" (click)="removeSprint(i)"
+            *ngIf="sprints.length > 1"></button>
         </div>
-
-        <div class="field flex align-items-center gap-3">
-          <label for="startDate">Start Date</label>
-          <p-datepicker formControlName="startDate" dateFormat="mm/dd/yy"></p-datepicker>
-        </div>
-
-        <div class="field flex align-items-center gap-3">
-          <label for="endDate">End Date</label>
-          <p-datepicker formControlName="endDate" dateFormat="mm/dd/yy"></p-datepicker>
-        </div>
-
-        <div class="field flex align-items-center gap-3">
-          <label for="status">Status</label>
-      <p-dropdown
-  [options]="statusOptions"
-  formControlName="status"
-  placeholder="Select a status"
-  
-  optionLabel="label"
->
-  <!-- Template for dropdown items -->
-  <ng-template let-option pTemplate="item">
-    <p-tag
-      [value]="option.label"
-      [severity]="getSeverity(option.value)"
-    ></p-tag>
-  </ng-template>
-
-  <!-- Template for selected item -->
-  <ng-template let-selectedOption pTemplate="selectedItem">
-    <p-tag
-      *ngIf="selectedOption"
-      [value]="selectedOption.label"
-      [severity]="getSeverity(selectedOption.value)"
-    ></p-tag>
-  </ng-template>
-</p-dropdown>
-        </div>
-
-        <button
-          pButton
-          type="button"
-          label="Remove"
-          class="p-button-danger mt-3"
-          (click)="removeSprint(i)"
-          *ngIf="sprints.length > 1"
-        ></button>
       </div>
-    </div>
-<div class="flex gap-2 mt-4">
-    <button
-      pButton
-      type="button"
-      label="Add Sprint"
-      class="p-button-success mb-3"
-      (click)="addSprint()"
-    ></button>
+      <div class="flex gap-2 mt-4">
+        <button pButton type="button" label="Add Sprint" class="p-button-success mb-3" (click)="addSprint()"></button>
 
-    <button pButton   type="Submit" label="Submit" class="p-button-primary mb-3"
-    (click)="checkSprint()"></button>
-    </div>
-  </form>
-</div>
+        <button pButton type="Submit" label="Submit" class="p-button-primary mb-3" (click)="checkSprint()"></button>
+      </div>
+    </form>
+  </div>
 
-    </p-dialog>
+</p-dialog>
 
+<p-toast />
