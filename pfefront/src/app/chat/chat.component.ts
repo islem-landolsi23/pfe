@@ -66,8 +66,9 @@ export class ChatComponent implements OnInit, AfterViewChecked, OnDestroy {
   backendurl = 'http://localhost:8080'
 
 
-  // messages: ChatMessage[] = [];
-  messages = new Set<ChatMessage>();
+  messages: ChatMessage[] = [];
+  private messageIds = new Set<string>();
+  // messages = new Set<ChatMessage>();
   email: any;
   myName: any
   myImage: any;
@@ -297,21 +298,26 @@ export class ChatComponent implements OnInit, AfterViewChecked, OnDestroy {
   lisenerMessage() {
     this.messageSub?.unsubscribe();
     this.messageSub = this.chatService.getMessageSubject().subscribe((messages: any) => {
-      console.log("ena el message eli jit ", messages)
+
 
       if (messages.conversationID == this.conversationId) {
-        console.log("ena li bech netekteb", messages)
-        console.log("ena li 9dime", this.messages)
+
         //   this.messages = [...this.messages, messages];
-        this.messages.add(messages);
-        console.log("ena li jdide", this.messages)
+        this.addMessage(messages);
+
       }
       // this.messages = [...this.messages, ...messages.map((item: any) => ({ ...item }))];
 
 
     });
   }
-
+  addMessage(msg: ChatMessage) {
+    const key = msg.id ?? `${msg.user}-${msg.timestamp}-${msg.content}`;
+    if (!this.messageIds.has(key)) {
+      this.messageIds.add(key);
+      this.messages = [...this.messages, msg]; // safe for *ngFor
+    }
+  }
 
 
 
@@ -319,16 +325,16 @@ export class ChatComponent implements OnInit, AfterViewChecked, OnDestroy {
     //  this.messageSub?.unsubscribe();
     this.conversationservice.getMessagesByConversation(id).subscribe(res => {
 
-      // this.messages = res.map((item: any) => ({
-      //   ...item,
-      //   //  message_side: item.user === this.userName ? 'sender': 'receiver'
-      // }))
-      this.messages = new Set(
-        res.map((item: any) => ({
-          ...item,
-          // message_side: item.user === this.userName ? 'sender': 'receiver'
-        }))
-      );
+      this.messages = res.map((item: any) => ({
+        ...item,
+        //  message_side: item.user === this.userName ? 'sender': 'receiver'
+      }))
+      // this.messages = new Set(
+      //   res.map((item: any) => ({
+      //     ...item,
+      //     // message_side: item.user === this.userName ? 'sender': 'receiver'
+      //   }))
+      // );
     })
   }
 
@@ -370,7 +376,8 @@ export class ChatComponent implements OnInit, AfterViewChecked, OnDestroy {
       } as ChatMessage
 
       this.chatService.sendMessage(this.conversationId, chatMessage, this.selectedContact.isGroup);
-      this.messages.add(chatMessage);
+      // this.messages.add(chatMessage);
+      this.addMessage(chatMessage)
       // this.messages.push(chatMessage)
     })
 
@@ -529,9 +536,9 @@ export class ChatComponent implements OnInit, AfterViewChecked, OnDestroy {
   showerror(text: string) {
     this.messageService.add({ severity: 'error', summary: 'error', detail: text });
   }
-  get messagesArray(): ChatMessage[] {
-    return Array.from(this.messages);
-  }
+  // get messagesArray(): ChatMessage[] {
+  //   return Array.from(this.messages);
+  // }
 
 }
 

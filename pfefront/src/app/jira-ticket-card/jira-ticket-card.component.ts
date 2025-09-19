@@ -7,10 +7,12 @@ import { UserService } from '../service/user.service';
 import { TaskserviceService } from '../service/taskservice.service';
 import { ChatService, NotificationDTO } from '../service/chat.service';
 import { Kanban2Component } from '../kanban2/kanban2.component';
+import { Dialog, DialogModule } from 'primeng/dialog';
+import { ButtonModule } from 'primeng/button';
 @Component({
   selector: 'app-jira-ticket-card',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, Kanban2Component],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, Kanban2Component, Dialog, ButtonModule],
   templateUrl: './jira-ticket-card.component.html',
   styleUrl: './jira-ticket-card.component.scss'
 })
@@ -44,7 +46,7 @@ export class JiraTicketCardComponent implements OnInit, OnChanges {
   users: string[] = [];
 
   table = true;
-
+  visibledelete = false;
   constructor(private fb: FormBuilder, private userService: UserService
     , private taskservice: TaskserviceService, private chatservice: ChatService) {
     this.getAllUsers()
@@ -76,6 +78,7 @@ export class JiraTicketCardComponent implements OnInit, OnChanges {
       this.taskservice.getBySprint(this.sprintId).subscribe(res => {
 
         console.log("hello", res)
+        this.tickets = []
         res.forEach(el => {
 
 
@@ -287,7 +290,35 @@ export class JiraTicketCardComponent implements OnInit, OnChanges {
   kanban() {
     this.table = !this.table;
   }
+  tosktodelete: any
 
+  showdeleteTask(task: any) {
+    this.visibledelete = true;
+    this.tosktodelete = task
+
+    // if (confirm("Are you sure you want to delete this task?")) {
+    //   this.columntodeletfrom.tasks = this.columntodeletfrom.tasks.filter(t => t.id !== this.tosktodelete);
+    // }
+  }
+
+
+
+
+  deletetask() {
+
+    //   this.columntodeletfrom.tasks = this.columntodeletfrom.tasks.filter(t => t.id !== this.tosktodelete.id);
+
+    this.taskservice.delete(this.tosktodelete.id).subscribe(res => {
+
+
+      //  this.columntodeletfrom.tasks = this.columntodeletfrom.tasks.filter(t => t.id !== this.tosktodelete.id);
+
+      this.visibledelete = false
+      this.fillTable()
+      //window.location.reload()
+
+    })
+  }
 }
 
 export interface TaskDTO {

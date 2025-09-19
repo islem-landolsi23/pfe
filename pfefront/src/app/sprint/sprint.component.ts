@@ -52,10 +52,10 @@ export class SprintComponent implements OnInit {
     private projectservice: ProjectService, private sprintService: SprintService) {
 
     this.sprintForm = this.fb.group({
-      name: [''],
-      description: [''],
-      startDate: [null],
-      endDate: [null]
+      name: [{ value: '', disabled: true }],
+      description: [{ value: '', disabled: true }],
+      startDate: [{ value: '', disabled: true }],
+      endDate: [{ value: '', disabled: true }]
     });
 
 

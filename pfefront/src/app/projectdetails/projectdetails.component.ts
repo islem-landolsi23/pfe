@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common'; // <-- Import this
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -177,7 +177,10 @@ export class ProjectdetailsComponent implements OnInit {
 
   checkSprint() {
 
-
+    if (this.checkemptyformArray(this.sprints)) {
+      this.showError("Form has empty fields")
+      return;
+    }
     const sprintsRaw = this.form.get('sprints')?.value || [];
 
     // Transform: replace { label, value } with just value
@@ -188,7 +191,10 @@ export class ProjectdetailsComponent implements OnInit {
 
     this.project.sprints = sprintsTransformed;
     this.projectservice.saveSprints(this.project).subscribe(res => {
+      this.showSucess()
       console.log("new project ", res)
+      this.listsprints = res.sprints
+      this.visible = false
     })
 
 
@@ -252,6 +258,33 @@ export class ProjectdetailsComponent implements OnInit {
   }
   showSucess() {
     this.messageService.add({ severity: 'success', summary: 'success', detail: 'saved successfully ' });
+  }
+
+  checkemptyformArray(formArray: FormArray) {
+    console.log(formArray.controls.map(f => f.value))
+    const emptyIndexes: number[] = [];
+    formArray.controls.forEach((ctrl, i) => {
+      if (this.controlHasEmpty(ctrl)) emptyIndexes.push(i);
+    });
+    console.log("Form groups with any empty field at indexes:", emptyIndexes);
+    // if thereis empty indexes it reurn true
+    return emptyIndexes.length > 0;
+  }
+  controlHasEmpty(control: AbstractControl): boolean {
+    if (control instanceof FormGroup) {
+      return Object.keys(control.controls).some(key => this.controlHasEmpty(control.get(key)!));
+    }
+
+    if (control instanceof FormArray) {
+      return control.controls.some(c => this.controlHasEmpty(c));
+    }
+
+    // FormControl case
+    const v = (control as FormControl).value;
+    if (v === null || v === undefined) return true;
+    if (typeof v === 'string') return v.trim() === '';
+    // treat Date/number/object as filled (adjust if you want to treat null date as empty)
+    return false;
   }
 
 }

@@ -66,11 +66,11 @@ public class MessageWebSocketController {
         newMessage.setType(message.getFileType());
 
 
-        messageRepository.save(newMessage);
+             Message m=  messageRepository.save(newMessage);
 
 
 
-        return new ChatMessage( message.getUser(),
+        return new ChatMessage(m.getId(), message.getUser(),
                 message.getContent(),
                 message.getTimestamp(),
                 message.getFile_Url(), message.getConversationID(),

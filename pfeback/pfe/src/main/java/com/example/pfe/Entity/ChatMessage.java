@@ -12,6 +12,8 @@ import lombok.ToString;
 @ToString
 public class ChatMessage {
 
+
+    Long id ;
     String user;
     String content ;
     String timestamp;

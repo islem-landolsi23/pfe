@@ -1,4 +1,5 @@
 export interface ChatMessage {
+  id :any
     user: string;
     timestamp: string ;
     content : string 

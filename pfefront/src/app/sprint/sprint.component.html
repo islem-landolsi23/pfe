@@ -5,11 +5,12 @@
   <form [formGroup]="sprintForm" class="p-fluid flex flex-column gap-5">
 
     <!-- Project Name -->
-    <div>
+    <div class="grid ">
+
       <label for="projectName" class="block text-sm font-medium mb-2">name</label>
-      <p-fluid>
-        <input id="projectName" type="text" pInputText formControlName="name" />
-      </p-fluid>
+
+      <input id="projectName" type="text" pInputText formControlName="name" class="w-80" />
+
     </div>
 
 
@@ -85,10 +86,10 @@
 
 
 
-  <div class="flex justify-end mt-3">
+  <!-- <div class="flex justify-end mt-3">
     <button pButton pRipple label="Save"
       class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center gap-1">
     </button>
-  </div>
+  </div> -->
 </div>
 <p-toast />
