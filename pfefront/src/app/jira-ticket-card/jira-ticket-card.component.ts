@@ -120,7 +120,7 @@ export class JiraTicketCardComponent implements OnInit, OnChanges {
   }
   loadMockData() {
     this.tickets = Array(50).fill(null).map((_, index) => ({
-      id: `TIC-${index + 1000}`,
+      // id: `TIC-${index + 1000}`,
       title: `Sample Ticket ${index + 1}`,
       description: `This is a sample ticket description ${index + 1}`,
       priority: this.priorityOptions[Math.floor(Math.random() * 3)],
@@ -254,7 +254,7 @@ export class JiraTicketCardComponent implements OnInit, OnChanges {
         }
       } else {
         const newTicket = {
-          id: `TIC-${this.tickets.length + 1000}`,
+          id: null,
           ...formData,
           createdDate: new Date()
         };
@@ -288,6 +288,7 @@ export class JiraTicketCardComponent implements OnInit, OnChanges {
 
 
   kanban() {
+    this.fillTable()
     this.table = !this.table;
   }
   tosktodelete: any

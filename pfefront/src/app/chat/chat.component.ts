@@ -261,9 +261,10 @@ export class ChatComponent implements OnInit, AfterViewChecked, OnDestroy {
 
   sendMessage() {
 
-
+    let Id = this.generateLongId()
     const chatMessage = {
 
+      id: Id,
       user: this.userName,
       timestamp: new Date().toDateString(),
       content: this.newMessage,
@@ -315,7 +316,9 @@ export class ChatComponent implements OnInit, AfterViewChecked, OnDestroy {
     const key = msg.id ?? `${msg.user}-${msg.timestamp}-${msg.content}`;
     if (!this.messageIds.has(key)) {
       this.messageIds.add(key);
+      console.log("el 9dime", this.messages)
       this.messages = [...this.messages, msg]; // safe for *ngFor
+      console.log("el jdide", this.messages)
     }
   }
 
@@ -356,15 +359,20 @@ export class ChatComponent implements OnInit, AfterViewChecked, OnDestroy {
       this.uploadFile(file);
     }
   }
-
+  generateLongId(): number {
+    return Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
+  }
   uploadFile(file: File) {
 
 
     this.fileservice.saveFile(file).subscribe(res => {
       let fileType = this.detectFileType(res.fileUrl)
 
+
+      let Id = this.generateLongId()
       const chatMessage = {
 
+        id: Id,
         user: this.userName,
         timestamp: new Date().toDateString(),
         content: "",

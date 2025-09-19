@@ -3,6 +3,7 @@ package com.example.pfe.Entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDateTime;
 
@@ -15,7 +16,8 @@ import java.time.LocalDateTime;
 public class Message {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(generator = "assigned")
+    @GenericGenerator(name = "assigned", strategy = "assigned")
     private Long id;
 
     private String senderEmail;

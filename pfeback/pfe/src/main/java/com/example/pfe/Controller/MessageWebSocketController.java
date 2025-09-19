@@ -64,9 +64,17 @@ public class MessageWebSocketController {
 
         newMessage.setFileUrl(message.getFile_Url());
         newMessage.setType(message.getFileType());
+        System.out.println(message.getId());
+        System.out.println("**************************"+message.getId() != null);
+        Message m = new Message();
+        if(message.getId() != null)
+        {  newMessage.setId(message.getId());
+             m=  messageRepository.save(newMessage);
+            System.out.println("the id "+m.getId());
+        }
+        else { m=  messageRepository.save(newMessage);}
 
 
-             Message m=  messageRepository.save(newMessage);
 
 
 

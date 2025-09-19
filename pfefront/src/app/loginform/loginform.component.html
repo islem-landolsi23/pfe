@@ -1,26 +1,24 @@
-
-
 <div class="flex justify-content-center flex-wrap">
     <!-- <div class="flex align-items-center justify-content-center w-4rem h-4rem bg-primary font-bold border-round m-2">1</div> -->
     <div class="flex align-items-center justify-content-center">
-<div class="container">
+        <div class="container">
 
 
 
 
-    <div class="main">
-    
-            <h1>Login</h1>
-            <div class="textbox">
-                <input type="text" placeholder="Email" required [(ngModel)]="email" >
-                <i class='bx bxs-user'></i>
-            </div>
-            <div class="textbox">
-                <input type="password" placeholder="Password" required [(ngModel)]="password">
-                <i class='bx bxs-lock-alt'></i>
-            </div>
-            <button class="button" type="submit"(click)="login()"> Login</button> 
-            <!-- <div class="checkbox">
+            <div class="main">
+
+                <h1>Login</h1>
+                <div class="textbox">
+                    <input type="text" placeholder="Email" required [(ngModel)]="email">
+                    <i class='bx bxs-user'></i>
+                </div>
+                <div class="textbox">
+                    <input type="password" placeholder="Password" required [(ngModel)]="password">
+                    <i class='bx bxs-lock-alt'></i>
+                </div>
+                <button class="button" type="submit" (click)="login()"> Login</button>
+                <!-- <div class="checkbox">
                 <label> <input type="checkbox"> Remember Me</label>
                 <a href="#">Forget Password</a>
             </div>
@@ -28,9 +26,9 @@
             <button class="button" type="submit"> Login</button> -->
 
 
-            <div class="columns">
+                <div class="columns">
 
-                <!-- <div class="social-links column is-offset-3">
+                    <!-- <div class="social-links column is-offset-3">
 
                     <a aria-label="Github" target="_blank" rel="noopener" (click)="loginWithGit()">
                         Connect with github
@@ -40,39 +38,40 @@
                         </svg>
                     </a>
                 </div> -->
-                <br>
-                  <div class="githubcenter">
+                    <br>
+                    <div class="githubcenter">
 
-                             <a  class="github-login-btn"  (click)="loginWithGit()">
-  <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub logo" class="github-logo">
-  <span>Connect with GitHub</span>
-</a>
+                        <a class="github-login-btn" (click)="loginWithGit()">
+                            <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+                                alt="GitHub logo" class="github-logo">
+                            <span>Connect with GitHub</span>
+                        </a>
+                    </div>
+
+
                 </div>
 
-    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             </div>
-
-
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
-
-
-
-    </div>
-</div>
+        </div>
     </div>
     <!-- <div class="flex align-items-center justify-content-center w-4rem h-4rem bg-primary font-bold border-round m-2">3</div> -->
 </div>
@@ -81,3 +80,4 @@
 
 
 
+<p-toast />
