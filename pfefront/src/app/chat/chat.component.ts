@@ -65,7 +65,7 @@ export class ChatComponent implements OnInit, AfterViewChecked, OnDestroy {
   groupename: any;
   backendurl = 'http://localhost:8080'
 
-
+  notGroup = true;
   messages: ChatMessage[] = [];
   private messageIds = new Set<string>();
   // messages = new Set<ChatMessage>();
@@ -193,6 +193,7 @@ export class ChatComponent implements OnInit, AfterViewChecked, OnDestroy {
     // Unsubscribe from any old subscription
 
     if (contact.isGroup == false) {
+      this.notGroup = true;
       if (this.getMyId() != null) {
         this.conversationservice.createOrGetPrivateChat(this.getMyId(), contact.id).subscribe(res => {
 
@@ -216,6 +217,7 @@ export class ChatComponent implements OnInit, AfterViewChecked, OnDestroy {
         console.log("raj3it null")
 
     } else {
+      this.notGroup = false;
       this.selectedContact = contact;
       this.conversationId = contact.id;
       this.chatService.setActiveChatUser(contact.email);
@@ -359,7 +361,8 @@ export class ChatComponent implements OnInit, AfterViewChecked, OnDestroy {
       const maxSize = 100 * 1024 * 1024; // 100 MB in bytes
 
       if (file.size > maxSize) {
-        alert("File size must be less than 100 MB!");
+        this.showerror("File size must be less than 100 MB!")
+
         return; // stop upload
       }
       this.uploadFile(file);
@@ -433,6 +436,8 @@ export class ChatComponent implements OnInit, AfterViewChecked, OnDestroy {
     this.notificationDataservice.markListAsread(notificatinoDto).subscribe(res => {
 
 
+
+      this.chatService.sendToclear(notificatinoDto)
       const contact = this.contacts.find(c => c.email === senderEmail);
       if (contact) {
         contact['unread'] = 0;

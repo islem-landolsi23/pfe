@@ -66,7 +66,7 @@
               -->
             <i class="pi pi-users" style="font-size: 1.5rem"></i>
           </button>
-          <button class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full" (click)="call()">
+          <button *ngIf="notGroup" class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full" (click)="call()">
             <svg class="w-12 h-6 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor"
               viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

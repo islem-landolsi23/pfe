@@ -146,6 +146,7 @@ export class AppComponent implements OnInit {
 
               this.notificationdataservice.markMessageAsread(notification).subscribe(() => {
 
+
               })
             }
           }
@@ -308,7 +309,8 @@ export class AppComponent implements OnInit {
 
   goToRout(path: string) {
 
-
+    console.log("this is wis bize", this.unreadMessagesCount)
+    console.log("this is wis bize", this.unreadNotificationsCount)
     if (path && path != '/meeting' && path != 'startmeeting' && path != 'join' && path != 'Notifications')
       this.router.navigateByUrl(path);
     else {

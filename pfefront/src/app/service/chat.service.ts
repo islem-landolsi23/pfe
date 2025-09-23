@@ -13,7 +13,7 @@ import { forkJoin } from 'rxjs';
 export class ChatService {
   private stompClient: any
   private messageSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
-  private notificationsSubject = new BehaviorSubject<NotificationDTO[]>([]);
+  private notificationsSubject = new BehaviorSubject<NotificationDTO[] | null>([]);
   private activeChatUserSource = new BehaviorSubject<string | null>(null);
 
 
@@ -135,7 +135,7 @@ export class ChatService {
 
 
 
-  getNotifications(): Observable<NotificationDTO[]> {
+  getNotifications(): Observable<NotificationDTO[] | null> {
     return this.notificationsSubject.asObservable();
   }
 
@@ -155,7 +155,9 @@ export class ChatService {
     });
 
   }
-
+  sendToclear(notificatinoDto: any) {
+    this.notificationsSubject.next(notificatinoDto);
+  }
 
 
 
