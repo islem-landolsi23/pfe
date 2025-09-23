@@ -98,9 +98,9 @@
               class="max-w-full rounded mt-2"></video>
 
             <!-- PDF / Other -->
-            <a *ngIf="message.fileType === 'pdf' || message.fileType === 'file'" [href]="message.file_Url"
+            <a *ngIf="message.fileType === 'pdf' || message.fileType === 'file'" [href]="backendurl + message.file_Url"
               target="_blank" class="underline mt-2 block">
-              📄 Download File
+              {{changeFilename(message.file_Url)}} 📄 Download File
             </a>
             <span class="text-xs opacity-75">{{message.timestamp | date:"MMM dd, yyyy : HH:mm"}}</span>
           </div>

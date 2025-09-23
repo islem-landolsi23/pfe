@@ -356,6 +356,12 @@ export class ChatComponent implements OnInit, AfterViewChecked, OnDestroy {
   onFileSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
+      const maxSize = 100 * 1024 * 1024; // 100 MB in bytes
+
+      if (file.size > maxSize) {
+        alert("File size must be less than 100 MB!");
+        return; // stop upload
+      }
       this.uploadFile(file);
     }
   }
@@ -544,9 +550,10 @@ export class ChatComponent implements OnInit, AfterViewChecked, OnDestroy {
   showerror(text: string) {
     this.messageService.add({ severity: 'error', summary: 'error', detail: text });
   }
-  // get messagesArray(): ChatMessage[] {
-  //   return Array.from(this.messages);
-  // }
+  changeFilename(name: string) {
+    const change1 = name.replace("/uploads/", "")
+    return change1.replace(/^\d+/, "");
+  }
 
 }
 
