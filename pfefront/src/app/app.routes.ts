@@ -21,27 +21,28 @@ import { TicketDetailsComponent } from './ticket-details/ticket-details.componen
 
 export const routes: Routes = [
 
-    {path : 'kanban',component :KanbanboardComponent },
-     {path : 'login',component :LoginformComponent },
-      {path : 'user',component :UserpageComponent,  canActivate: [authGuard], },
-        {path : 'project',component :ProjectComponent,  canActivate: [authGuard], },
-        {
-        path: 'ticket',
-        loadChildren: () => import('./ticket/ticket.module').then(m => m.TicketModule)
-      },
-        {path : 'chat',component :ChatComponent },
-     
-            {path : 'kanban2',component :Kanban2Component },
-            { path: 'oauth2-redirect', component: Oauth2RedirectComponent },
-              { path: 'project-details/:id', component: ProjectdetailsComponent },
-                { path: 'sprint/:projectId/:sprintId', component: SprintComponent },
-                  { path: 'task/:projectId/:sprintId/:task', component: TaskComponent },
-                    { path: 'videocall', component: VideocallComponent },
-                     { path: 'multiple', component: MultipleCallComponent },
-                      { path: 'meeting/:roomId', component: MeetingroomComponent },
-                       { path: 'call', component: AudiocallComponent },
-{ path: 'ticketDetails', component: TicketDetailsComponent },
-                       { path: 'test', component: JiraTicketCardComponent }
+  { path: 'kanban', component: KanbanboardComponent },
+  { path: 'login', component: LoginformComponent },
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: 'user', component: UserpageComponent, canActivate: [authGuard], },
+  { path: 'project', component: ProjectComponent, canActivate: [authGuard], },
+  {
+    path: 'ticket',
+    loadChildren: () => import('./ticket/ticket.module').then(m => m.TicketModule)
+  },
+  { path: 'chat', component: ChatComponent },
+
+  { path: 'kanban2', component: Kanban2Component },
+  { path: 'oauth2-redirect', component: Oauth2RedirectComponent },
+  { path: 'project-details/:id', component: ProjectdetailsComponent },
+  { path: 'sprint/:projectId/:sprintId', component: SprintComponent },
+  { path: 'task/:projectId/:sprintId/:task', component: TaskComponent },
+  { path: 'videocall', component: VideocallComponent },
+  { path: 'multiple', component: MultipleCallComponent },
+  { path: 'meeting/:roomId', component: MeetingroomComponent },
+  { path: 'call', component: AudiocallComponent },
+  { path: 'ticketDetails', component: TicketDetailsComponent },
+  { path: 'test', component: JiraTicketCardComponent }
 
 
 ];
