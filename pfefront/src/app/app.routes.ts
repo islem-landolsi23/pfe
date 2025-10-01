@@ -30,19 +30,19 @@ export const routes: Routes = [
     path: 'ticket',
     loadChildren: () => import('./ticket/ticket.module').then(m => m.TicketModule)
   },
-  { path: 'chat', component: ChatComponent },
+  { path: 'chat', component: ChatComponent, canActivate: [authGuard] },
 
-  { path: 'kanban2', component: Kanban2Component },
-  { path: 'oauth2-redirect', component: Oauth2RedirectComponent },
-  { path: 'project-details/:id', component: ProjectdetailsComponent },
-  { path: 'sprint/:projectId/:sprintId', component: SprintComponent },
-  { path: 'task/:projectId/:sprintId/:task', component: TaskComponent },
-  { path: 'videocall', component: VideocallComponent },
-  { path: 'multiple', component: MultipleCallComponent },
-  { path: 'meeting/:roomId', component: MeetingroomComponent },
-  { path: 'call', component: AudiocallComponent },
-  { path: 'ticketDetails', component: TicketDetailsComponent },
-  { path: 'test', component: JiraTicketCardComponent }
+  { path: 'kanban2', component: Kanban2Component, canActivate: [authGuard] },
+  { path: 'oauth2-redirect', component: Oauth2RedirectComponent, canActivate: [authGuard] },
+  { path: 'project-details/:id', component: ProjectdetailsComponent, canActivate: [authGuard] },
+  { path: 'sprint/:projectId/:sprintId', component: SprintComponent, canActivate: [authGuard] },
+  { path: 'task/:projectId/:sprintId/:task', component: TaskComponent, canActivate: [authGuard], },
+  { path: 'videocall', component: VideocallComponent, canActivate: [authGuard] },
+  { path: 'multiple', component: MultipleCallComponent, canActivate: [authGuard] },
+  { path: 'meeting/:roomId', component: MeetingroomComponent, canActivate: [authGuard] },
+  { path: 'call', component: AudiocallComponent, canActivate: [authGuard] },
+  { path: 'ticketDetails', component: TicketDetailsComponent, canActivate: [authGuard] },
+  { path: 'test', component: JiraTicketCardComponent, canActivate: [authGuard] }
 
 
 ];
