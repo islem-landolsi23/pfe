@@ -1,0 +1,325 @@
+<div class="container mx-auto p-4">
+  <!-- Header Section -->
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold text-gray-800">Ticket Management</h1>
+    <button (click)="openTicketModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2">
+      <i class="fas fa-plus"></i> New Ticket
+    </button>
+  </div>
+
+  <!-- Filters Section -->
+  <div class="bg-white p-4 rounded-lg shadow mb-6">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div class="relative">
+        <input type="text" [(ngModel)]="searchQuery" placeholder="Search tickets..." class="w-full border rounded-lg px-3 py-2">
+      </div>
+      <select [(ngModel)]="filterStatus" class="border rounded-lg px-3 py-2">
+        <option value="">All Status</option>
+        <option *ngFor="let status of statusOptions" [value]="status">{{status}}</option>
+      </select>
+      <select [(ngModel)]="filterPriority" class="border rounded-lg px-3 py-2">
+        <option value="">All Priority</option>
+        <option *ngFor="let priority of priorityOptions" [value]="priority">{{priority}}</option>
+      </select>
+      <input type="date" [(ngModel)]="filterDate" class="border rounded-lg px-3 py-2">
+    </div>
+  </div>
+
+  <!-- Tickets Table -->
+  <div class="bg-white rounded-lg shadow overflow-hidden">
+    <table class="min-w-full">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Priority</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Assigned To</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created Date</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">
+        <tr *ngFor="let ticket of filteredTickets" class="hover:bg-gray-50">
+          <td class="px-6 py-4 whitespace-nowrap">{{ticket.id}}</td>
+          <td class="px-6 py-4">{{ticket.title}}</td>
+          <td class="px-6 py-4">
+            <span [ngClass]="getPriorityClass(ticket.priority)" class="px-2 py-1 rounded-full text-xs">
+              {{ticket.priority}}
+            </span>
+          </td>
+          <td class="px-6 py-4">
+            <span [ngClass]="getStatusClass(ticket.status)" class="px-2 py-1 rounded-full text-xs">
+              {{ticket.status}}
+            </span>
+          </td>
+          <td class="px-6 py-4">{{ticket.assignedTo}}</td>
+          <td class="px-6 py-4">{{ticket.createdDate | date:'short'}}</td>
+          <td class="px-6 py-4">
+            <button (click)="viewTicketDetails(ticket)" class="text-blue-600 hover:text-blue-800 mr-2">
+              <i class="fas fa-eye"></i>
+            </button>
+            <button (click)="editTicket(ticket)" class="text-green-600 hover:text-green-800 mr-2">
+              <i class="fas fa-edit"></i>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div class="flex justify-between items-center mt-4">
+    <div class="text-sm text-gray-700">
+      Showing {{startIndex + 1}} to {{endIndex}} of {{totalItems}} entries
+    </div>
+    <div class="flex gap-2">
+      <button [disabled]="currentPage === 1" (click)="changePage(currentPage - 1)" class="px-3 py-1 rounded border">
+        Previous
+      </button>
+      <button [disabled]="currentPage === totalPages" (click)="changePage(currentPage + 1)" class="px-3 py-1 rounded border">
+        Next
+      </button>
+    </div>
+  </div>
+
+  <!-- New Ticket Modal -->
+  <div *ngIf="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-6 w-full max-w-lg">
+      <h2 class="text-xl font-bold mb-4">{{editMode ? 'Edit Ticket' : 'New Ticket'}}</h2>
+      <form [formGroup]="ticketForm" (ngSubmit)="submitTicket()">
+        <div class="mb-4">
+          <label class="block text-sm font-medium mb-1">Title</label>
+          <input type="text" formControlName="title" class="w-full border rounded px-3 py-2">
+        </div>
+        <div class="mb-4">
+          <label class="block text-sm font-medium mb-1">Description</label>
+          <textarea formControlName="description" rows="3" class="w-full border rounded px-3 py-2"></textarea>
+        </div>
+        <div class="grid grid-cols-2 gap-4 mb-4">
+          <div>
+            <label class="block text-sm font-medium mb-1">Priority</label>
+            <select formControlName="priority" class="w-full border rounded px-3 py-2">
+              <option *ngFor="let priority of priorityOptions" [value]="priority">{{priority}}</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1">Status</label>
+            <select formControlName="status" class="w-full border rounded px-3 py-2">
+              <option *ngFor="let status of statusOptions" [value]="status">{{status}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-4 mb-4">
+          <div>
+            <label class="block text-sm font-medium mb-1">Assignee</label>
+            <select formControlName="assignedTo" class="w-full border rounded px-3 py-2">
+              <option *ngFor="let user of users" [value]="user">{{user}}</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1">Due Date</label>
+            <input type="date" formControlName="dueDate" class="w-full border rounded px-3 py-2">
+          </div>
+        </div>
+        <div class="flex justify-end gap-2">
+          <button type="button" (click)="closeModal()" class="px-4 py-2 border rounded">
+            Cancel
+          </button>
+          <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+            {{editMode ? 'Update' : 'Create'}} Ticket
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+
+ts
+
+
+
+import { Component, OnInit } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from "@angular/forms";
+
+@Component({
+  selector: "app-ticket-management",
+  standalone: true,
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  templateUrl: "./component.html",
+  styleUrls: ["./component.css"]
+})
+export class TicketManagementComponent implements OnInit {
+  tickets: any[] = [];
+  filteredTickets: any[] = [];
+  searchQuery: string = "";
+  filterStatus: string = "";
+  filterPriority: string = "";
+  filterDate: string = "";
+  showModal: boolean = false;
+  editMode: boolean = false;
+  currentTicket: any = null;
+  ticketForm: FormGroup;
+
+  // Pagination
+  currentPage: number = 1;
+  itemsPerPage: number = 10;
+  totalItems: number = 0;
+  totalPages: number = 0;
+  startIndex: number = 0;
+  endIndex: number = 0;
+
+  statusOptions: string[] = ["Open", "In Progress", "Resolved", "Closed"];
+  priorityOptions: string[] = ["High", "Medium", "Low"];
+  users: string[] = ["John Doe", "Jane Smith", "Mike Johnson", "Sarah Williams"];
+
+  constructor(private fb: FormBuilder) {
+    this.ticketForm = this.fb.group({
+      title: ["", Validators.required],
+      description: [""],
+      priority: ["Medium", Validators.required],
+      status: ["Open", Validators.required],
+      assignedTo: ["", Validators.required],
+      dueDate: ["", Validators.required]
+    });
+  }
+
+  ngOnInit() {
+    this.loadMockData();
+    this.applyFilters();
+  }
+
+  loadMockData() {
+    this.tickets = Array(50).fill(null).map((_, index) => ({
+      id: `TIC-${index + 1000}`,
+      title: `Sample Ticket ${index + 1}`,
+      description: `This is a sample ticket description ${index + 1}`,
+      priority: this.priorityOptions[Math.floor(Math.random() * 3)],
+      status: this.statusOptions[Math.floor(Math.random() * 4)],
+      assignedTo: this.users[Math.floor(Math.random() * 4)],
+      createdDate: new Date(Date.now() - Math.random() * 10000000000),
+      dueDate: new Date(Date.now() + Math.random() * 10000000000)
+    }));
+    this.totalItems = this.tickets.length;
+    this.totalPages = Math.ceil(this.totalItems / this.itemsPerPage);
+    this.applyFilters();
+  }
+
+  applyFilters() {
+    let filtered = [...this.tickets];
+
+    if (this.searchQuery) {
+      const query = this.searchQuery.toLowerCase();
+      filtered = filtered.filter(ticket =>
+        ticket.title.toLowerCase().includes(query) ||
+        ticket.description.toLowerCase().includes(query)
+      );
+    }
+
+    if (this.filterStatus) {
+      filtered = filtered.filter(ticket => ticket.status === this.filterStatus);
+    }
+
+    if (this.filterPriority) {
+      filtered = filtered.filter(ticket => ticket.priority === this.filterPriority);
+    }
+
+    if (this.filterDate) {
+      const filterDate = new Date(this.filterDate);
+      filtered = filtered.filter(ticket =>
+        new Date(ticket.createdDate).toDateString() === filterDate.toDateString()
+      );
+    }
+
+    this.totalItems = filtered.length;
+    this.totalPages = Math.ceil(this.totalItems / this.itemsPerPage);
+    
+    const start = (this.currentPage - 1) * this.itemsPerPage;
+    this.startIndex = start;
+    this.endIndex = Math.min(start + this.itemsPerPage, this.totalItems);
+    this.filteredTickets = filtered.slice(start, this.endIndex);
+  }
+
+  changePage(page: number) {
+    this.currentPage = page;
+    this.applyFilters();
+  }
+
+  getPriorityClass(priority: string): string {
+    switch (priority) {
+      case "High": return "bg-red-100 text-red-800";
+      case "Medium": return "bg-yellow-100 text-yellow-800";
+      case "Low": return "bg-green-100 text-green-800";
+      default: return "";
+    }
+  }
+
+  getStatusClass(status: string): string {
+    switch (status) {
+      case "Open": return "bg-blue-100 text-blue-800";
+      case "In Progress": return "bg-yellow-100 text-yellow-800";
+      case "Resolved": return "bg-green-100 text-green-800";
+      case "Closed": return "bg-gray-100 text-gray-800";
+      default: return "";
+    }
+  }
+
+  openTicketModal() {
+    this.editMode = false;
+    this.currentTicket = null;
+    this.ticketForm.reset({
+      status: "Open",
+      priority: "Medium"
+    });
+    this.showModal = true;
+  }
+
+  closeModal() {
+    this.showModal = false;
+    this.ticketForm.reset();
+  }
+
+  editTicket(ticket: any) {
+    this.editMode = true;
+    this.currentTicket = ticket;
+    this.ticketForm.patchValue({
+      title: ticket.title,
+      description: ticket.description,
+      priority: ticket.priority,
+      status: ticket.status,
+      assignedTo: ticket.assignedTo,
+      dueDate: new Date(ticket.dueDate).toISOString().split('T')[0]
+    });
+    this.showModal = true;
+  }
+
+  submitTicket() {
+    if (this.ticketForm.valid) {
+      const formData = this.ticketForm.value;
+      if (this.editMode && this.currentTicket) {
+        const index = this.tickets.findIndex(t => t.id === this.currentTicket.id);
+        if (index !== -1) {
+          this.tickets[index] = { ...this.currentTicket, ...formData };
+        }
+      } else {
+        const newTicket = {
+          id: `TIC-${this.tickets.length + 1000}`,
+          ...formData,
+          createdDate: new Date()
+        };
+        this.tickets.unshift(newTicket);
+      }
+      this.applyFilters();
+      this.closeModal();
+    }
+  }
+
+  viewTicketDetails(ticket: any) {
+    // Implement ticket details view logic
+    console.log("Viewing ticket:", ticket);
+  }
+}

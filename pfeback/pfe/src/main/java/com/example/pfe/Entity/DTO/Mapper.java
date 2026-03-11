@@ -1,0 +1,112 @@
+package com.example.pfe.Entity.DTO;
+
+
+import com.example.pfe.Entity.*;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+public class Mapper {
+
+
+
+    public ProjectDto toDto(Project project) {
+        List<SprintDto>sprintList = new ArrayList<>();
+        if(project.getSprints()!= null){
+            sprintList =project.getSprints().stream()
+                    .map(this::toDto)
+                    .toList() ;
+        }else {sprintList=null ;}
+        return new ProjectDto(
+                project.getId(),
+                project.getName(),
+                project.getDescription(),
+                project.getStartDate(),
+                project.getEndDate(),
+                sprintList
+        );
+    }
+
+    public SprintDto toDto(Sprint sprint) {
+
+        List<TaskDTO> taskDTOList = new ArrayList<>() ;
+        if( sprint.getTasks()!= null)
+        {
+            taskDTOList =    sprint.getTasks().stream()
+                    .map(this::toDto)
+                    .toList();
+        }else {taskDTOList =null ;}
+
+        return new SprintDto(
+                sprint.getId(),
+                sprint.getName(),
+                sprint.getStartDate(),
+                sprint.getEndDate(),
+                sprint.getStatus(),
+                sprint.getProject() != null ? sprint.getProject().getId() : null,
+                taskDTOList
+
+        );
+    }
+
+    public TaskDTO toDto(Task task) {
+        return new TaskDTO(
+                task.getId(),
+                task.getTitle(),
+                task.getDescription(),
+                task.getStatus(),
+                task.getPriority(),
+                task.getCreatedAt(),
+                task.getDueDate(),
+                task.getSprint() != null ? task.getSprint().getId() : null,
+                task.getAssignedUser() != null ? task.getAssignedUser().getId() : null
+        );
+    }
+    public UserDto toDto(User user) {
+        if (user == null) return null;
+        return new UserDto(
+                user.getId(),
+                user.getName(),
+                user.getEmail(),
+                user.getAvatarUrl(),
+                user.getPassword()
+        );
+    }
+
+
+    public ConversationDto toDto(Conversation conversation) {
+        List<UserDto> participantDtos = conversation.getParticipants().stream()
+                .map(u -> new UserDto(u.getId(), u.getName(), u.getEmail(), u.getAvatarUrl(),u.getPassword()))
+                .collect(Collectors.toList());
+
+        return new ConversationDto(
+                conversation.getId(),
+                conversation.getTitle(),
+                conversation.isGroup(),
+                conversation.getCreatedAt(),
+                participantDtos
+        );
+    }
+
+    public  NotificationDTO toDTO(Notification notification) {
+        if (notification == null) {
+            return null;
+        }
+
+        NotificationDTO newDto = new NotificationDTO(
+                notification.getTitle(),
+                notification.getMessage(),
+                notification.getReceiver() != null ? notification.getReceiver().getEmail() : null,
+                notification.getTimestamp(),
+                notification.getSender() != null ? notification.getSender().getEmail() : null,
+                notification.getType(),
+                notification.getTaskUrl()
+        );
+
+        newDto.setId(notification.getId());
+        return newDto ;
+    }
+}

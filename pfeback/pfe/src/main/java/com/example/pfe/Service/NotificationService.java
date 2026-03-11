@@ -1,0 +1,77 @@
+package com.example.pfe.Service;
+
+import com.example.pfe.Entity.Notification;
+import com.example.pfe.Entity.User;
+import com.example.pfe.Repository.NotificationRepository;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+@Service
+public class NotificationService {
+
+    private final NotificationRepository notificationRepository;
+
+    public NotificationService(NotificationRepository notificationRepository) {
+        this.notificationRepository = notificationRepository;
+    }
+
+    public Notification createNotification(String title, String message, User receiver, User sender,
+                                           String type ,String taskurl) {
+        Notification notification =
+                new Notification(title, message, receiver, sender, LocalDateTime.now().toString(),type,taskurl);
+
+        return notificationRepository.save(notification);
+    }
+
+    public List<Notification> getUnreadNotifications(String email) {
+        return notificationRepository.findByReceiverEmailAndReadFalse(email);
+    }
+
+    public void markAsRead(Long notificationId) {
+        notificationRepository.findById(notificationId).ifPresent(n -> {
+            n.setRead(true);
+            notificationRepository.save(n);
+        });
+    }
+
+    public List<Notification> markAllAsRead(String email) {
+       return  notificationRepository.findBySenderEmailAndReadFalse( email) ;
+
+    }
+
+
+    public List<Notification> turnAllARead(String receiverEmail ,  String senderEmail) {
+
+
+        String type ="chat Notification";
+     return      notificationRepository.findByReceiverEmailAndSenderEmailAndReadFalseAndType(
+                  receiverEmail,
+                  senderEmail,
+                  type) ;
+
+    }
+
+    public List<Notification> getUnreadTaskNotification( String email)
+
+    {
+        return notificationRepository.findByReceiverEmailAndReadFalseAndType(email,"TaskNotification") ;
+    }
+
+    public List<Notification> getUnreadMessageNotification( String email)
+
+    {
+        List<Notification> chatNotifications =    notificationRepository.findByReceiverEmailAndReadFalseAndType(email,"chat Notification") ;
+        List<Notification> groupNotifications =     notificationRepository.findByReceiverEmailAndReadFalseAndType(email,"groupe") ;
+        List<Notification> allNotifications = Stream.concat(chatNotifications.stream(), groupNotifications.stream())
+                .collect(Collectors.toList());
+        System.out.println(allNotifications);
+        return allNotifications ;
+    }
+
+
+
+}

@@ -1,0 +1,63 @@
+<!-- <p>meetingroom works!</p>
+<div class="video-container">
+  <video #localVideo autoplay playsinline muted></video>
+  <video #remoteVideo autoplay playsinline></video>
+</div>
+<button (click)="startCall()">Start Call</button> -->
+
+<!-- <div class="flex items-center justify-center text-center">
+  <p class="text-lg font-mono bg-gray-100 p-3 rounded-lg mb-6">{{ roomId }}</p>
+</div> -->
+
+
+
+<!-- <div class="call">
+  <div class="videos">
+    <div class="panel">
+      <h4>You</h4>
+      <video #localVideo autoplay playsinline muted></video>
+    </div>
+
+    <div class="panel" *ngFor="let id of remoteIds">
+      <h4>{{ id }}</h4>
+      <video [attr.id]="'remote-'+id" [srcObject]="remoteStreams.get(id) || null" autoplay playsinline>
+      </video>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="bg-red-500 text-white px-4 py-2 rounded" (click)="ngOnDestroy()">Leave</button>
+  </div>
+</div> -->
+
+<div class="flex flex-col items-center justify-start min-h-screen text-center space-y-6 pt-20">
+  <!-- Room ID -->
+  <p class="text-lg font-mono bg-gray-100 p-3 rounded-lg">
+    {{ roomId }}
+  </p>
+
+  <!-- Call Section -->
+  <div class="call flex flex-col items-center space-y-6">
+    <div class="videos flex flex-wrap justify-center gap-6">
+      <!-- Local Video -->
+      <div class="panel text-center">
+        <h4>You</h4>
+        <video #localVideo autoplay playsinline muted class="rounded-lg shadow-md"></video>
+      </div>
+
+      <!-- Remote Videos -->
+      <div class="panel text-center" *ngFor="let id of remoteIds">
+        <h4>{{ id }}</h4>
+        <video [attr.id]="'remote-'+id" [srcObject]="remoteStreams.get(id) || null" autoplay playsinline
+          class="rounded-lg shadow-md"></video>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="actions">
+      <button class="bg-red-500 text-white px-6 py-2 rounded-lg shadow" (click)="ngOnDestroy()">
+        Leave
+      </button>
+    </div>
+  </div>
+</div>

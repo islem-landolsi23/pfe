@@ -1,0 +1,46 @@
+
+
+
+
+<div class="p-4 space-x-2">
+  <input type="text" [(ngModel)]="email" placeholder="Enter email" class="border p-2 rounded">
+  <button (click)="call()" class="bg-blue-500 text-white px-4 py-2 rounded">Call</button>
+</div>
+
+<!-- Outgoing call status -->
+<!-- <div *ngIf="outgoingCall()" class="mt-4 p-4 bg-gray-100 rounded">
+  <ng-container [ngSwitch]="outgoingCall().type">
+    <p *ngSwitchCase="'CALL'">📞 Calling {{ outgoingCall().toEmail }}...</p>
+    <p *ngSwitchCase="'ACCEPTED'" class="text-green-600">✅ {{ outgoingCall().fromEmail }} accepted</p>
+    <p *ngSwitchCase="'DECLINED'" class="text-red-600">❌ {{ outgoingCall().fromEmail }} declined</p>
+  </ng-container>
+</div> -->
+
+<!-- Incoming call popup -->
+<!-- <div *ngIf="incomingCall()" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+  <div class="bg-white p-6 rounded-2xl shadow-lg w-80 text-center">
+    <h2 class="text-lg font-bold mb-4">Incoming Call</h2>
+    <p class="mb-4">From: {{ incomingCall().fromEmail }}</p>
+    <div class="flex justify-around">
+      <button (click)="acceptCall()" class="bg-green-500 text-white px-4 py-2 rounded">Accept</button>
+      <button (click)="declineCall()" class="bg-red-500 text-white px-4 py-2 rounded">Decline</button>
+    </div>
+  </div> 
+</div>-->
+
+<!-- Remote audio output -->
+<!-- <audio #remoteAudio autoplay></audio> -->
+<!-- <div *ngIf="outgoingCall()" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+   <div class="bg-white p-6 rounded-2xl shadow-lg w-80 text-center">
+  <ng-container [ngSwitch]="outgoingCall().type">
+    {{outgoingCall().type}}
+    <p *ngSwitchCase="'CALL'">📞 Calling {{ outgoingCall().toEmail }}...</p>
+    <p *ngSwitchCase="'ACCEPTED'" class="text-green-600">✅ {{ outgoingCall().fromEmail }} accepted</p>
+    <p *ngSwitchCase="'DECLINED'" class="text-red-600">❌ {{ outgoingCall().fromEmail }} declined</p>
+  </ng-container>
+    <button (click)="hangup()" class="bg-red-500 text-white px-4 py-2 rounded">hang</button>
+  </div>
+</div> -->
+
+
+

@@ -1,0 +1,125 @@
+import { CommonModule } from '@angular/common';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import {  ElementRef, ViewChild } from '@angular/core';
+//import * as Stomp from 'stompjs';
+import { Stomp } from '@stomp/stompjs';
+//import * as SockJS from 'sockjs-client';
+
+import SockJS from 'sockjs-client'
+@Component({
+  selector: 'app-multiple-call',
+  standalone: true,
+  imports: [FormsModule,CommonModule ],
+  templateUrl: './multiple-call.component.html',
+  styleUrl: './multiple-call.component.scss'
+})
+export class MultipleCallComponent implements  OnInit  {
+
+ @ViewChild('localVideo') localVideo!: ElementRef<HTMLVideoElement>;
+  peerConnections: { [id: string]: RTCPeerConnection } = {};
+  localStream!: MediaStream;
+  stompClient: any;
+  myId: string = Math.random().toString(36).substring(2);
+  roomId: string = "room1";
+
+
+
+
+
+
+
+
+
+
+ngOnInit() {
+    this.connectSignaling();
+    this.startLocalStream();
+}
+  connectSignaling() {
+    const socket = new SockJS('http://localhost:8080/ws');
+    this.stompClient = Stomp.over(socket);
+    this.stompClient.connect({}, () => {
+      this.stompClient.subscribe(`/topic/signal/${this.myId}`, (msg: any) => {
+        const data = JSON.parse(msg.body);
+        this.handleSignal(data);
+      });
+      // Notify others that I joined
+      this.broadcast({ type: 'join', from: this.myId, to: this.roomId });
+    });
+  }
+
+  async startLocalStream() {
+    this.localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+    this.localVideo.nativeElement.srcObject = this.localStream;
+  }
+
+
+
+
+    async handleSignal(message: any) {
+    const fromId = message.from;
+    if (message.type === 'join' && fromId !== this.myId) {
+      await this.createPeerConnection(fromId, true);
+    } else if (message.type === 'offer') {
+      await this.createPeerConnection(fromId, false, message.data);
+    } else if (message.type === 'answer') {
+      await this.peerConnections[fromId].setRemoteDescription(JSON.parse(message.data));
+    } else if (message.type === 'candidate') {
+      await this.peerConnections[fromId].addIceCandidate(JSON.parse(message.data));
+    }
+  }
+  async createPeerConnection(peerId: string, isInitiator: boolean, remoteOffer?: any) {
+    const pc = new RTCPeerConnection();
+    this.localStream.getTracks().forEach(track => pc.addTrack(track, this.localStream));
+
+    pc.ontrack = (event) => {
+      const video = document.createElement('video');
+      video.autoplay = true;
+      video.playsInline = true;
+      video.srcObject = event.streams[0];
+      document.getElementById('remoteVideos')?.appendChild(video);
+    };
+
+    pc.onicecandidate = (event) => {
+      if (event.candidate) {
+        this.broadcast({
+          type: 'candidate',
+          from: this.myId,
+          to: peerId,
+          data: JSON.stringify(event.candidate)
+        });
+      }
+    };
+
+    this.peerConnections[peerId] = pc;
+
+    if (isInitiator) {
+      const offer = await pc.createOffer();
+      await pc.setLocalDescription(offer);
+      this.broadcast({ type: 'offer', from: this.myId, to: peerId, data: JSON.stringify(offer) });
+    } else if (remoteOffer) {
+      await pc.setRemoteDescription(JSON.parse(remoteOffer));
+      const answer = await pc.createAnswer();
+      await pc.setLocalDescription(answer);
+      this.broadcast({ type: 'answer', from: this.myId, to: peerId, data: JSON.stringify(answer) });
+    }
+  }
+
+
+    broadcast(message: any) {
+    this.stompClient.send('/app/signal', {}, JSON.stringify(message));
+  }
+
+// ngOnDestroy(): void {
+//   throw new Error('Method not implemented.');
+// }
+}
+
+interface SignalMessage {
+  type: string;
+  from: string;
+  to: string;
+  roomId: string;
+  data?: any;
+}

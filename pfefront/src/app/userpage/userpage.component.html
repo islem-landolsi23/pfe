@@ -1,0 +1,171 @@
+<!-- <img [src]="avatar_url" alt="User Avatar"> -->
+
+
+
+
+
+
+
+
+
+
+<!-- 
+   <div class="line-height-10">
+    <div class="overflow-auto p-3  " >
+       
+ <p-avatar image="{{avatar_url}}"
+  class="mr-2" size="xlarge" shape="circle" />
+ 
+    
+    
+         
+           
+                <div class="label "> {{user.name}}</div>
+    </div>
+</div>  -->
+<!--//////////////////////////////////////////////////////////////////////////////////////////////////////////-->
+<!-- 
+<div class="flex justify-content-center flex-wrap">
+
+    <div class="flex align-items-center justify-content-center">
+        <p-panel [toggleable]="true" class="w-12">
+            <ng-template #header>
+                <div class="flex items-center gap-50">
+                    <p-avatar image="{{avatar_url}}" shape="circle" />
+                    <span class="font-bold">{{user.name}}</span>
+                </div>
+            </ng-template>
+
+            <ng-template #icons>
+                <p-button icon="pi pi-cog" severity="secondary" rounded text />
+
+            </ng-template>
+          
+                
+         
+           <br><br>
+
+                <input pInputText   placeholder="UserName" class="w-30rem"
+                >
+               
+      
+       
+           
+        </p-panel>
+
+
+
+    </div>
+</div> -->
+
+
+<div class="flex justify-content-center mt-5">
+    <p-card class="w-11 shadow-4">
+        <div class="flex flex-column align-items-center gap-3">
+            <p-panel [toggleable]="true" class="w-full  h-full">
+                <ng-template #header>
+                    <div class="flex align-items-center ">
+                        <p-avatar [image]="avatar_url" shape="circle" size="large" (dblclick)="openModal()"></p-avatar>
+                        <span class="font-bold ml-2">{{ user.name }}</span>
+                    </div>
+                </ng-template>
+
+                <ng-template #icons>
+                    <p-button icon="pi pi-cog" severity="secondary" rounded text />
+                </ng-template>
+                <form [formGroup]="userForm">
+                    <!--                          first panel                           -->
+
+                    <div class="mt-4 flex flex-column justify-content-center">
+
+                        <input pInputText placeholder="User name" formControlName="name" class="w-40rem" />
+                        <br>
+                        <input pInputText placeholder="email" class="w-40rem" formControlName="email" />
+                        <br>
+
+
+                        <p-fluid>
+                            <p-floatLabel>
+
+                                <p-password formControlName="password" [feedback]="false" [toggleMask]="true" />
+                                <label for="password">Password</label>
+                            </p-floatLabel>
+                        </p-fluid>
+
+
+                    </div>
+                </form>
+            </p-panel>
+            <!-- <p-panel [toggleable]="true" class="w-full h-full">
+                <ng-template #header>
+                    <div class="flex align-items-center gap-3">
+                        Projects
+                    </div>
+                </ng-template>
+
+                <ng-template #icons>
+                    <p-button icon="pi pi-cog" severity="secondary" rounded text />
+                </ng-template>
+              
+                <label for=""> Project : </label> porjeycmo
+                <p-divider />
+                <p>
+                    <label for=""> Project :</label> lolo wow
+                </p>
+                <p-divider />
+                <label for=""> Project :</label> kiki gio 
+
+            </p-panel>-->
+        </div>
+        <br>
+        <div class="flex justify-end">
+            <button pButton pRipple label="Save" class="p-button-success" (click)="saveUser()">
+            </button>
+        </div>
+
+    </p-card>
+</div>
+
+<!-- <button class=""(click)="saveUser()">save </button> -->
+
+
+
+
+<div class="fixed inset-0 z-50 flex items-center justify-center" *ngIf="isOpen">
+    <div class="fixed inset-0 bg-black bg-opacity-50" (click)="closeModal()"></div>
+    <div class="relative w-full max-w-md p-6 bg-white rounded-lg shadow-xl">
+        <button class="absolute top-2 right-2 text-gray-500 hover:text-gray-700" (click)="closeModal()">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
+        <div class="flex flex-col items-center">
+            <div class="relative w-48 h-48 mb-4" (dragover)="onDragOver($event)" (drop)="onDrop($event)"
+                (click)="fileInput.click()">
+                <div class="absolute inset-0 rounded-full border-2 border-dashed border-gray-300 
+         hover:border-blue-500 transition-colors cursor-pointer 
+         flex flex-col items-center justify-center overflow-hidden">
+                    <ng-container *ngIf="!previewUrl; else imagePreview">
+                        <svg class="w-12 h-12 text-gray-400 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5">
+                            </path>
+                        </svg>
+                        <p class="text-sm text-gray-500">Click or drag image</p>
+                    </ng-container>
+                    <ng-template #imagePreview>
+                        <img [src]="previewUrl" class="w-full h-full object-cover rounded-full" alt="Preview" />
+                    </ng-template>
+                </div>
+            </div>
+            <input #fileInput type="file" class="hidden" (change)="onFileSelected($event)" accept="image/*" />
+            <div *ngIf="errorMessage" class="text-red-500 text-sm mb-4">{{ errorMessage }}</div>
+            <button [disabled]="!previewUrl" (click)="saveImage()"
+                class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                Save Image
+            </button>
+        </div>
+    </div>
+</div>
+
+<p-toast />
